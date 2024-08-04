@@ -1,0 +1,1530 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "utopia API",
+        "description": "API documentation for utopia ",
+        "contact": {
+            "email": "info@utopia.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://gestion.utopia.madrid/api/",
+            "description": "utopia API"
+        }
+    ],
+    "paths": {
+        "/": {},
+        "/login": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "token de acceso",
+                "operationId": "7de52757920550fda88031a63f0f0f59",
+                "requestBody": {
+                    "description": "Post credentials",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "client_id",
+                                    "client_secret",
+                                    "grant_type",
+                                    "username",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "client_secret": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "39y1jpj3oH6jKSLITpNCoOi64gnFY4DDRUBo5Vt5"
+                                    },
+                                    "client_id": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "3"
+                                    },
+                                    "grant_type": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "password"
+                                    },
+                                    "username": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "ruben@ruben.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "12345678"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/categories": {
+            "get": {
+                "tags": [
+                    "categorias"
+                ],
+                "summary": "Mostrar categorias",
+                "operationId": "31d7eb1fb499fb981765e01717f25c7c",
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "categorias"
+                ],
+                "summary": "Crear categoria",
+                "operationId": "9d672c849a554dcdeb0c9328926d679e",
+                "requestBody": {
+                    "description": "Post categoria",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "idsector"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    },
+                                    "idsector": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "informacion": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/categories/{id}": {
+            "get": {
+                "tags": [
+                    "categorias"
+                ],
+                "summary": "Mostrar categoria ",
+                "operationId": "3c38bf6848eab35a9980f2152312a3f1",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro necesario para la consulta de categorias",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "categorias"
+                ],
+                "summary": "Modificar categoria ",
+                "operationId": "94463130a9fb896f028c0e1d05589408",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro para editar categorias",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "put categoria",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "idsector"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    },
+                                    "idsector": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "informacion": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "categorias"
+                ],
+                "summary": "Eliminar categoria",
+                "operationId": "917ad5212d304fa6c5221f39e73189aa",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro para editar categorias",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/contactos": {
+            "post": {
+                "tags": [
+                    "contactos"
+                ],
+                "summary": "Crear contacto",
+                "operationId": "2b7ef1175492748f2e2d5cbf94d24a62",
+                "requestBody": {
+                    "description": "Post contacto",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "identidad"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    },
+                                    "telefono": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "123456789"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_@_.com"
+                                    },
+                                    "identidad": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/conatctos/{id}": {
+            "get": {
+                "tags": [
+                    "contactos"
+                ],
+                "summary": "Mostrar contacto ",
+                "operationId": "3eca4e58bbef14a0a6aef2bb25d75177",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro necesario para la consulta de contacto",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/contactos/{id}": {
+            "put": {
+                "tags": [
+                    "contactos"
+                ],
+                "summary": "Modificar contacto",
+                "operationId": "9d2a330a90e4a69e815474b5befc592c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro para editar contacto",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "put contacto",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_@_.com"
+                                    },
+                                    "telefono": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "123456789"
+                                    },
+                                    "identidad": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "contactos"
+                ],
+                "summary": "Eliminar contacto",
+                "operationId": "522ff9d198f2edeca087cc8e774e58a0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro para editar contacto",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/entities": {
+            "get": {
+                "tags": [
+                    "entidades"
+                ],
+                "summary": "Mostrar entidades",
+                "operationId": "f3fd9e6e7992fbab636b4a533adf6d17",
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "entidades"
+                ],
+                "summary": "Crear entidad",
+                "operationId": "697c50bdf496a1fab48a866198325ab7",
+                "requestBody": {
+                    "description": "Post entidad",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "lat",
+                                    "lon",
+                                    "idcategoria",
+                                    "idsector"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "lat": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "lon": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "idcategoria": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "idsector": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "informacion": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    },
+                                    "urlweb": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    },
+                                    "direccion": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    },
+                                    "imagen": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/entities/{id}": {
+            "get": {
+                "tags": [
+                    "entidades"
+                ],
+                "summary": "Mostrar entidad detalle",
+                "operationId": "fa15041858ccfde07b3398422de1005e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro necesario para la consulta de entidad",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "entidades"
+                ],
+                "summary": "Modificar entidad",
+                "operationId": "e656bbb370b39819b530f1de81f02512",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro para editar entidad",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "put entidad",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "lat": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "lon": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "idcategoria": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "idsector": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "informacion": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    },
+                                    "urlweb": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    },
+                                    "direccion": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    },
+                                    "imagen": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "entidades"
+                ],
+                "summary": "Eliminar entidad",
+                "operationId": "b72acbd76972372a06ec10334f089864",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro para editar entidad",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/entitiesfilt?search={search}": {
+            "get": {
+                "tags": [
+                    "entidades"
+                ],
+                "summary": "Mostrar entidades con filtro",
+                "operationId": "a463286584593036230628e4ec2ae8cd",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "path",
+                        "description": "Parámetro necesario para filtrar entidad search ",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/entitytags": {
+            "post": {
+                "tags": [
+                    "entitytags"
+                ],
+                "summary": "Crear tag de entidad",
+                "operationId": "b77bf74b1139ecec08fe9eaae8f73c5f",
+                "requestBody": {
+                    "description": "Post tag",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "identidad",
+                                    "idtag"
+                                ],
+                                "properties": {
+                                    "identidad": {
+                                        "type": "integer",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "idtag": {
+                                        "type": "integer",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/entitytags/{id}": {
+            "delete": {
+                "tags": [
+                    "entitytags"
+                ],
+                "summary": "Eliminar tag de entidad",
+                "operationId": "a7e041179375f8279e0e3e05a49410b0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro para eliminar tag",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/products": {
+            "get": {
+                "tags": [
+                    "productos"
+                ],
+                "summary": "Mostrar productos",
+                "operationId": "6b833f04511adac37bc7d5092ac8aa24",
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "productos"
+                ],
+                "summary": "Crear producto",
+                "operationId": "67b9eab5d919557da8e67fb67b0bfbc5",
+                "requestBody": {
+                    "description": "Post producto",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "precio",
+                                    "identidad"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    },
+                                    "precio": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "identidad": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/products/{id}": {
+            "get": {
+                "tags": [
+                    "productos"
+                ],
+                "summary": "Mostrar producto ",
+                "operationId": "204dc4208ba8b416ed9fa338f411b761",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro necesario para la consulta de producto",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "productos"
+                ],
+                "summary": "Modificar producto",
+                "operationId": "43efc164c51e89a16de4ffa2718b950d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro para editar producto",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "put product",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    },
+                                    "precio": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "identidad": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "informacion": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    },
+                                    "imagen": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "productos"
+                ],
+                "summary": "Eliminar producto",
+                "operationId": "f251ae7854d7d8820c0f59a84a74df3f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro para editar producto",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/reds": {
+            "post": {
+                "tags": [
+                    "redes"
+                ],
+                "summary": "Crear red",
+                "operationId": "5a0f2ac1317b246c3463bbad6115320f",
+                "requestBody": {
+                    "description": "Post red",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "url",
+                                    "entity_id",
+                                    "tipored_id"
+                                ],
+                                "properties": {
+                                    "url": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    },
+                                    "identidad": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "idtipored": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/reds/{id}": {
+            "put": {
+                "tags": [
+                    "redes"
+                ],
+                "summary": "Modificar red",
+                "operationId": "7af578494c66294285ce8609b231c465",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro para editar la red.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "put red",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "url",
+                                    "entity_id",
+                                    "tipored_id"
+                                ],
+                                "properties": {
+                                    "url": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    },
+                                    "identidad": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    },
+                                    "idtipored": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "redes"
+                ],
+                "summary": "Eliminar red",
+                "operationId": "11b23d6be4ce28c45bc6abd6e58857b7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro para editar red",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/sectors": {
+            "get": {
+                "tags": [
+                    "sectores"
+                ],
+                "summary": "Mostrar sectores",
+                "operationId": "3dfe430829ee2b059eaa384d71268960",
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/tags": {
+            "get": {
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Mostrar tags",
+                "operationId": "d471af8752732894db4da27409f6e403",
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Crear tag",
+                "operationId": "15f49781c05eff0dc6133603d130784b",
+                "requestBody": {
+                    "description": "Post tag",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/tags/{id}": {
+            "get": {
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Mostrar tag ",
+                "operationId": "d52d4c712e909af06d8205bbe516ed1b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro necesario para la consulta de tag",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Modificar tag",
+                "operationId": "9cecbd5302e8592b346858752ff49551",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro para editar tag",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "put tag",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "tags"
+                ],
+                "summary": "Eliminar tag",
+                "operationId": "d3388c48b935302bf366048c63710799",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro para eliminar tag",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/tiporeds": {
+            "get": {
+                "tags": [
+                    "redes"
+                ],
+                "summary": "Mostrar redes",
+                "operationId": "0197335b1990f88cdda77f29f322147b",
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Mostrar todos los usuarios",
+                "operationId": "8cf2740a815b9ea1a079d7741682c422",
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Crear usuarios",
+                "operationId": "22e982e77acec303d516baa3ad93ad65",
+                "requestBody": {
+                    "description": "Post user",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nombre",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "nombre": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "nombre"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "nombre@dominio.com"
+                                    },
+                                    "informacion": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "12345678"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "put": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Modificar usuario",
+                "operationId": "b420dbae8b77b7351c229890ef1bf2e4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Parámetro para editar usuario.",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "examples": {
+                            "int": {
+                                "summary": "Introduce un número de id .",
+                                "value": "1"
+                            }
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "put user",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "text",
+                                        "example": "_@_.com"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        },
+        "/me": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Mostrar usuarios",
+                "operationId": "c845ec0926d2337c717c9a3f48bcb108",
+                "responses": {
+                    "200": {
+                        "description": "Respuesta Ok."
+                    },
+                    "default": {
+                        "description": "Ha ocurrido un error."
+                    }
+                }
+            }
+        }
+    }
+}
