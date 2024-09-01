@@ -15,7 +15,8 @@ use App\Models\Franjashorarias;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use App\Transformers\VisitFiltTransformer;
-
+use DateTime;
+use DateInterval;
 
 
 

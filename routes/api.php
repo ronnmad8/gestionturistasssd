@@ -21,7 +21,7 @@ use App\Http\Controllers\Visit\VisitController;
 use App\Http\Controllers\Visit\VisitCategoryController;
 use App\Http\Controllers\Visittags\VisittagsController ;
 use App\Http\Controllers\Visithours\VisithoursController ;
-
+use App\Http\Controllers\Pedido\PedidoController;
 use App\Http\Controllers\VisitFilt\VisitFiltController;
 use App\Http\Controllers\Reserva\ReservaController;
 use App\Http\Controllers\Textcontents\TextcontentsController;
@@ -134,9 +134,10 @@ Route::post('login', [LoginController::class, 'issueToken']);
  */
 Route::post('register', [UserController::class, 'store']);
 Route::resource('users', UserController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
-Route::get('me', [UserController::class, 'me']);
+Route::get('/me', [UserController::class, 'me']);
 Route::get('/reservascliente/{idlang}/{idpedido}', [UserController::class, 'reservascliente']);
-Route::get('/pedidocliente/{idlang}/{idpedido}', [UserController::class, 'pedidocliente']);
+Route::get('/pedidocliente/{idpedido}', [PedidoController::class, 'pedido']);
+Route::post('/pedidocliente', [PedidoController::class, 'store']);
 
 
 Route::resource('users/verify/{token}', UserController::class, ['only' =>['verify']]);

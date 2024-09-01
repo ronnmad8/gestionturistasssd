@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Transformers\PedidoTransformer;
 
+
 class Pedido extends Model
 {
     
@@ -18,11 +19,9 @@ class Pedido extends Model
     protected $dates = ['deleted_at'];
     protected $fillable = [
     	'user_id',
-    	'created',
     	'total',
     	'totalfinal',
-    	'children',
-        'adults'
+        'paymentmethod'
     ];
     
     protected $hidden = [

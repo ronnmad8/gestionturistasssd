@@ -63,8 +63,8 @@ class VisitController extends ApiController
         $idlang ?? 1; 
 
         $data = Visit::select('visits.*'
-        , Visit::raw("(SELECT visitlanguages.name FROM visitlanguages WHERE visitlanguages.language_id = 1 and visitlanguages.visit_id = 1 limit 1  ) as titulo ")
-        , Visit::raw("(SELECT visitlanguages.descripcion FROM visitlanguages WHERE visitlanguages.language_id = 1  and visitlanguages.visit_id = visits.id  limit 1) as descripcion ")
+        , Visit::raw("(SELECT visitlanguages.name FROM visitlanguages WHERE visitlanguages.language_id = ".$idlang." and visitlanguages.visit_id = visits.id limit 1  ) as titulo ")
+        , Visit::raw("(SELECT visitlanguages.descripcion FROM visitlanguages WHERE visitlanguages.language_id = ".$idlang."  and visitlanguages.visit_id = visits.id  limit 1) as descripcion ")
         )
         ->where('visits.recomendado', 1 )
         ->get();

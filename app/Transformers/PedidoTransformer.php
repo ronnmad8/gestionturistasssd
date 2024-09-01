@@ -2,33 +2,34 @@
 
 namespace App\Transformers;
 
-use App\Models\Reserva;
+use App\Models\Pedido;
 use League\Fractal\TransformerAbstract;
 
-class ReservaTransformer extends TransformerAbstract
+class PedidoTransformer extends TransformerAbstract
 {
     /**
      * A Fractal transformer.
      *
      * @return array
      */
-    public static  function transform(Reserva $reserva)
+    public static  function transform(Pedido $pedido)
     {
         /**
          * id,
     	 * total,
     	 * totalfinal,
          * user_id,
-         * created
+         * created_at
          */
 
         return [
-            'id' => (int)$reserva->id,
-            'user_id' => (int)$reserva->visit_id,
-            'total' => (float)$reserva->language_id,
-            'totalfinal' => (float)$reserva->language_id,
-            'created' => (string)$reserva->created
-
+            'id' => (int)$pedido->id,
+            'total' => (float)$pedido->total,
+            'totalfinal' => (float)$pedido->totalfinal,
+            'user_id' => (float)$pedido->user_id,
+            'peymentmethod' => (float)$pedido->paymentmethod,
+            'created_at' => (string)$pedido->created_at,
+            'reservas' => $pedido->reservas
         ];
     }
 
@@ -36,10 +37,12 @@ class ReservaTransformer extends TransformerAbstract
     {
         $attributes = [
             'id' => 'id',
-            'user_id' => 'user_id',
             'total' => 'total',
             'totalfinal' => 'totalfinal',
-            'created' => 'created'
+            'user_id' => 'user_id',
+            'paymentmethod' => 'paymentmethod',
+            'created_at' => 'created_at',
+            'reservas' => 'reservas'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;
@@ -49,10 +52,12 @@ class ReservaTransformer extends TransformerAbstract
     {
         $attributes = [
             'id' => 'id',
-            'user_id' => 'user_id',
             'total' => 'total',
             'totalfinal' => 'totalfinal',
-            'created' => 'created'
+            'user_id' => 'user_id',
+            'paymentmethod' => 'paymentmethod',
+            'created_at' => 'created_at',
+            'reservas' => 'reservas'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;

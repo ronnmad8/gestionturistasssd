@@ -14,7 +14,7 @@ class ReservaController extends ApiController
     public function __construct()
     {
         $this->middleware('transform.input:'. ReservaTransformer::class)->only(['store','update','reserva', 'reservasvisita']);
-        $this->middleware('auth:api')->except(['index', 'show', 'reserva', 'reservascliente']);
+        $this->middleware('auth:api')->except(['index', 'show', 'reserva', 'reservascliente','me']);
     }
 
 
@@ -117,15 +117,15 @@ class ReservaController extends ApiController
         $data = $request->all();
         $reserva = Reserva::create($data);
 
-        if ($request->hasFile('imagenreserva')) {
-            $file = $request->file('imagenreserva');
+        // if ($request->hasFile('imagenreserva')) {
+        //     $file = $request->file('imagenreserva');
             
-            if($file != null){
-                $namefile = $this->updatefile($file);
-                $reserva->image = $namefile;
-                $reserva->save();
-            }
-        }
+        //     if($file != null){
+        //         $namefile = $this->updatefile($file);
+        //         $reserva->image = $namefile;
+        //         $reserva->save();
+        //     }
+        // }
 
         return $this->showOne($reserva, 201);
     }
