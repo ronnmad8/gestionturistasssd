@@ -39,6 +39,7 @@ class Visit extends Model
         'titulo',
         'descripcion',
         'image',
+        'precio'
     
     ];
     protected $hidden = [

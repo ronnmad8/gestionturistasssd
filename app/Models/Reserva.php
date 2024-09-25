@@ -29,7 +29,7 @@ class Reserva extends Model
         'total',
         'private',
         'pedido_id'
-    ];
+    ]; 
     
 
     protected $hidden = [

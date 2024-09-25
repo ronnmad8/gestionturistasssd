@@ -94,6 +94,7 @@ class VisitFiltController extends ApiController
         $searchfilt =  $searchfilt->where(function ($query) use ($search) {
             $query->whereRaw(strtolower('visitlanguages.name LIKE ? OR visitlanguages.descripcion LIKE ?'), ["%{$search}%", "%{$search}%"]);
         });
+        
         $searchfilt = $searchfilt->pluck('visit_id')->toArray();
         $searchfilt = array_values(array_unique($searchfilt));
 
@@ -277,10 +278,10 @@ class VisitFiltController extends ApiController
             }
         })
         ->where(function ($query) use ($preciofin) {
-            $query->where('visits.preciohoramin', "<=",  $preciofin );
+            $query->where('visits.precio', "<=",  $preciofin );
         })
         ->where(function ($query) use ($preciomin) {
-            $query->where('visits.preciohoramin', ">=",  $preciomin );
+            $query->where('visits.precio', ">=",  $preciomin );
         })
         ->where(function ($query) use ($duracionestramos) {
             if(!empty($duracionestramos)){

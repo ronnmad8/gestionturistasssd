@@ -42,10 +42,11 @@ class UserTransformer extends TransformerAbstract
             'state' => (string)$user->state,
             'country' => (string)$user->country,
             'city' => (string)$user->city,
+            'particular' => (string)$user->particular,
+            'postalcode' => (string)$user->postalcode,
             'number' => (string)$user->number,
             'address' => (string)$user->address,
-            'rol_id' => (string)$user->rol_id,
-            'deleted_at' => isset($user->deleted_at) ? (string) $user->deleted_at : null,
+            'rol_id' => (string)$user->rol_id
         
         ];
     }
@@ -62,6 +63,8 @@ class UserTransformer extends TransformerAbstract
             'state' => 'state',
             'country' => 'country',
             'city' => 'city',
+            'particular' => 'particular',
+            'postalcode' => 'postalcode',
             'number' => 'number',
             'address' => 'address',
             'rol_id' => 'rol_id'
@@ -82,6 +85,8 @@ class UserTransformer extends TransformerAbstract
             'state' => 'state',
             'country' => 'country',
             'city' => 'city',
+            'particular' => 'particular',
+            'postalcode' => 'postalcode',
             'number' => 'number',
             'address' => 'address',
             'rol_id' => 'rol_id'

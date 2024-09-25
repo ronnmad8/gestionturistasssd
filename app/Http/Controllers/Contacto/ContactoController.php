@@ -6,6 +6,8 @@ use App\Models\Contacto;
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use App\Transformers\ContactoTransformer;
+use App\Mail\ContactMail;
+use Illuminate\Support\Facades\Mail;
 
 class ContactoController extends ApiController
 {
@@ -14,7 +16,7 @@ class ContactoController extends ApiController
     public function __construct()
     {
         $this->middleware('transform.input:'. ContactoTransformer::class)->only(['store','update']);
-        $this->middleware('auth:api')->except(['index', 'show']);
+        $this->middleware('auth:api')->except(['index', 'show', 'contact']);
     }
 
 
@@ -235,4 +237,25 @@ class ContactoController extends ApiController
     {
         //
     }
+
+
+    public function contact(Request $request)
+    {
+        $rules = [
+            'email' => 'required'
+        ];
+
+        $result = "false";
+
+        //$this->validate($request, $rules);
+
+        $data = $request->all();
+        $email = $data["email"];
+
+        Mail::to($email) // Email al que se enviará el correo
+        ->send(new ContactMail($data));
+
+        return response()->json(['result' => 'Correo enviado con éxito']);
+    }
+
 }

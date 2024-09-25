@@ -26,6 +26,7 @@ class ReservaTransformer extends TransformerAbstract
          * total
          * titulo
          * descripcion
+         * mediafilee
          */
 
         return [
@@ -43,8 +44,9 @@ class ReservaTransformer extends TransformerAbstract
             'paymentmethod' => (int)$reserva->paymentmethod,
             'private' => (int)$reserva->private,
             'titulo' => $reserva->titulo,
-            'descripcion' => $reserva->descripcion
-        
+            'descripcion' => $reserva->descripcion,
+            'mediafile' => $reserva->mediafile,
+            'hora' => $reserva->hora
 
         ];
     }
@@ -66,8 +68,10 @@ class ReservaTransformer extends TransformerAbstract
             'paymentmethod' => 'paymentmethod',
             'private' => 'private',
             'titulo' => 'titulo',
-            'descripcion' => 'descipcion'
-        ];
+            'descripcion' => 'descipcion',
+            'mediafile' => $reserva->mediafile,
+            'hora' => $reserva->hora
+         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;
     }
@@ -88,7 +92,9 @@ class ReservaTransformer extends TransformerAbstract
             'paymentmethod' => 'paymentmethod',
             'private' => 'private',
             'titulo' => 'titulo',
-            'descripcion' => 'descipcion'
+            'descripcion' => 'descipcion',
+            'mediafile' => $reserva->mediafile,
+            'hora' => $reserva->hora
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;

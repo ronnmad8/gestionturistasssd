@@ -7,6 +7,7 @@ use App\Models\Reserva;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use App\Transformers\PedidoTransformer;
+use Illuminate\Support\Str;
 
 class PedidoController extends ApiController
 {
@@ -119,15 +120,15 @@ class PedidoController extends ApiController
                     $reserva["persons"] = (int)$r["children"] + (int)$r["adults"];
                     $reserva["pedido_id"] = $pedido->id;
                     $reserva["user_id"] = $pedido->user_id;
-                    Reserva::create([$reserva]);
+                    $reserva["visit_id"] = (int)$r["visit"]["id"];
+                    $reserva["uuid"] = Str::uuid();
+                    $reserva->save();
+                    
                     $reservasArray[] = $reserva; 
                 }
             }    
-            $pedido["reservas"] = $reservasArray;
             return $this->showOne($pedido, 201);
         }
-
-        
 
         return null;
     }

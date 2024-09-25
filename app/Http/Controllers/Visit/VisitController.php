@@ -76,7 +76,8 @@ class VisitController extends ApiController
 
     public function searchbasic(Request $request)
     {
-        
+        $idlang = $request->input('idlang') ?? 1 ;
+
         $search = $request->input('search');
         $search = strtolower($search);
 
@@ -92,9 +93,9 @@ class VisitController extends ApiController
         Visitlanguages::raw("(SELECT visitlanguages.descripcion FROM visitlanguages WHERE visitlanguages.visit_id = visits.id and visitlanguages.language_id = ".$idlang."  limit 1) as descripcion")
         )
         ->orWhere(function ($query) use ($searchfilt) {
-            if(!empty($searchfilt)){
+           // if(!empty($searchfilt)){
                 $query->whereIn('visits.id', $searchfilt);
-            }
+           // }
         })
         ->get();
         

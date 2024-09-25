@@ -27,6 +27,7 @@ use App\Http\Controllers\Reserva\ReservaController;
 use App\Http\Controllers\Textcontents\TextcontentsController;
 use App\Http\Controllers\Textcomments\TextcommentsController;
 
+
 /** @var \Laravel\Lumen\Routing\Router $router */
 
 /**
@@ -39,7 +40,7 @@ Route::get('/test', function() {
 /**
  * Basex
  */
-Route::resource('basex', BasexController::class, ['only' => ['index', 'show']]);
+//Route::resource('basex', BasexController::class, ['only' => ['index', 'show']]);
 Route::resource('testcontrol', TestController::class, ['only' => ['show']]);
 
 
@@ -79,7 +80,6 @@ Route::get('/hoursid', [VisitFiltController::class, 'hoursid']);
  * Reserva
  */
 Route::resource('reservas', ReservaController::class, ['only' => ['index', 'show','store','update','destroy']]);
-
 Route::get('/reserva/{id}', [ReservaController::class, 'reserva']);
 
 
@@ -122,6 +122,8 @@ Route::get('/isolanguages/{id}', [IsolanguagesController::class, 'isolanguages']
  * Contacto
  */
 //Route::resource('contactos', ContactoController::class, ['only' => ['show','store','update','destroy']]);
+Route::post('/contact', [ContactoController::class, 'contact']);
+
 
 /**
  * Login
@@ -133,13 +135,17 @@ Route::post('login', [LoginController::class, 'issueToken']);
  * Users
  */
 Route::post('register', [UserController::class, 'store']);
-Route::resource('users', UserController::class, ['only' => ['index', 'show', 'store', 'update', 'destroy']]);
+Route::resource('users', UserController::class, ['only' => ['index', 'show', 'destroy', 'update']]);
 Route::get('/me', [UserController::class, 'me']);
 Route::get('/reservascliente/{idlang}/{idpedido}', [UserController::class, 'reservascliente']);
+Route::get('/reservasclienteall/{idlang}', [UserController::class, 'reservasclienteall']);
+Route::post('/users/changedata', [UserController::class, 'changedata']);
 Route::get('/pedidocliente/{idpedido}', [PedidoController::class, 'pedido']);
 Route::post('/pedidocliente', [PedidoController::class, 'store']);
 
 
 Route::resource('users/verify/{token}', UserController::class, ['only' =>['verify']]);
-//Route::resource('users/{user}/resend', UserController::class, ['only' =>['resend']]);
+
+
+//Route::resource('users/{user}/resend', UserController::class, ['only' =>['resend']]); ////
 

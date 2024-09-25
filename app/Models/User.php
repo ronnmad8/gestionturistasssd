@@ -38,7 +38,8 @@ class User extends Authenticatable
         'city',
         'number',
         'address',
-        'rol_id'
+        'rol_id',
+        'particular'
 
     ];
 

@@ -52,6 +52,7 @@ class VisitFiltTransformer extends TransformerAbstract
             'accesibilidad' => $visit->duracionmin,
             'duracionmin' => $visit->duracionmin,
             'preciohoramin' => ($visit->preciohoramin *1),
+            'precio' => $visit->precio,
             'puntoencuentro' => $visit->puntoencuentro,
             'titulo' => $visit->titulo,
             'descripcion' => $visit->descripcion,
@@ -85,6 +86,7 @@ class VisitFiltTransformer extends TransformerAbstract
             'puntodeencuentro' => 'puntodeencuentro',
             'titulo' => 'titulo',
             'descripcion' => 'descripcion',
+            'precio' => 'precio'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;
@@ -108,6 +110,7 @@ class VisitFiltTransformer extends TransformerAbstract
             'puntodeencuentro' => 'puntodeencuentro',
             'titulo' => 'titulo',
             'descripcion' => 'descripcion',
+            'precio' => 'precio'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;

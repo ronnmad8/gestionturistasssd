@@ -30,6 +30,7 @@ class VisitTransformer extends TransformerAbstract
         *nummax,
         *descripcion,
         *titulo,
+        *precio,
         */
 
         return [
@@ -48,6 +49,7 @@ class VisitTransformer extends TransformerAbstract
             'titulo' => $visit->titulo,
             'descripcion' => $visit->descripcion,
             'mediafiles' => $visit->mediafiles,
+            'precio' => $visit->precio
             
         ];
     }
@@ -71,6 +73,7 @@ class VisitTransformer extends TransformerAbstract
             'puntodeencuentro' => 'puntodeencuentro',
             'titulo' => 'titulo',
             'descripcion' => 'descripcion',
+            'precio' => 'precio'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;
@@ -94,7 +97,7 @@ class VisitTransformer extends TransformerAbstract
             'puntodeencuentro' => 'puntodeencuentro',
             'titulo' => 'titulo',
             'descripcion' => 'descripcion',
-
+            'precio' => 'precio'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;
