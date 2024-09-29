@@ -13,6 +13,7 @@ use App\Models\Hours;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Datetime;
+use Illuminate\Support\Str;
 
 class AdminvisitsController extends Controller
 {
@@ -24,69 +25,35 @@ class AdminvisitsController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-
-        //lista de visitas
-        //$adminvisits = Visit::all()->take(8);
-        
+    {        
         $adminvisits= Visit::with(['visitcategories.category', 'visitlanguages', 'visittags.tags'] )
         ->orderByDesc('visits.id')
-        ->simplePaginate(100);
+        ->simplePaginate(1000);
 
         $hours= Hours::select('hours.*')->get();
         $categories= Category::select('categories.*')->get();
         $languages= Languages::with('isolanguages')->orderBy('id') ->get();
         $tags= Tag::select('tags.*')->get();
-
-
         return view('adminvisits.index', compact(['adminvisits', 'hours', 'tags', 'categories', 'languages']));
     }
 
 
-    public function visitsfilt($c_id)
-    {
-        
-        $clientes= Cliente::select('clientes.*', 'centros.name as centro')
-        ->join('centros','centros.id','clientes.centros_id')
-        ->where('clientes.centros_id', $c_id )
-        ->orderByDesc('clientes.id')
-        ->simplePaginate(10);
-
-        $visitlanguages= Visitlanguages::select('visitlanguages.*')->get();
-
-        return view('adminvisits.index', compact(['visitlanguages']));
-
-    }
-
-
-    
-
-    // public function autorizacion($code)
+    // public function visitsfilt($c_id)
     // {
-    //     //autorizacion cliente 
-    //     //->join('autorizacion_clientes', 'autorizacion_clientes.cliente_id','clientes.id')
+        
+    //     $clientes= Cliente::select('clientes.*', 'centros.name as centro')
+    //     ->join('centros','centros.id','clientes.centros_id')
+    //     ->where('clientes.centros_id', $c_id )
+    //     ->orderByDesc('clientes.id')
+    //     ->simplePaginate(10);
 
-    //     $hoy = date('Y-m-d H:i:s');
+    //     $visitlanguages= Visitlanguages::select('visitlanguages.*')->get();
 
-    //     $cliente= Cliente::select('clientes.*')
-    //     ->where('clientes.code', $code)
-    //     ->where('clientes.caducidad','>', $hoy )
-    //     //->where('clientes.estado_id', '2' )
-    //     ->first();
-
-    //     return view('cliente.autorizacion', compact(['cliente']));
+    //     return view('adminvisits.index', compact(['visitlanguages']));
     // }
 
 
 
- 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Cliente  $cliente
-     * @return \Illuminate\Http\Response
-     */
     public function updatevisit(Request $request)
     {
         $request->validate([
@@ -94,6 +61,8 @@ class AdminvisitsController extends Controller
             'recomendado' => 'required|boolean',
             'precio' => 'required|numeric|min:0',
         ]);
+
+        try {
 
         $id = $request->input('id');
         if($id != null){
@@ -173,59 +142,123 @@ class AdminvisitsController extends Controller
             }
         }
         return response()->json(['error' => 'Visit not found'], 404);
+        }
+        catch (\Exception $e) {
+            return response()->json(['error' => 'Error al crear la visita', 'message' => $e->getMessage()], 500);
+        }
     }
-
-
-    // public function visitasupdate(Request $request)
-    // {
-    //     ////actualizar
-    //     $id = $request->input('id');
-    //     $alu = Alumno::findOrFail($id);
-    //     $alu->nombre = $request->input('nombre');
-    //     $alu->apellido1 = $request->input('apellido1');
-    //     $alu->apellido2 = $request->input('apellido2');
-    //     $alu->curso_id = $request->input('curso_id');
-
-    //     $alu->save();
-    //     return  $id ;
-    // }
-
 
   
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\AutorizacionCliente  $cliente
-     * @return \Illuminate\Http\Response
-     */
-    public function createvisita(Request $request)
+    function createvisit(Request $request)
     {
-        $hoy = date('Y-m-d H:i:s');
-        
+        $validated = $request->validate([
+            'cuandomin' => 'integer',
+            'cancelacion' => 'integer',
+            'temporada' => 'integer',
+            'mascotas' => 'integer',
+            'accesibilidad' => 'integer',
+            'duracionmin' => 'integer',
+            'recomendado' => 'integer',
+            'precio' => 'numeric',
+            'puntoencuentro' => 'string|nullable',
+            'puntoencuentrotext' => 'string|nullable',
+            'name' => 'string|required',
+            'nummax' => 'integer',
+            'nummin' => 'integer',
+            'visitcategories' => 'array|nullable',
+            'visittags' => 'array|nullable',
+            'visitlanguages' => 'array|nullable'
+        ]);
+
+        try {
+
         $visit = new Visit();
-        return $visit;
 
-        $visit->cuandomin = $request->input('cuandomin');
-        $visit->cancelacion = $request->input('cancelacion');
-        $visit->temporada = $request->input('temporada');
+            $visit->uuid = Str::uuid()->toString();
+            $visit->cuandomin = $request->input('cuandomin', 0);
+            $visit->cancelacion = $request->input('cancelacion', 0);
+            $visit->temporada = $request->input('temporada', 0);
+            $visit->mascotas = $request->input('mascotas', 0);
+            $visit->accesibilidad = $request->input('accesibilidad', 0);
+            $visit->duracionmin = $request->input('duracionmin', 0);
+            $visit->recomendado = $request->input('recomendado', 0);
+            $visit->precio = $request->input('precio', 0);
+            $visit->puntoencuentro = $request->input('puntoencuentro', '');
+            $visit->puntoencuentrotext = $request->input('puntoencuentrotext', '');
+            $visit->name = $request->input('name', '');
+            $visit->nummax = $request->input('nummax', 0);
+            $visit->nummin = $request->input('nummin',0);
+            $visit->preciohoramin = 0; 
+            if ($visit->duracionmin > 0) {
+                $visit->preciohoramin = round($visit->precio / ($visit->duracionmin / 60), 2);
+            } 
+            if ($visit->save()) {
+                $visitcategories = $request->input('visitcategories', []); 
+                if (!empty($visitcategories)) {
+                    $visit->visitcategories()->delete();
+                    foreach ($visitcategories as $category) {
+                        $visit->visitcategories()->create(['category_id' => $category]);
+                    }
+                }
+                $visit->load('visitcategories.category');
 
-        $cliente->fecha_autorizacion = new Datetime();
+                $visittags = $request->input('visittags', []); 
+                if (!empty($visittags)) {
+                    $visit->visittags()->delete();
+                    foreach ($visittags as $tag) {
+                        $visit->visittags()->create(['tags_id' => $tag]);
+                    }
+                }
+                $visit->load('visittags.tags');
 
-        $visit->save();
+                $visitlanguages = $request->input('visitlanguages', []); 
+                if (!empty($visitlanguages)) {
+                    foreach ($visitlanguages as $vl) {
+                        $languageId = $vl['language_id'] ?? null; 
+                        $name = $vl['name'] ?? null;
+                        $descripcion = $vl['descripcion'] ?? null;
 
-        return [true];
+                        if($languageId != null){
+                            $visit->visitlanguages()->create([
+                                'language_id' => $languageId,
+                                'name' => $name,
+                                'descripcion' => $descripcion,
+                            ]);
+                        }
+                    }
+                }
+                $visit->load('visitlanguages.languages');
+                
+                return response()->json($visit);
+                }
+            
+            } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al crear la visita', 'message' => $e->getMessage()], 500);
+            }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Cliente  $cliente
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Cliente $cliente)
+
+    public function deletevisit( Request $request )
     {
-        //
+        try {
+            $id = $request->input('id');
+            if($id != null){
+                \DB::beginTransaction();
+                $visita = Visit::with(['visitcategories.category', 'visitlanguages', 'visittags.tags'] )->findOrFail($id);
+                $visita->visitlanguages()->delete();
+                $visita->visittags()->delete();
+                $visita->visitcategories()->delete();
+    
+                $visita->delete();
+                \DB::commit();
+        
+                return response()->json(['message' => 'Visita eliminada con éxito'], 200);
+            }
+            return null;
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            return response()->json(['error' => 'Error al eliminar la visita', 'message' => $e->getMessage()], 500);
+        }
     }
 
 

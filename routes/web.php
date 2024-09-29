@@ -20,6 +20,7 @@ Route::get('/inicio', [AdminvisitsController::class, 'inicio'])->name('inicio');
 Route::get('/adminvisits', [AdminvisitsController::class, 'index'])->name('adminvisits');
 Route::post('/adminvisits/updatevisit', [AdminvisitsController::class, 'updatevisit'])->name('adminvisits/updatevisit');
 Route::post('/adminvisits/createvisit', [AdminvisitsController::class, 'createvisit'])->name('adminvisits/createvisit');
+Route::post('/adminvisits/deletevisit', [AdminvisitsController::class, 'deletevisit'])->name('adminvisits/deletevisit');
 
 
 

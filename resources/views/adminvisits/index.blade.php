@@ -18,7 +18,7 @@
     <div class="row">
 
         <div class="col-xl-4 text-left my-1" style="min-width: 140px;">
-            <button id="buscar" type="button" class="btn btn-dark cupo mb-2" title="buscar">
+            <button id="crear" type="button" class="btn btn-dark cupo mb-2" title="buscar">
                 <i class="fa fa-plus mr-2"></i> <small> NUEVA VISITA</small>
             </button>
         </div>
@@ -33,7 +33,7 @@
             <thead>
                 <tr>
 
-                    <th style="min-width: 100px">EDITAR</th>
+                    <th style="min-width: 200px">ACCIONES</th>
                     <th style="min-width: 100px">NOMBRE</th>
                     <th style="min-width: 100px">CATEGORÍAS</th>
                     <th style="min-width: 100px">TAGS</th>
@@ -59,9 +59,12 @@
                 @foreach($adminvisits as $key => $c)
                 <tr id="tr-{{$c->id}}" class="trclientes">
 
-                    <td style="max-width: 200px;">
-                        <button type='button' id='a-{{$c->id}}' class='editar btn btn-warning py-0'>
+                    <td style="min-width: 200px;">
+                        <button type='button' id='edit-{{$c->id}}' class='editar btn btn-warning py-0'>
                             <i class='fa fa-cog'></i>
+                        </button>
+                        <button type='button' id='delete-{{$c->id}}' class='btdelete btn btn-danger py-0'>
+                            <i class='fa fa-trash' style="color: #000"></i>
                         </button>
                     </td>
                     
@@ -160,7 +163,7 @@
             <tfoot>
                 <tr>
 
-                    <th style="min-width: 100px">EDITAR</th>
+                    <th style="min-width: 200px">ACCIONES</th>
                     <th style="min-width: 100px">NOMBRE</th>
                     <th style="min-width: 100px">CATEGORÍAS</th>
                     <th style="min-width: 100px">TAGS</th>
@@ -383,22 +386,22 @@ $(".editar").on('click', function() {
 
 
     $('#Cvisitlanguages').on('change', function() {
-        mostraridiomasactivados();
+        mostraridiomasactivados(visit_languagesdata);
     });
 
-    function mostraridiomasactivados(){
-        let selectedLanguages = $('#Cvisitlanguages').val();
-        $('.idioma-section').addClass(' dnone ');
-        if (selectedLanguages) {
-            selectedLanguages.forEach(function(id) {
-                $('#Cidioma_' + id).removeClass('dnone');
-                let namedata = visit_languagesdata.filter(x=> x.language_id == id).map(x=> x.name) || "";
-                let descriptiondata = visit_languagesdata.filter(x=> x.language_id == id).map(x=> x.descripcion) || "";
-                $('#Clanguagename_'+ id).val(namedata);
-                $('#Clanguagedescripcion_'+ id).val(descriptiondata);
-            });
-        }
-    }
+    // function mostraridiomasactivados(){
+    //     let selectedLanguages = $('#Cvisitlanguages').val();
+    //     $('.idioma-section').addClass(' dnone ');
+    //     if (selectedLanguages) {
+    //         selectedLanguages.forEach(function(id) {
+    //             $('#Cidioma_' + id).removeClass('dnone');
+    //             let namedata = visit_languagesdata.filter(x=> x.language_id == id).map(x=> x.name) || "";
+    //             let descriptiondata = visit_languagesdata.filter(x=> x.language_id == id).map(x=> x.descripcion) || "";
+    //             $('#Clanguagename_'+ id).val(namedata);
+    //             $('#Clanguagedescripcion_'+ id).val(descriptiondata);
+    //         });
+    //     }
+    // }
 
 
     $('#Cid').val(id);
@@ -423,18 +426,68 @@ $(".editar").on('click', function() {
     $('#abrirModalX').click();
     $('#form-data-display').removeClass('oculto');
     updateFormData();
-    mostraridiomasactivados();
+    mostraridiomasactivados(visit_languagesdata);
+});
+
+
+$("#crear").on('click', function() {
+
+let name = "";
+let precio = 0;
+let nummin = 0;
+let nummax = 0;
+let duracionmin = 0;
+let cancelacion = 0;
+let temporada = 0;
+let mascotas = 0;
+let accesibilidad = 0;
+let recomendado = 0;
+let puntoencuentro = "";
+let puntoencuentrotext = "";
+let categories = [];
+let tags = [];
+let languages = [1];
+
+var visit_languagesdata = [];
+
+$('#Cvisitlanguages').on('change', function() {
+    mostraridiomasactivados(visit_languagesdata);
 });
 
 
 
+$('#Cid').val(null);
+$('#Cname').val(name);
+$('#Cprecio').val(precio);
+$('#Cnummin').val(nummin);
+$('#Cnummax').val(nummax);
+$('#Ccancelacion').val(cancelacion);
+$('#Cduracionmin').val(duracionmin);
+$('#Ctemporada').val(temporada);
+$('#Cmascotas').val(mascotas);
+$('#Caccesibilidad').val(accesibilidad);
+$('#Crecomendado').val(recomendado);
+$('#Cpuntoencuentro').val(puntoencuentro);
+$('#Cpuntoencuentrotext').val(puntoencuentrotext);
+$('#Cvisitcategories').val(categories);
+$('#Cvisittags').val(tags);
+$('#Cvisitlanguages').val(languages);
+
+$('#abrirModalX').click();
+$('#form-data-display').removeClass('oculto');
+updateFormData();
+mostraridiomasactivados(visit_languagesdata);
+});
+
+
 //bteditarX
 $("#bteditarX").on('click', function() {
-
+    var create = false;
     let urlaccion = "{{ route('adminvisits/updatevisit')}}";
     let idaccion = $('#Cid').val();
-    if(idaccion == null){
+    if(idaccion == null || idaccion == "" ){
         urlaccion = "{{ route('adminvisits/createvisit')}}";
+        create = true;
     }
 
     let visit_languages_data = [];
@@ -470,6 +523,7 @@ $("#bteditarX").on('click', function() {
 
     }
     console.log("payload ",formData);
+    console.log("urlaccion ",urlaccion);
     try {
         $.ajaxSetup({
             headers: {
@@ -483,44 +537,46 @@ $("#bteditarX").on('click', function() {
             method: "POST",
             success: function(result) {
                 if(result != null){
-                    let id = result["id"];
-                    $("#Ename-" + id).text(result["name"]);
-                    $("#Eprecio-" + id).text(result["precio"]);
-                    $("#Enummin-" + id).text(result["nummin"]);
-                    $("#Enummax-" + id).text(result["nummax"]);
-                    
-                    $("#Eduracionmin-" + id).text(result["duracionmin"]);
-                    $("#Ecancelacion-" + id).text(result["cancelacion"]);
-                    $("#Etemporada-" + id).text(result["temporada"]);
-                    $("#Emascotas-" + id).text(result["mascotas"]);
-                    $("#Eaccesibilidad-" + id).text(result["accesibilidad"]);
-                    $("#Erecomendado-" + id).text(result["recomendado"]);
-                    $("#Epuntoencuentro-" + id).text(result["puntoencuentro"]);
-                    $("#Epuntoencuentrotext-" + id).text(result["puntoencuentrotext"]);
-                    let resultvisitcategories = result["visitcategories"];
-                    if (resultvisitcategories && Array.isArray(resultvisitcategories) && resultvisitcategories.length > 0 )
+                    if(create){
+                        location.reload();
+                    }
+                    else
                     {
+                      let id = result["id"];
+                      $("#Ename-" + id).text(result["name"]);
+                      $("#Eprecio-" + id).text(result["precio"]);
+                      $("#Enummin-" + id).text(result["nummin"]);
+                      $("#Enummax-" + id).text(result["nummax"]);
+                      $("#Eduracionmin-" + id).text(result["duracionmin"]);
+                      $("#Ecancelacion-" + id).text(result["cancelacion"]);
+                      $("#Etemporada-" + id).text(result["temporada"]);
+                      $("#Emascotas-" + id).text(result["mascotas"]);
+                      $("#Eaccesibilidad-" + id).text(result["accesibilidad"]);
+                      $("#Erecomendado-" + id).text(result["recomendado"]);
+                      $("#Epuntoencuentro-" + id).text(result["puntoencuentro"]);
+                      $("#Epuntoencuentrotext-" + id).text(result["puntoencuentrotext"]);
+                      let resultvisitcategories = result["visitcategories"];
+                      if (resultvisitcategories && Array.isArray(resultvisitcategories) && resultvisitcategories.length > 0 )
+                      {
                         $("#Evisitcategories-" + id).text(resultvisitcategories.filter(category => category.category && category.category.id).map(category => category.category.id).join(','));
                         $("#Ecategorias-" + id).text(resultvisitcategories.filter(category => category.category && category.category.name).map(category => category.category.name).join(','));
-                    }
-                    let resultvisittags = result["visittags"];
-                    if (resultvisittags && Array.isArray(resultvisittags) && resultvisittags.length > 0 )
-                    {
+                      }
+                      let resultvisittags = result["visittags"];
+                      if (resultvisittags && Array.isArray(resultvisittags) && resultvisittags.length > 0 )
+                      {
                         $("#Evisittags-" + id).text(resultvisittags.filter(tag => tag.tags && tag.tags.id).map(tag => tag.tags.id).join(','));
                         $("#Etags-" + id).text(resultvisittags.filter(tag => tag.tags && tag.tags.name).map(tag => tag.tags.name).join(','));
-                    }
-                    let resultvisitlanguages = result["visitlanguages"];
+                      }
+                      let resultvisitlanguages = result["visitlanguages"];
                     
-                    if (resultvisitlanguages && Array.isArray(resultvisitlanguages) && resultvisitlanguages.length > 0 )
-                    {
+                      if (resultvisitlanguages && Array.isArray(resultvisitlanguages) && resultvisitlanguages.length > 0 )
+                      {
                         $("#Evisitlanguages-" + id).text(resultvisitlanguages.filter(language => language.languages && language.languages.id).map(language => language.language_id).join(','));
                         $("#Evisitlanguagesname-" + id).text(resultvisitlanguages.filter(language => language.languages && language.languages.id).map(language => language.name).join(','));
                         $("#Evisitlanguagesdescripcion-" + id).text(resultvisitlanguages.filter(language => language.languages && language.languages.id).map(language => language.descripcion).join(',,,'));
-
-                        let testdescripcion = $("#Evisitlanguagesdescripcion-" + id).text();
-                        debugger
+                      }
+                      $("#Elanguages-" + id).text(result["visitlanguages"].map(l => l.languages.name).join(','));
                     }
-                    $("#Elanguages-" + id).text(result["visitlanguages"].map(l => l.languages.name).join(','));
                 }
             },
             fail: function() {
@@ -538,6 +594,53 @@ $("#bteditarX").on('click', function() {
 
 });
 
+
+$(".btdelete").on('click', function() {
+    let idtodelete = $(this).attr('id').split('-')[1]; 
+    var formData = {
+        id: idtodelete
+    }
+    if (confirm('¿Estás seguro de que quieres eliminar este registro?')) {
+      try {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: '/adminvisits/deletevisit',
+            data: formData,
+            dataType: "json",
+            method: "POST",
+            success: function(result) {
+                if(result != null){
+                    location.reload();
+                }
+            },
+            fail: function() {
+                alert("fail");
+            }
+        })
+      }catch (error) {
+        console.err(error);
+      }
+    }
+});
+
+
+function mostraridiomasactivados(visit_languagesdatax){
+    let selectedLanguages = $('#Cvisitlanguages').val();
+    $('.idioma-section').addClass(' dnone ');
+    if (selectedLanguages) {
+        selectedLanguages.forEach(function(id) {
+            $('#Cidioma_' + id).removeClass('dnone');
+            let namedata = visit_languagesdatax.filter(x=> x.language_id == id).map(x=> x.name) || "";
+            let descriptiondata = visit_languagesdatax.filter(x=> x.language_id == id).map(x=> x.descripcion) || "";
+            $('#Clanguagename_'+ id).val(namedata);
+            $('#Clanguagedescripcion_'+ id).val(descriptiondata);
+        });
+    }
+}
 
 
 
