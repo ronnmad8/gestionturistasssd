@@ -6,6 +6,8 @@ use App\Transformers\TagsTransformer;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Visittags;
+
 
 class Tag extends Model
 {
@@ -22,4 +24,8 @@ class Tag extends Model
     ];
 
 
+    public function visitTags()
+    {
+        return $this->hasMany(Visittags::class, 'tags_id', 'id');
+    }
 }

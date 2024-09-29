@@ -4,6 +4,7 @@ namespace App\Models;
 
 
 use App\Models\Visit;
+use App\Models\Languages;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Transformers\VisitlanguagesTransformer;
@@ -28,8 +29,13 @@ class Visitlanguages extends Model
     ];
 
     public function visit(){
-        return $this->belongsTo(Visit::class);
+        return $this->belongsTo(Visit::class, 'visit_id', 'id');
     }
+
+    public function languages(){
+        return $this->belongsTo(Languages::class, 'language_id', 'id');
+    }
+
 
 
 }

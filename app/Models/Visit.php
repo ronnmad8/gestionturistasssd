@@ -49,7 +49,7 @@ class Visit extends Model
 
     public function visitcategories()
     {
-        return $this->hasMany(Visitcategory::class);
+        return $this->hasMany(Visitcategory::class, 'visit_id', 'id');
     }
 
     public function visittags()

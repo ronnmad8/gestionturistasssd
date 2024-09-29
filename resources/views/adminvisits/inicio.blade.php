@@ -67,13 +67,11 @@
 <div hidden class="dnone">
 
 
-     <div id="clientestotal">{{$adminvisitstotal ?? '' }}</div>
-     @foreach($cuentaclientes as $c)
+     <div id="adminvisitstotal">{{$adminvisitstotal ?? '' }}</div>
+     @foreach($visittags as $c)
         <div  id="c-{{$c['id'] ?? ''}}" class="clis" >{{$c["valor"] ?? '' }}</div>
      @endforeach
-     @foreach($centros as $cxc)
-        <div  id="cxcc-{{$cxc['id'] ?? ''}}" class="clisx" >{{$cxc["name"] ?? '' }}</div>
-     @endforeach
+
 
 </div>
    

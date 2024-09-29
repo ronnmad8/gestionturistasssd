@@ -18,7 +18,7 @@ class Visittags extends Model
     protected $dates = ['deleted_at'];
     protected $fillable = [
     	'visit_id',
-    	'tag_id',
+    	'tags_id'
     ];
 
     protected $hidden = [

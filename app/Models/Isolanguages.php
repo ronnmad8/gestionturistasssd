@@ -18,7 +18,8 @@ class Isolanguages extends Model
     protected $fillable = [
     	'name',
         'iso',
-        'iso_code'
+        'iso_code',
+        'language_id'
 
     ];
 
