@@ -6,38 +6,31 @@
 <div class="panel panel-default shadow p-3 my-5 bg-white rounded  ">
     <div class="panel-heading">
         <div class="row">
-            <div class="col-xl-6">
+            <div class="col-xl-2 col-12">
                 <h2>VISITAS</h2>
             </div>
-            <div class="col-xl-6">
+            <div class="col-xl-2 col-12">
+                <button id="crear" type="button" class="btn btn-dark cupo mb-2" title="buscar">
+                    <i class="fa fa-plus mr-2"></i> <small> NUEVA VISITA</small>
+                </button>
             </div>
         </div>
-    </div>
-
-
-    <div class="row">
-
-        <div class="col-xl-4 text-left my-1" style="min-width: 140px;">
-            <button id="crear" type="button" class="btn btn-dark cupo mb-2" title="buscar">
-                <i class="fa fa-plus mr-2"></i> <small> NUEVA VISITA</small>
-            </button>
-        </div>
-        <a id="aniffilt" href="#" hidden></a>
     </div>
 
     <div class="py-2 my-2" id="pags">
        
     </div>
-    <div class="table-responsive mxh">
+
+    <div class="table-responsive mxh" >
         <table class="table table-hover scroll" id="tablaAdminvisitas">
             <thead>
                 <tr>
 
-                    <th style="min-width: 200px">ACCIONES</th>
+                    <th style="min-width: 240px">ACCIONES</th>
                     <th style="min-width: 100px">NOMBRE</th>
                     <th style="min-width: 100px">CATEGORÍAS</th>
                     <th style="min-width: 100px">TAGS</th>
-                    <th style="min-width: 100px">IDIOMAS</th>
+                    <th style="min-width: 200px">IDIOMAS</th>
                     <th style="min-width: 100px"> <span> PRECIO €</span></th>
                     <th style="min-width: 100px"><div><i class="mr-1 fa fa-user"></i> MIN</div></th>
                     <th style="min-width: 100px"><i class="mr-1 fa fa-user"></i> MAX</th>
@@ -49,22 +42,30 @@
                     <th style="min-width: 50px">RECOMENDADO</th>
                     <th style="min-width: 200px">PUNTO ENCUENTRO</th>
                     <th style="min-width: 300px">PUNTO </th>
+                    <th style="min-width: 200px">HORAS </th>
+                    <th style="min-width: 300px">IMAGENES </th>
 
 
                 </tr>
             </thead>
-            <tbody id="body_table">
+            <tbody id="body_table"   >
 
 
                 @foreach($adminvisits as $key => $c)
                 <tr id="tr-{{$c->id}}" class="trclientes">
 
-                    <td style="min-width: 200px;">
+                    <td style="min-width: 240px;">
                         <button type='button' id='edit-{{$c->id}}' class='editar btn btn-warning py-0'>
-                            <i class='fa fa-cog'></i>
+                            <i class='fa fa-cog' style="color: #fff"></i>
+                        </button>
+                        <button type='button' id='edithours-{{$c->id}}' class='editarhoras btn btn-primary py-0'>
+                            <i class='fa fa-clock' style="color: #fff"></i>
+                        </button>
+                        <button type='button' id='editimages-{{$c->id}}' class='editarimagenes btn btn-success py-0'>
+                            <i class='fa fa-image' style="color: #fff"></i>
                         </button>
                         <button type='button' id='delete-{{$c->id}}' class='btdelete btn btn-danger py-0'>
-                            <i class='fa fa-trash' style="color: #000"></i>
+                            <i class='fa fa-trash' style="color: #fff"></i>
                         </button>
                     </td>
                     
@@ -78,7 +79,7 @@
                     <td style='width: 100px'>
                         <div id='Etags-{{$c->id}}'>{{ $c->visittags->pluck('tags.name')->join(', ') }}</div>
                     </td>
-                    <td style='width: 100px'>
+                    <td style='width: 200px'>
                         <div id='Elanguages-{{$c->id}}'>{{ $c->visitlanguages->pluck('languages.name')->join(', ') }}</div>
                     </td>
                     <td style='width: 200px'>
@@ -114,6 +115,16 @@
                     <td style='width: 300px'>
                         <div id='Epuntoencuentrotext-{{$c->id}}'>{{$c->puntoencuentrotext}}</div>
                     </td>
+                    <td style='width: 200px'>
+                        <div id='Ediahoras-{{$c->id}}' style="max-height: 100px; overflow-x: hidden; border: 1px solid gray" >
+                        @foreach($c->visithours as $hour)
+                            {{ $hour['hour'] }} - {{ $diassemana[$hour['diasemana']] }} <br>
+                        @endforeach
+                        </div>
+                    </td>
+                    <td style='width: 300px'>
+                        <div id='Eimagenes-{{$c->id}}'></div>
+                    </td>
                     <div class="dnone" hidden>
                         <div id='Euuid-{{$c->id}}'>{{$c->uuid}}</div>
                         <div id='Epreciohoramin-{{$c->id}}'>{{$c->preciohoramin}}</div>
@@ -123,6 +134,7 @@
                         <div id='Eaccesibilidad-{{$c->id}}'>{{$c->accesibilidad}}</div>
                         <div id='Erecomendado-{{$c->id}}'>{{$c->recomendado}}</div>
                         <div id='Epuntoencuentrotext-{{$c->id}}'>{{$c->puntoencuentrotext}}</div>
+                        <div id='Evisithours-{{$c->id}}'>{{$c->visithours}}</div>
                         
                         <div id='Evisitcategories-{{$c->id}}'> 
                             @if ($c->visitcategories->isNotEmpty())
@@ -134,6 +146,13 @@
                             {{ $c->visittags->pluck('tags_id')->join(',') }}
                             @endif
                         </div>
+                        <div id='Evisithours-{{$c->id}}'> 
+                            @if ($c->visithours->isNotEmpty())
+                            {{ $c->visithours }}
+                            @endif
+                        </div>
+
+                        
                         <div id='Evisitlanguages-{{$c->id}}'> 
                             @if ($c->visitlanguages->isNotEmpty())
                             {{ $c->visitlanguages->sortBy('language_id')->pluck('language_id')->join(',') }}
@@ -163,11 +182,11 @@
             <tfoot>
                 <tr>
 
-                    <th style="min-width: 200px">ACCIONES</th>
+                    <th style="min-width: 240px">ACCIONES</th>
                     <th style="min-width: 100px">NOMBRE</th>
                     <th style="min-width: 100px">CATEGORÍAS</th>
                     <th style="min-width: 100px">TAGS</th>
-                    <th style="min-width: 100px">IDIOMAS</th>
+                    <th style="min-width: 200px">IDIOMAS</th>
                     <th style="min-width: 100px"><div> PRECIO €</div></th>
                     <th style="min-width: 100px"><div><i class="mr-1 fa fa-user"></i> MIN</div></th>
                     <th style="min-width: 100px"><i class="mr-1 fa fa-user"></i> MAX</th>
@@ -179,11 +198,21 @@
                     <th style="min-width: 50px">RECOMENDADO</th>
                     <th style="min-width: 200px">PUNTO ENCUENTRO</th>
                     <th style="min-width: 300px">PUNTO </th>
-
+                    <th style="min-width: 200px">HORAS </th>
+                    <th style="min-width: 300px">IMAGENES </th>
 
                 </tr>
             </tfoot>
         </table>
+    </div>
+
+    <div class="dnone">
+        <div id="lista_hours" data-hours="{{ json_encode($hours) }}">
+        </div>
+        <div id="lista_diassemana" data-diassemana="{{ json_encode($diassemana) }}">
+        </div>
+        <div id="lista_languages" data-languages="{{ json_encode($languages) }}">
+        </div>
     </div>
 
 </div>
@@ -328,12 +357,77 @@
 </div>
 
 
+<div>
+    <button type='button' class="dnone" id='abrirModalXhoras' data-toggle='modal' data-target='#modalXhoras'
+        data-backdrop='static' data-keyboard='false'>
+    </button>
+    <div class='modal fade' id='modalXhoras'>
+
+        <div class='modal-dialog' role='document'>
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <h4 class='modal-title text-center'>
+                        <span> DATOS VISITA HORAS </span>
+                    </h4>
+                    <button id="btcloseeditarhoras" type='button' class='close' data-dismiss='modal' aria-label='Close'>
+                        <span aria-hidden='true'>&times;</span>
+                    </button>
+                </div>
+                <div class='modal-body'>
+                    <div class='w100 formulariomodal'>
+
+                        <div class="dnone">
+                            <input id="Ch_id" name='Ch_id'>
+                        </div>
+
+                        <div class="my-2 mx-auto">
+                            <p class="m-0">Dias semana</p>
+                            <select class="form-control" id="Ch_diasemana" name="Ch_diasemana[]" >
+                            @foreach ($diassemana as $key => $dia)
+                                <option value="{{ $key }}">{{ $dia }}</option>
+                            @endforeach
+                            </select>
+                        </div>
+                        <div class="my-2 mx-auto">
+                            <p class="m-0">Horas</p>
+                            <select class="form-control" id="Ch_hours_id" name="Ch_hours_id[]" >
+                            @foreach ($hours as $hora)
+                                <option value="{{ $hora->id }}">{{ $hora->hora }}</option>
+                            @endforeach
+                            </select>
+                        </div>
+                        <div class="m10 text-center">
+                            <button type="button" id="btAddhoradia" class='m-2 btn btn-secondary'>Añadir hora-día</button>
+                        </div>
+
+                        <div class="my-4 mx-auto bg-light p-2">
+                            <div id="Cvisitdiashoratext">
+                            </div>
+                            <input class="dnone" id="Cvisitdiashora" name="Cvisitdiashora" value='[]'>
+                        </div>
+
+                        <div class="m10 mxauto text-center">
+                            <button type="button" id="bteditarhoras" class='m-2 btn btn-info'>GUARDAR</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
+
+
+let hoursData = $('#lista_hours').data('hours') || [];
+let diasSemanaData = $('#lista_diassemana').data('diassemana') || [];
+let languagesData = $('#lista_languages').data('languages') || [];
 
 
 $('.menu').removeClass('activ');
 $("#linkadminvisits").addClass('activ');
-
 
 $(".editar").on('click', function() {
 
@@ -361,12 +455,6 @@ $(".editar").on('click', function() {
         key++;
     });
 
-    console.log("**categories ==> ",categories);
-    console.log("**tags ==> ",tags);
-    console.log("**languages ==> ",languages);
-    console.log("**languages_name ==> ",languages_name);
-    console.log("**languages_descripcion ==> ",languages_descripcion);
-
     let name = $('#Ename-' + id).text();
     let precio = parseInt($('#Eprecio-' + id).text());
     let nummin = parseInt($('#Enummin-' + id).text());
@@ -384,25 +472,9 @@ $(".editar").on('click', function() {
     
     console.log("model visita ==> ",visitObject);
 
-
     $('#Cvisitlanguages').on('change', function() {
         mostraridiomasactivados(visit_languagesdata);
     });
-
-    // function mostraridiomasactivados(){
-    //     let selectedLanguages = $('#Cvisitlanguages').val();
-    //     $('.idioma-section').addClass(' dnone ');
-    //     if (selectedLanguages) {
-    //         selectedLanguages.forEach(function(id) {
-    //             $('#Cidioma_' + id).removeClass('dnone');
-    //             let namedata = visit_languagesdata.filter(x=> x.language_id == id).map(x=> x.name) || "";
-    //             let descriptiondata = visit_languagesdata.filter(x=> x.language_id == id).map(x=> x.descripcion) || "";
-    //             $('#Clanguagename_'+ id).val(namedata);
-    //             $('#Clanguagedescripcion_'+ id).val(descriptiondata);
-    //         });
-    //     }
-    // }
-
 
     $('#Cid').val(id);
     $('#Cname').val(name);
@@ -417,17 +489,72 @@ $(".editar").on('click', function() {
     $('#Crecomendado').val(recomendado);
     $('#Cpuntoencuentro').val(puntoencuentro);
     $('#Cpuntoencuentrotext').val(puntoencuentrotext);
-    
     $('#Cvisitcategories').val(categories);
     $('#Cvisittags').val(tags);
     $('#Cvisitlanguages').val(languages);
-
 
     $('#abrirModalX').click();
     $('#form-data-display').removeClass('oculto');
     updateFormData();
     mostraridiomasactivados(visit_languagesdata);
 });
+
+
+$(".editarhoras").on('click', function() {
+    
+    let id = $(this).attr('id').split('-')[1];
+    let visit_hourstext = $('#Evisithours-' + id).text();
+    let visit_hoursjson = JSON.parse(visit_hourstext); 
+    let visit_hoursdata = [];
+    visit_hoursjson.forEach(function(hh) {
+        let diahoranuevohh = {
+        visit_id : parseInt(hh.visit_id),
+        hours_id: parseInt(hh.hours_id),
+        hour: hh.hour ,
+        diasemana: parseInt(hh.diasemana)
+        }
+        visit_hoursdata.push(diahoranuevohh);
+    })
+
+    $('#Ch_id').val(id);
+    $('#Cvisitdiashora').val(JSON.stringify(visit_hoursdata));
+
+    let listahorasdia = "";
+    visit_hoursdata.forEach(function(h) {
+        listahorasdia += getcomponenthoradia(h);
+    })
+    $('#Cvisitdiashoratext').html(listahorasdia);
+    $('#abrirModalXhoras').click();
+});
+
+
+$("#btAddhoradia").on('click', function() {
+    
+    let visit_hoursdata = JSON.parse($('#Cvisitdiashora').val());
+    let hours_id = parseInt($('#Ch_hours_id').val() );
+    let diasemana = parseInt($('#Ch_diasemana').val());
+    let visit_id = parseInt($('#Ch_id').val());
+
+    if( hours_id != null && diasemana != null && visit_id != null ){
+        let diahoranuevo = {
+            visit_id: visit_id,
+            hours_id: hours_id,
+            hour: getHora(hours_id),
+            diasemana: diasemana
+        };
+        visit_hoursdata.push(diahoranuevo)
+        $('#Cvisitdiashora').val(JSON.stringify(visit_hoursdata));
+        let listahorasdia = "";
+        
+        visit_hoursdata.forEach(function(h) { 
+            listahorasdia += getcomponenthoradia(h); 
+        })
+        $('#Cvisitdiashoratext').html(listahorasdia);
+
+    }
+    
+})
+
 
 
 $("#crear").on('click', function() {
@@ -522,8 +649,6 @@ $("#bteditarX").on('click', function() {
         puntoencuentrotext: $('#Cpuntoencuentrotext').val()
 
     }
-    console.log("payload ",formData);
-    console.log("urlaccion ",urlaccion);
     try {
         $.ajaxSetup({
             headers: {
@@ -591,9 +716,26 @@ $("#bteditarX").on('click', function() {
         console.err(error);
     }
 
-
 });
 
+
+
+$('#Cvisitdiashoratext').on('click', '.btdelhora', function() {
+    let itemiddelete = $(this).attr('id').split('-')[1]; 
+    let itemiddeletediahora = itemiddelete.split('@'); 
+    let visit_hoursdata = JSON.parse($('#Cvisitdiashora').val());
+
+    let diano = parseInt(itemiddeletediahora[0]);
+    let horano = parseInt(itemiddeletediahora[1]);
+    visit_hoursdata = visit_hoursdata.filter(x=> !(x.hours_id == horano && x.diasemana == diano )  );
+    $('#Cvisitdiashora').val(JSON.stringify(visit_hoursdata));
+    let listahorasdia = "";        
+    visit_hoursdata.forEach(function(h) { 
+        listahorasdia += getcomponenthoradia(h); 
+    })
+    $('#Cvisitdiashoratext').html(listahorasdia);
+
+});
 
 $(".btdelete").on('click', function() {
     let idtodelete = $(this).attr('id').split('-')[1]; 
@@ -628,6 +770,78 @@ $(".btdelete").on('click', function() {
 });
 
 
+$("#bteditarhoras").on('click', function() {
+    let visithours = $('#Cvisitdiashora').val() || [];
+    if(visithours != null){
+
+        let visithoursdata = JSON.parse(visithours); 
+        var formData = {
+            visithours: visithoursdata 
+        }
+
+        try {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: '/adminvisits/setvisithours',
+            data: formData,
+            dataType: "json",
+            method: "POST",
+            success: function(result) {
+                if(result != null){
+                    location.reload();
+                }
+            },
+            fail: function() {
+                alert("fail");
+            }
+        })
+      }catch (error) {
+        console.err(error);
+      }
+    }
+    
+});
+
+
+
+
+$(".bteditarimagenes").on('click', function() {
+    let id = $(this).attr('id').split('-')[1]; 
+    var formData = {
+        id: idtodelete
+    }
+
+      try {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: '/adminvisits/editvisitimages',
+            data: formData,
+            dataType: "json",
+            method: "POST",
+            success: function(result) {
+                if(result != null){
+                   //
+                }
+            },
+            fail: function() {
+                alert("fail");
+            }
+        })
+      }catch (error) {
+        console.err(error);
+      }
+    
+});
+
+
 function mostraridiomasactivados(visit_languagesdatax){
     let selectedLanguages = $('#Cvisitlanguages').val();
     $('.idioma-section').addClass(' dnone ');
@@ -642,6 +856,27 @@ function mostraridiomasactivados(visit_languagesdatax){
     }
 }
 
+
+function mostrarhorasdia(visit_hoursdatax){
+    $('#Cvisitdiahoras_'+ id).val(visit_hoursdatax);
+}
+
+function getDayName(diasemana) {
+    return diasSemanaData[diasemana] || '';
+}
+
+function getHora(hours_id) {
+    return hoursData[hours_id].hora ;
+}
+
+function getcomponenthoradia(horax){
+   let dayname = getDayName(horax.diasemana);
+   let hdiaid =  (horax.diasemana+"@"+horax.hours_id) ;
+   let hora = horax.hour;
+   let component = "<div style='display: flex; justify-content: space-between ' ><div>" + hora + " - " + dayname + "</div>"+
+   "<div class='btdelhora' id='btdelhora-"+ hdiaid +"' style='cursor: pointer'><i class='fa fa-trash' > </i></div>   </div>";
+   return component;
+}
 
 
 </script>

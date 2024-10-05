@@ -26,7 +26,7 @@ class AdminvisitsController extends Controller
      */
     public function index()
     {        
-        $adminvisits= Visit::with(['visitcategories.category', 'visitlanguages', 'visittags.tags'] )
+        $adminvisits= Visit::with(['visitcategories.category', 'visitlanguages', 'visittags.tags', 'visithours'] )
         ->orderByDesc('visits.id')
         ->simplePaginate(1000);
 
@@ -34,7 +34,18 @@ class AdminvisitsController extends Controller
         $categories= Category::select('categories.*')->get();
         $languages= Languages::with('isolanguages')->orderBy('id') ->get();
         $tags= Tag::select('tags.*')->get();
-        return view('adminvisits.index', compact(['adminvisits', 'hours', 'tags', 'categories', 'languages']));
+        $tags= Hours::select('hours.*')->get();
+        $diassemana = [
+            0 => 'lunes',
+            1 => 'martes',
+            2 => 'miércoles',
+            3 => 'jueves',
+            4 => 'viernes',
+            5 => 'sábado',
+            6 => 'domingo'
+        ];
+
+        return view('adminvisits.index', compact(['adminvisits', 'hours', 'tags', 'categories', 'languages', 'diassemana'  ]));
     }
 
 
@@ -51,7 +62,6 @@ class AdminvisitsController extends Controller
 
     //     return view('adminvisits.index', compact(['visitlanguages']));
     // }
-
 
 
     public function updatevisit(Request $request)
@@ -148,6 +158,51 @@ class AdminvisitsController extends Controller
         }
     }
 
+
+    public function setvisithours(Request $request)
+    {
+        
+        try {
+            $visithours = $request->input('visithours', []); 
+
+            if($visithours != null && $visithours != []){
+
+                $id = $visithours[0]["visit_id"] ?? null;
+                $visit = Visit::with(['visitcategories.category', 'visitlanguages', 'visittags.tags'] )->findOrFail($id);
+                $existingHours = $visit->visithours()->get();
+
+                $frontendHoursIds = collect($visithours)->pluck('hours_id')->filter()->all();
+                foreach ($visithours as $vh) 
+                {
+                    $visitId = $vh['visit_id'] ?? null; 
+                    $hours_id = $vh['hours_id'] ?? 0;
+                    $diasemana = $vh['diasemana'] ?? 0;
+                    $hour = "10:00";
+                    if($visitId != null){
+                        $existinghour = $existingHours->where('diasemana', $diasemana)->firstWhere('hours_id', $hours_id);
+                        if (!$existinghour) {
+                            $visit->visithours()->create([
+                            'visit_id' => $visitId,
+                            'hours_id' => $hours_id,
+                            'hour' => $hour,
+                            'diasemana' => $diasemana
+                            ]);
+                        }
+                    }
+                }
+                $visit->visithours()->whereNotIn('hours_id', $frontendHoursIds)->delete(); // delete no se actualicen
+                
+                return response()->json($visit);
+            }
+            else{
+                return null;
+            }
+            return response()->json(['error' => 'Visit not found'], 404);
+        }
+        catch (\Exception $e) {
+            return response()->json(['error' => 'Error al actualizar la visita', 'message' => $e->getMessage()], 500);
+        }
+    }
   
     function createvisit(Request $request)
     {

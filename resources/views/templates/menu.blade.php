@@ -1,8 +1,8 @@
-<div class="d-flex" id="wrapper">
+<div class="d-flex " id="wrapper" >
 
-    <div class="activado fondoGris text-light border-right" id="sidebar-wrapper"  >
+    <div class="activado fondoGris text-light border-right" id="sidebar-wrapper" style=""  >
         <div class="sidebar-heading" style="min-width: 229px !important; text-align: center;">
-            <img src="http://localhost:4200/assets/images/logo-madguides.svg" style="width:100px; height: auto;">
+            <img src="https://madguidesmadrid.com/assets/images/logo-madguides.svg" style="width:100px; height: auto;">
         </div>
 
         <div id="linksadmin" class="list-group list-group-flush">
