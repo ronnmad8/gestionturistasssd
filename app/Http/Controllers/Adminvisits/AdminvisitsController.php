@@ -10,9 +10,11 @@ use App\Models\Languages;
 use App\Models\Category;
 use App\Models\Tag;
 use App\Models\Hours;
+use App\Models\Mediafiles;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Datetime;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class AdminvisitsController extends Controller
@@ -26,7 +28,7 @@ class AdminvisitsController extends Controller
      */
     public function index()
     {        
-        $adminvisits= Visit::with(['visitcategories.category', 'visitlanguages', 'visittags.tags', 'visithours'] )
+        $adminvisits= Visit::with(['visitcategories.category', 'visitlanguages', 'visittags.tags', 'visithours', 'mediafiles'] )
         ->orderByDesc('visits.id')
         ->simplePaginate(1000);
 
@@ -34,7 +36,7 @@ class AdminvisitsController extends Controller
         $categories= Category::select('categories.*')->get();
         $languages= Languages::with('isolanguages')->orderBy('id') ->get();
         $tags= Tag::select('tags.*')->get();
-        $tags= Hours::select('hours.*')->get();
+        $hours= Hours::select('hours.*')->get();
         $diassemana = [
             0 => 'lunes',
             1 => 'martes',
@@ -76,7 +78,7 @@ class AdminvisitsController extends Controller
 
         $id = $request->input('id');
         if($id != null){
-            $visit = Visit::with(['visitcategories.category', 'visitlanguages', 'visittags.tags'] )->findOrFail($id);
+            $visit = Visit::with(['visitcategories.category', 'visitlanguages', 'visittags.tags', 'mediafiles'] )->findOrFail($id);
             $visit->cuandomin = $request->input('cuandomin', 0);
             $visit->cancelacion = $request->input('cancelacion', 0);
             $visit->temporada = $request->input('temporada', 0);
@@ -164,35 +166,98 @@ class AdminvisitsController extends Controller
         
         try {
             $visithours = $request->input('visithours', []); 
+            $id = $request->input('id'); 
 
             if($visithours != null && $visithours != []){
-
-                $id = $visithours[0]["visit_id"] ?? null;
-                $visit = Visit::with(['visitcategories.category', 'visitlanguages', 'visittags.tags'] )->findOrFail($id);
+                $result = false;
+                $visit = Visit::findOrFail($id);
                 $existingHours = $visit->visithours()->get();
 
                 $frontendHoursIds = collect($visithours)->pluck('hours_id')->filter()->all();
                 foreach ($visithours as $vh) 
                 {
-                    $visitId = $vh['visit_id'] ?? null; 
-                    $hours_id = $vh['hours_id'] ?? 0;
-                    $diasemana = $vh['diasemana'] ?? 0;
-                    $hour = "10:00";
-                    if($visitId != null){
+                    $hours_id = $vh['hours_id'];
+                    $diasemana = $vh['diasemana'];
+                    $hour = $vh['hour'];
+                    if ($hours_id && $diasemana && $hour) {
                         $existinghour = $existingHours->where('diasemana', $diasemana)->firstWhere('hours_id', $hours_id);
+
                         if (!$existinghour) {
-                            $visit->visithours()->create([
-                            'visit_id' => $visitId,
-                            'hours_id' => $hours_id,
-                            'hour' => $hour,
-                            'diasemana' => $diasemana
-                            ]);
+
+                            $visithours = new VisitHours();
+                            $visithours->visit_id = $id;
+                            $visithours->hours_id = $hours_id;
+                            $visithours->hour = $hour;
+                            $visithours->diasemana = $diasemana;
+                    
+                            $visithours->save();
+                            $result = true;
                         }
                     }
                 }
-                $visit->visithours()->whereNotIn('hours_id', $frontendHoursIds)->delete(); // delete no se actualicen
+                if (!empty($frontendHoursIds)) {
+                    $visit->visithours()->whereNotIn('hours_id', $frontendHoursIds)->delete(); // delete no se actualicen
+                }
                 
-                return response()->json($visit);
+                return response()->json($result);
+            }
+            return response()->json(['error' => 'Visit not found'], 404);
+        }
+        catch (\Exception $e) {
+            return response()->json(['error' => 'Error al actualizar la visita', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+
+    public function visitimagesfiles(Request $request)
+    {
+        
+        try {
+            $res = false;
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $file) {
+                    $filename = $file->getClientOriginalName();
+                    $filepath = 'public/images/' . $filename;
+                    if (Storage::exists($filepath)) {
+                        Storage::delete($filepath);
+                    }
+                    $file->storeAs('public/images/', $filename);
+                    $res = true;
+                }
+                return response()->json($res);
+            }
+            return response()->json(false);
+        }
+        catch (\Exception $e) {
+            return response()->json(['error' => 'Error al actualizar la visita', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function setvisitimages(Request $request)
+    {
+        try {    
+            $visitimages = $request->input('visitimages', []);
+            if(!empty($visitimages)){
+                $id = $request->input('id');
+                $visit = Visit::findOrFail($id);
+                
+                foreach ($visitimages as $vm) 
+                {
+                    if($id != null){
+                        $order = $vm['order'];
+                        $filename = $vm['filename'] ;
+                        $url = $vm['url'] ;
+                        $visit->mediafiles()->updateOrCreate(
+                            ['order' => $order],
+                            [
+                                'filename' => $filename,
+                                'url' => $url,
+                                'visit_id' => $id
+                            ]
+                        );
+                    }
+                }
+                return response()->json(true);
             }
             else{
                 return null;
@@ -283,6 +348,19 @@ class AdminvisitsController extends Controller
                     }
                 }
                 $visit->load('visitlanguages.languages');
+
+                $image1 = new Mediafiles();
+                $image1->uuid = Str::uuid()->toString();
+                $image1->order = 1;
+                $image1->visit_id = $id;
+                $image1->path = "https://gestion.endesys.org/images/";
+                $image1->filename = "noimage.jpg";
+                $image1->url = $image1->path."".$image1->filename;
+                $image1->type = "image";
+
+                $visit->mediafiles()->create([
+                    $image1
+                ]);
                 
                 return response()->json($visit);
                 }

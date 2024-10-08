@@ -22,6 +22,7 @@ Route::post('/adminvisits/updatevisit', [AdminvisitsController::class, 'updatevi
 Route::post('/adminvisits/createvisit', [AdminvisitsController::class, 'createvisit'])->name('adminvisits/createvisit');
 Route::post('/adminvisits/deletevisit', [AdminvisitsController::class, 'deletevisit'])->name('adminvisits/deletevisit');
 Route::post('/adminvisits/setvisithours', [AdminvisitsController::class, 'setvisithours'])->name('adminvisits/setvisithours');
+Route::post('/adminvisits/visitimagesfiles', [AdminvisitsController::class, 'visitimagesfiles'])->name('adminvisits/visitimagesfiles');
 Route::post('/adminvisits/setvisitimages', [AdminvisitsController::class, 'setvisitimages'])->name('adminvisits/setvisitimages');
 
 

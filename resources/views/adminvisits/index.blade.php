@@ -122,9 +122,14 @@
                         @endforeach
                         </div>
                     </td>
-                    <td style='width: 300px'>
-                        <div id='Eimagenes-{{$c->id}}'></div>
+                    <td style='width: 200px'>
+                        <div id='Eimagenes-{{$c->id}}' style="max-height: 100px; overflow-x: hidden; border: 1px solid gray" >
+                        @foreach($c->mediafiles as $mediafile)
+                        {{ $mediafile['order'] }} - {{ $mediafile['filename'] }} <br>
+                        @endforeach
+                        </div>
                     </td>
+
                     <div class="dnone" hidden>
                         <div id='Euuid-{{$c->id}}'>{{$c->uuid}}</div>
                         <div id='Epreciohoramin-{{$c->id}}'>{{$c->preciohoramin}}</div>
@@ -149,6 +154,11 @@
                         <div id='Evisithours-{{$c->id}}'> 
                             @if ($c->visithours->isNotEmpty())
                             {{ $c->visithours }}
+                            @endif
+                        </div>
+                        <div id='Evisitimages-{{$c->id}}'> 
+                            @if ($c->mediafiles->isNotEmpty())
+                            {{$c->mediafiles}}
                             @endif
                         </div>
 
@@ -417,6 +427,64 @@
     </div>
 </div>
 
+<div>
+    <button type='button' class="dnone" id='abrirModalXimages' data-toggle='modal' data-target='#modalXimages'
+        data-backdrop='static' data-keyboard='false'>
+    </button>
+    <div class='modal fade' id='modalXimages'>
+
+        <div class='modal-dialog' role='document'>
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <h4 class='modal-title text-center'>
+                        <span> DATOS VISITA IMÁGENES </span>
+                    </h4>
+                    <button id="btcloseeditarimages" type='button' class='close' data-dismiss='modal' aria-label='Close'>
+                        <span aria-hidden='true'>&times;</span>
+                    </button>
+                </div>
+                <div class='modal-body'>
+                    <div class='w100 formulariomodal'>
+
+                        <div class="dnone">
+                            <input id="Cm_id" name='Cm_id'>
+                        </div>
+
+                        <div class="my-2 mx-auto">
+
+                            @for ($i = 1; $i <= 5; $i++)
+                            <div class="px-2 m-2">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <div class="">
+                                        <img id="Cimageurl-{{$i}}" src="" style="width: 150px; height: 150px; object-fit:cover"  >
+                                    </div>
+                                    <div class="px-2"> 
+                                        <div>
+                                            <b>{{$i}}</b>
+                                            <span id="Cimagefilename-{{$i}}" ></span> 
+                                        </div>
+                                        <div class="mt-4 mb-2">
+                                            <input type="file" id="Cimage-{{$i}}" name="Cimage-{{$i}}" class='form-control' />
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                            @endfor
+                    
+                        </div>
+                        <div>
+                            <input class="dnone" id="Cvisitimages" name="Cvisitimages" value='[]'>
+                        </div>
+                        <div class="m10 mxauto text-center">
+                            <button type="button" id="bteditarimages" class='m-2 btn btn-info'>GUARDAR</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
 
@@ -529,7 +597,6 @@ $(".editarhoras").on('click', function() {
 
 
 $("#btAddhoradia").on('click', function() {
-    
     let visit_hoursdata = JSON.parse($('#Cvisitdiashora').val());
     let hours_id = parseInt($('#Ch_hours_id').val() );
     let diasemana = parseInt($('#Ch_diasemana').val());
@@ -550,12 +617,74 @@ $("#btAddhoradia").on('click', function() {
             listahorasdia += getcomponenthoradia(h); 
         })
         $('#Cvisitdiashoratext').html(listahorasdia);
-
     }
-    
 })
 
+$(".editarimagenes").on('click', function() {
 
+    let id = $(this).attr('id').split('-')[1];
+    let visit_imagestext = $('#Evisitimages-' + id).text().trim() || "";
+
+    if(visit_imagestext != ""){
+        let visit_imagesjson = JSON.parse(visit_imagestext); 
+        let visit_imagesdata = [];
+    
+        visit_imagesjson.forEach(function(md) {
+        let nuevaimagen = {
+            visit_id : parseInt(md.visit_id),
+            order: parseInt(md.order),
+            filename: md.filename,
+            url: md.url
+        }
+        visit_imagesdata.push(nuevaimagen);
+        })
+
+        $('#Cm_id').val(id);
+        $('#Cvisitimages').val(JSON.stringify(visit_imagesdata));
+
+        let listaimages = "";
+        visit_imagesdata.forEach(function(im) {
+            if(im.order != null){
+                $('#Cimageurl-'+im.order).attr('src', im.url);
+                $('#Cimagefilename-'+im.order).text(im.filename);
+            }
+        })
+        $('#abrirModalXimages').click();
+    }
+
+});
+
+$(document).on('change', 'input[id^="Cimage-"]', function (e) {
+    let inputId = $(this).attr('id');
+    let id = parseInt(inputId.split('-')[1]);
+    let file = e.target.files[0];
+    if (file) {
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            let imgId = inputId.replace('Cimage-', 'Cimageurl-');
+            $('#' + imgId).attr('src', e.target.result);
+        }
+        reader.readAsDataURL(file);
+        //cambiar filename
+        let filename = file.name;
+        let visit_imagestext = $('#Cvisitimages').val() || "";
+        if(visit_imagestext != ""){
+            let visit_imagesjson = JSON.parse(visit_imagestext); 
+            visit_imagesjson.forEach(function(md) {
+            if(md.order == id){
+                md.filename = filename,
+                md.url = "https://gestion.endesys.org/storage/images/"+filename
+            }
+        })
+        $('#Cvisitimages').val(JSON.stringify(visit_imagesjson));
+        $('#Cimagefilename-'+id).text(filename);
+        $('#Cm_id').val(id);
+        }
+    }
+});
+
+
+///////////////////////////////////////////////////////calls ajax
 
 $("#crear").on('click', function() {
 
@@ -737,6 +866,8 @@ $('#Cvisitdiashoratext').on('click', '.btdelhora', function() {
 
 });
 
+
+
 $(".btdelete").on('click', function() {
     let idtodelete = $(this).attr('id').split('-')[1]; 
     var formData = {
@@ -772,10 +903,12 @@ $(".btdelete").on('click', function() {
 
 $("#bteditarhoras").on('click', function() {
     let visithours = $('#Cvisitdiashora').val() || [];
-    if(visithours != null){
+    let id = parseInt($('#Ch_id').val());
+    if(visithours != []){
 
         let visithoursdata = JSON.parse(visithours); 
         var formData = {
+            id: id,
             visithours: visithoursdata 
         }
 
@@ -792,7 +925,8 @@ $("#bteditarhoras").on('click', function() {
             method: "POST",
             success: function(result) {
                 if(result != null){
-                    location.reload();
+                    debugger
+                    //location.reload();
                 }
             },
             fail: function() {
@@ -807,41 +941,75 @@ $("#bteditarhoras").on('click', function() {
 });
 
 
-
-
-$(".bteditarimagenes").on('click', function() {
-    let id = $(this).attr('id').split('-')[1]; 
-    var formData = {
-        id: idtodelete
+$("#bteditarimages").on('click', function() 
+{ 
+    let formData = new FormData();
+    let hasnewfile = false;
+    for (let i = 1; i <= 5; i++) {
+        let fileInput = $('#Cimage-' + i)[0];
+        if (fileInput.files.length > 0) {
+            formData.append('images[]', fileInput.files[0]);
+            hasnewfile = true;
+        }
     }
-
-      try {
+    if(hasnewfile){
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
         $.ajax({
-            url: '/adminvisits/editvisitimages',
+            url: '/adminvisits/visitimagesfiles',
             data: formData,
-            dataType: "json",
+            processData: false,
+            contentType: false,
             method: "POST",
             success: function(result) {
-                if(result != null){
-                   //
-                }
-            },
-            fail: function() {
-                alert("fail");
+                if(result != null && result == true){ 
+                    let visitimages = $('#Cvisitimages').val() || [];
+                    if(visitimages != null && visitimages != []){
+                        let visitimagesdata = JSON.parse(visitimages); 
+                        let id = $('#Cm_id').val();
+                        let datos = {
+                            'id': id,
+                            'visitimages': visitimagesdata
+                        }
+                        
+                        try {
+                            $.ajaxSetup({
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            });
+                            $.ajax({
+                                url: '/adminvisits/setvisitimages',
+                                data: datos,
+                                dataType: "json",
+                                method: "POST",
+                                success: function(result) {
+                                    if(result != null){
+                                        location.reload();
+                                    }
+                                },
+                                fail: function() {
+                                    alert("fail");
+                                }
+                                })
+                            }catch (error) {
+                                console.err(error);
+                            }
+                        }
+                    }
+                },
+                fail: function() {
+                    alert("fail");
             }
         })
-      }catch (error) {
-        console.err(error);
-      }
-    
+    }
+    $('#btcloseeditarimages').click();
 });
-
-
+        
+    
 function mostraridiomasactivados(visit_languagesdatax){
     let selectedLanguages = $('#Cvisitlanguages').val();
     $('.idioma-section').addClass(' dnone ');
@@ -866,7 +1034,7 @@ function getDayName(diasemana) {
 }
 
 function getHora(hours_id) {
-    return hoursData[hours_id].hora ;
+    return hoursData[hours_id - 1].hora ;
 }
 
 function getcomponenthoradia(horax){
@@ -877,6 +1045,7 @@ function getcomponenthoradia(horax){
    "<div class='btdelhora' id='btdelhora-"+ hdiaid +"' style='cursor: pointer'><i class='fa fa-trash' > </i></div>   </div>";
    return component;
 }
+
 
 
 </script>

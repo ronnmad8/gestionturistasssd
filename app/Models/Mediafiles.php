@@ -25,6 +25,9 @@ class Mediafiles extends Model
         'pivot'
     ];
 
+    public function visit(){
+        return $this->belongsTo(Visit::class, 'visit_id', 'id');
+    }
     
 
 
