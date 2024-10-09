@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Psr\Http\Message\ServerRequestInterface;
+use Illuminate\Support\Facades\Auth; 
 
 class LoginController extends \Laravel\Passport\Http\Controllers\AccessTokenController
 {
@@ -57,5 +58,44 @@ class LoginController extends \Laravel\Passport\Http\Controllers\AccessTokenCont
     }
 
 
+    public function showLoginForm()
+    {
+        return view('auth.login'); // Blade template que crearemos más adelante
+    }
+    
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:1',
+        ]);
+
+        if (Auth::attempt($request->only('email', 'password'))) {
+
+            $user = Auth::user();
+
+            if ($user->rol_id == 3) {
+                return redirect()->intended('/inicio');
+            } else {
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'No tienes permisos para acceder.',
+                ]);
+            }
+        }
+
+        return back()->withErrors([
+            'email' => 'Las credenciales no son correctas.',
+        ]);
+    }
+
+    /**
+     * Cierra la sesión del usuario.
+     */
+    public function logout(Request $request)
+    {
+        Auth::logout();
+        return redirect('/login');
+    }
 
 }

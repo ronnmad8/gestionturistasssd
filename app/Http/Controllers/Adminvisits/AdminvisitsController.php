@@ -51,20 +51,6 @@ class AdminvisitsController extends Controller
     }
 
 
-    // public function visitsfilt($c_id)
-    // {
-        
-    //     $clientes= Cliente::select('clientes.*', 'centros.name as centro')
-    //     ->join('centros','centros.id','clientes.centros_id')
-    //     ->where('clientes.centros_id', $c_id )
-    //     ->orderByDesc('clientes.id')
-    //     ->simplePaginate(10);
-
-    //     $visitlanguages= Visitlanguages::select('visitlanguages.*')->get();
-
-    //     return view('adminvisits.index', compact(['visitlanguages']));
-    // }
-
 
     public function updatevisit(Request $request)
     {
@@ -196,7 +182,7 @@ class AdminvisitsController extends Controller
                     }
                 }
                 if (!empty($frontendHoursIds)) {
-                    $visit->visithours()->whereNotIn('hours_id', $frontendHoursIds)->delete(); // delete no se actualicen
+                    $visit->visithours()->whereNotIn('hours_id', $frontendHoursIds)->delete();
                 }
                 
                 return response()->json($result);

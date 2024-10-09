@@ -925,8 +925,7 @@ $("#bteditarhoras").on('click', function() {
             method: "POST",
             success: function(result) {
                 if(result != null){
-                    debugger
-                    //location.reload();
+                    location.reload();
                 }
             },
             fail: function() {

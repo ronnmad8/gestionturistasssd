@@ -43,10 +43,13 @@
                         Zona de administración
                     </strong>
                 </div>
-                <div class="mx-1 text-right" style="height: 20px;">
-                    <small>
-                        <i class="fa fa-user"></i>
-                    </small>
+                <div class="m-1 text-right" style="height: 28px;">
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit">
+                        SALIR <i class="fas fa-sign-out-alt ml-1"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
 
