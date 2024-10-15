@@ -19,9 +19,19 @@
                 VISITAS
                 <i class="fas fa-plane icomenu" style=" right: 17px; "></i>
             </a>
+            <a href="{{ route('adminreservas') }}" id="linkadminreservas"
+                class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
+                RESERVAS
+                <i class="fas fa-users icomenu" style=" right: 17px; "></i>
+            </a>
             <a href="{{ route('adminvisits') }}" id="linkadminguias"
                 class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
                 GUIAS
+                <i class="fas fa-users icomenu" style=" right: 17px; "></i>
+            </a>
+            <a href="{{ route('adminvisits') }}" id="linkadminguias"
+                class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
+                FACTURACIÓN
                 <i class="fas fa-users icomenu" style=" right: 17px; "></i>
             </a>
 

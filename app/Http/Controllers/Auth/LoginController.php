@@ -95,7 +95,7 @@ class LoginController extends \Laravel\Passport\Http\Controllers\AccessTokenCont
     public function logout(Request $request)
     {
         Auth::logout();
-        return redirect('/login');
+        return view('auth.login');
     }
 
 }

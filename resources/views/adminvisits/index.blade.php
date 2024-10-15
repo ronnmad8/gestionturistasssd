@@ -161,7 +161,6 @@
                             {{$c->mediafiles}}
                             @endif
                         </div>
-
                         
                         <div id='Evisitlanguages-{{$c->id}}'> 
                             @if ($c->visitlanguages->isNotEmpty())
@@ -178,7 +177,6 @@
                               {{ $c->visitlanguages->sortBy('language_id')->pluck('descripcion')->join(',,,') }}
                             @endif
                         </div>
-
 
                         <div id='Emodel-{{$c->id}}'>
                             {{json_encode($c)}}

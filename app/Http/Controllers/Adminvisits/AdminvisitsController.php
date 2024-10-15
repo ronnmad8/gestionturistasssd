@@ -384,33 +384,5 @@ class AdminvisitsController extends Controller
     
 
 
-    // public function formulario()
-    // {
-    //     $centros= Centros::select('centros.*')->where('centros.empleados','F')->get();
-    //     $cursos= Cursos::select('cursos.*')->get();
-
-    //     return view('cliente.formulario', compact(['centros', 'cursos']));
-    // }
-
-
-    public function inicio()
-    {
-
-        $visittags = Visittags::select('visittags.*')->get();
-        
-        // foreach($visittags as $visittag){
-        //     $conc++;
-        //     $c= Cliente::select('clientes.id')->where('clientes.centros_id', $conc)->groupBy('id')->get()->count();
-        //     $aa = array('valor'=> $c, 'id'=> $ce["id"], "name"=>$ce["name"], "cont"=>$conc);
-        //     array_push( $cuentaclientes , $aa );
-        // }
-
-  
-        return view('adminvisits.inicio', compact(
-            'visittags'
-        ));
-
-        
-    }
 
 }
