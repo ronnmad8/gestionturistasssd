@@ -7,7 +7,7 @@
     <div class="panel-heading">
         <div class="row">
             <div class="col-xl-2 col-12">
-                <h2>RESERVAS</h2>
+                <h2>GUIAS</h2>
             </div>
             <!-- <div class="col-xl-2 col-12">
                 <button id="crear" type="button" class="btn btn-dark cupo mb-2" title="buscar">
