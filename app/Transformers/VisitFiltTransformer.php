@@ -62,7 +62,6 @@ class VisitFiltTransformer extends TransformerAbstract
             'visittags' => $visit->visittags,
             'mediafiles' => $visit->mediafiles,
             'visithours' => $visit->visithours,
-            'visitdias' => $visit->visitdias,
             'visitlanguages' => $visit->visitlanguages,
         ];
     }

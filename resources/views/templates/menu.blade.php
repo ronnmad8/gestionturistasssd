@@ -24,12 +24,22 @@
                 RESERVAS
                 <i class="fas fa-users icomenu" style=" right: 17px; "></i>
             </a>
-            <a href="{{ route('adminvisits') }}" id="linkadminguias"
+            <a href="{{ route('inicio')  }}" id="linkcitas"
+                class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
+                CITAS
+                <i class="fas fa-users icomenu" style=" right: 17px; "></i>
+            </a>
+            <a href="{{ route('inicio')  }}" id="linkguias"
                 class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
                 GUIAS
                 <i class="fas fa-users icomenu" style=" right: 17px; "></i>
             </a>
-            <a href="{{ route('adminvisits') }}" id="linkadminguias"
+            <a href="{{ route('inicio')  }}" id="linkclientes"
+                class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
+                CLIENTES
+                <i class="fas fa-users icomenu" style=" right: 17px; "></i>
+            </a>
+            <a href="{{ route('inicio')  }}" id="linkfacturacion"
                 class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
                 FACTURACIÓN
                 <i class="fas fa-users icomenu" style=" right: 17px; "></i>

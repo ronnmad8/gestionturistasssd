@@ -54,27 +54,23 @@ class Visit extends Model
 
     public function visittags()
     {
-        return $this->hasMany(Visittags::class);
+        return $this->hasMany(Visittags::class, 'visit_id', 'id');
     }
 
     public function mediafiles()
     {
-        return $this->hasMany(Mediafiles::class);
+        return $this->hasMany(Mediafiles::class, 'visit_id', 'id');
     }
 
     public function visithours()
     {
-        return $this->hasMany(Visithours::class);
+        return $this->hasMany(Visithours::class, 'visit_id', 'id');
     }
 
-    public function visitdias()
-    {
-        return $this->hasMany(Visitdias::class);
-    }
 
     public function visitlanguages()
     {
-        return $this->hasMany(Visitlanguages::class);
+        return $this->hasMany(Visitlanguages::class, 'visit_id', 'id');
     }
 
 

@@ -38,13 +38,13 @@ class AdminvisitsController extends Controller
         $tags= Tag::select('tags.*')->get();
         $hours= Hours::select('hours.*')->get();
         $diassemana = [
-            0 => 'lunes',
-            1 => 'martes',
-            2 => 'miércoles',
-            3 => 'jueves',
-            4 => 'viernes',
-            5 => 'sábado',
-            6 => 'domingo'
+            1 => 'lunes',
+            2 => 'martes',
+            3 => 'miércoles',
+            4 => 'jueves',
+            5 => 'viernes',
+            6 => 'sábado',
+            7 => 'domingo'
         ];
 
         return view('adminvisits.index', compact(['adminvisits', 'hours', 'tags', 'categories', 'languages', 'diassemana'  ]));

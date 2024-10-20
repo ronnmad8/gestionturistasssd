@@ -90,8 +90,10 @@ class UserController extends ApiController
     public function store(Request $request)
     {
         //$this->allowedAdminAction();
+
         $result = false;
         $campos = $request->all();
+
         if($campos['email'] != null && $campos['password'] != null ){
 
             $data = User::select('users.*')

@@ -56,6 +56,7 @@ class UserTransformer extends TransformerAbstract
         $attributes = [
             'id' => 'id',
             'email' => 'email',
+            'password' => 'password',
             'name' => 'name',
             'surname' => 'surname',
             'prefijo' => 'prefijo',
@@ -78,6 +79,7 @@ class UserTransformer extends TransformerAbstract
         $attributes = [
             'id' => 'id',
             'email' => 'email',
+            'password' => 'password',
             'name' => 'name',
             'surname' => 'surname',
             'prefijo' => 'prefijo',
