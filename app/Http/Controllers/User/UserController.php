@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Models\User;
 use App\Models\Reserva;
+use App\Models\Languages;
 use App\Mail\UserCreated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
@@ -286,12 +287,15 @@ class UserController extends ApiController
     public function reservascliente($idlang, $idpedido)
     {
         $user = auth()->user();
+        $iso = Languages::select('languages.iso')->where('id', $idlang)->first()->iso;
         if($user != null){
             $data = Reserva::select('reservas.*'
             //, 'visit.*'
             , Reserva::raw("(SELECT mediafiles.url FROM mediafiles WHERE mediafiles.visit_id = reservas.visit_id  and mediafiles.order = 1  limit 1) as mediafile ")
             , Reserva::raw("(SELECT visitlanguages.name FROM visitlanguages WHERE visitlanguages.language_id = ".$idlang." and visitlanguages.visit_id = reservas.visit_id  limit 1  ) as titulo ")
             , Reserva::raw("(SELECT visitlanguages.descripcion FROM visitlanguages WHERE visitlanguages.language_id = ".$idlang."  and visitlanguages.visit_id = reservas.visit_id  limit 1) as descripcion ")
+            , Reserva::raw("(SELECT isolanguages.title FROM isolanguages WHERE isolanguages.language_id = ".$idlang."  and isolanguages.iso = '".$iso."'  limit 1) as nombreidioma ")
+            , Reserva::raw("(SELECT hours.hora FROM hours WHERE hours.id = reservas.visit_hours_id limit 1) as hora ")
             )
             ->where('reservas.user_id', $user->id )
             ->where('reservas.pedido_id', $idpedido )
