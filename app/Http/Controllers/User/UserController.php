@@ -114,6 +114,8 @@ class UserController extends ApiController
         return response()->json( $result , 200);
     }
 
+
+    
     /**
      * Update the specified resource in storage.
      *

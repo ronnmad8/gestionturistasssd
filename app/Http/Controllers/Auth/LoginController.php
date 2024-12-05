@@ -74,7 +74,13 @@ class LoginController extends \Laravel\Passport\Http\Controllers\AccessTokenCont
 
             $user = Auth::user();
 
-            if ($user->rol_id == 3) {
+            if ($user->rol_id == 2) {
+                return redirect()->intended('/inicioguias');
+            }
+            if ($user->rol_id == 4) {
+                return redirect()->intended('/inicioguias');
+            }
+            else if ($user->rol_id == 3) {
                 return redirect()->intended('/inicio');
             } else {
                 Auth::logout();
@@ -88,6 +94,40 @@ class LoginController extends \Laravel\Passport\Http\Controllers\AccessTokenCont
             'email' => 'Las credenciales no son correctas.',
         ]);
     }
+
+
+    public function registergu(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:1',
+        ]);
+
+
+        $result = false;
+        $campos = $request->all();
+
+        if($campos['email'] != null && $campos['password'] != null ){
+
+            $data = User::select('users.*')
+            ->where('users.email', $campos['email'] )
+            ->first();
+            
+            if($data == null){
+                $campos['password'] = bcrypt($request->password);
+                $campos['rol_id'] = 2;
+                $usuario = User::create($campos);
+                if($usuario != null){
+                    $result = true;
+                }
+            }
+        }
+
+        return redirect()->intended('/login');
+    }
+
+
+
 
     /**
      * Cierra la sesión del usuario.

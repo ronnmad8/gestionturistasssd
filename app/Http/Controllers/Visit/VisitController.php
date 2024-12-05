@@ -73,6 +73,25 @@ class VisitController extends ApiController
     }
 
 
+    public function related($id, $idlang)
+    {
+        $idlang ?? 1; 
+
+        $data = Visit::select('visits.*'
+        , Visit::raw("(SELECT visitlanguages.name FROM visitlanguages WHERE visitlanguages.language_id = ".$idlang." and visitlanguages.visit_id = visits.id limit 1  ) as titulo ")
+        , Visit::raw("(SELECT visitlanguages.descripcion FROM visitlanguages WHERE visitlanguages.language_id = ".$idlang."  and visitlanguages.visit_id = visits.id  limit 1) as descripcion ")
+        )
+        ->Join('visitcategories', 'visitcategories.visit_id', '=', 'visits.id')
+        ->orderByRaw("visitcategories.category_id = ? DESC", [$id])
+        ->orderBy('visits.id', 'desc')
+        ->distinct()
+        ->limit(4)
+        ->get();
+        
+        return $this->showAllBasic($data);
+    }
+
+
 
     public function searchbasic(Request $request)
     {

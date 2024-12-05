@@ -8,6 +8,7 @@ use App\Transformers\FranjashorariasTransformer;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Hours;
 
 class Franjashorarias extends Model
 {
@@ -21,6 +22,15 @@ class Franjashorarias extends Model
 
     ];
 
+    public function inithours()
+    {
+        return $this->hasMany(Hours::class, 'init_hours_id', 'id'); 
+    }
+
+    public function endhours()
+    {
+        return $this->hasMany(Hours::class, 'end_hours_id', 'id'); 
+    }
 
 
 }

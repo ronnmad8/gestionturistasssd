@@ -9,6 +9,9 @@
             <div class="w-100 text-center mb-2">
                 <small><b> MADGUIDES ADMIN</b> </small>
             </div>
+
+            @if(Auth::user()->rol_id == 3)
+
             <a href="{{ route('inicio') }}" id="linkhome"
                 class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
                 HOME
@@ -22,29 +25,51 @@
             <a href="{{ route('adminreservas') }}" id="linkadminreservas"
                 class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
                 RESERVAS
-                <i class="fas fa-users icomenu" style=" right: 17px; "></i>
+                <i class="fas fa-house-user icomenu" style=" right: 17px; "></i>
             </a>
-            <a href="{{ route('inicio')  }}" id="linkcitas"
+            <a href="{{ route('admincitas')  }}" id="linkadmincitas"
                 class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
                 CITAS
-                <i class="fas fa-users icomenu" style=" right: 17px; "></i>
+                <i class="fas fa-map-signs icomenu" style=" right: 17px; "></i>
             </a>
-            <a href="{{ route('inicio')  }}" id="linkguias"
+            <a href="{{ route('adminguias')  }}" id="linkadminguias"
                 class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
                 GUIAS
                 <i class="fas fa-users icomenu" style=" right: 17px; "></i>
             </a>
-            <a href="{{ route('inicio')  }}" id="linkclientes"
+            <a href="{{ route('adminclientes')  }}" id="linkadminclientes"
                 class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
                 CLIENTES
                 <i class="fas fa-users icomenu" style=" right: 17px; "></i>
             </a>
-            <a href="{{ route('inicio')  }}" id="linkfacturacion"
+            <a href="{{ route('adminfacturacion')  }}" id="linkadminfacturacion"
                 class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
                 FACTURACIÓN
-                <i class="fas fa-users icomenu" style=" right: 17px; "></i>
+                <i class="fas fa-money-bill-wave icomenu" style=" right: 17px; "></i>
             </a>
 
+            @endif
+
+            @if(Auth::user()->rol_id == 2  || Auth::user()->rol_id == 4)
+
+            <a href="{{ route('inicioguias') }}" id="linkhomeguias"
+                class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
+                HOME
+                <i class="fas fa-home icomenu" style=" right: 15px; "></i>
+            </a>
+            <a href="{{ route('adminreservasguia')  }}" id="linkadminreservasguia"
+                class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
+                MIS RESERVAS
+                <i class="fas fa-house-user icomenu" style=" right: 17px; "></i>
+            </a>
+            <a href="{{ route('adminguia', ['id' => Auth::user()->id] )  }}" id="linkadminguia"
+                class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
+                MIS DATOS
+                <i class="fas fa-user-edit icomenu" style=" right: 17px; "></i>
+            </a>
+
+            @endif
+            
         </div>
     </div>
 
@@ -83,6 +108,10 @@
         </div>
     </div>
 
+</div>
+
+<div id="loading-spinner" style="display: none;">
+    <div class="spinner"></div>
 </div>
 
 <script>

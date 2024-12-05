@@ -836,6 +836,10 @@ $("#bteditarX").on('click', function() {
             },
             beforeSend: function() {
                 $('#btcloseeditar').click();
+                $("#loading-spinner").show();$("#loading-spinner").show();
+            },
+            complete: function() {
+                $("#loading-spinner").hide();
             }
         });
 
@@ -890,6 +894,12 @@ $(".btdelete").on('click', function() {
             },
             fail: function() {
                 alert("fail");
+            },
+            beforeSend: function() {
+                $("#loading-spinner").show();
+            },
+            complete: function() {
+                $("#loading-spinner").hide();
             }
         })
       }catch (error) {
@@ -928,6 +938,12 @@ $("#bteditarhoras").on('click', function() {
             },
             fail: function() {
                 alert("fail");
+            },
+            beforeSend: function() {
+                $("#loading-spinner").show();
+            },
+            complete: function() {
+                $("#loading-spinner").hide();
             }
         })
       }catch (error) {
@@ -990,8 +1006,14 @@ $("#bteditarimages").on('click', function()
                                 },
                                 fail: function() {
                                     alert("fail");
+                                },
+                                beforeSend: function() {
+                                    $("#loading-spinner").show();
+                                },
+                                complete: function() {
+                                    $("#loading-spinner").hide();
                                 }
-                                })
+                            })
                             }catch (error) {
                                 console.err(error);
                             }

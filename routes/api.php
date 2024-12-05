@@ -65,6 +65,7 @@ Route::resource('mediafiles', MediafilesController::class, ['only' => ['index']]
 //Route::resource('visits', VisitController::class, ['only' => ['index','show','store','update','destroy']]);
 //Route::resource('visits.reservas', VisitReservaController::class, ['only' => ['index']]);
 Route::get('/visitrecommended/{id}', [VisitController::class, 'recommended']);
+Route::get('/visitrelated/{id}/{idlang}', [VisitController::class, 'related']);
 Route::get('/visitdetail/{id}/{langid}', [VisitController::class, 'visitdetail']);
 
 /**

@@ -355,6 +355,12 @@ function guardaradminvisit(fData) {
                 },
                 fail: function() {
                     alert("error al guardar");
+                },
+                beforeSend: function() {
+                    $("#loading-spinner").show();
+                },
+                complete: function() {
+                   $("#loading-spinner").hide();
                 }
             });
         }

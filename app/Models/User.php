@@ -10,6 +10,9 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Transformers\UserTransformer;
 use App\Transformers\UserSecTransformer;
+use App\Models\Disponibility;
+use App\Models\Nodisponibility;
+use App\Models\Guialanguages;
 
 class User extends Authenticatable
 {
@@ -92,5 +95,21 @@ class User extends Authenticatable
         return Str::random(40);
     }
 
+
+    public function disponibilities()
+    {
+        return $this->hasMany(Disponibility::class);
+    }
+
+    public function nodisponibilities()
+    {
+        return $this->hasMany(Nodisponibility::class);
+    }
     
+    
+    public function guialanguages()
+    {
+        return $this->hasMany(Guialanguages::class);
+    }
+
 }

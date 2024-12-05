@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Pedido;
 
 use App\Models\Pedido;
 use App\Models\Reserva;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use App\Transformers\PedidoTransformer;
@@ -122,8 +123,16 @@ class PedidoController extends ApiController
                     $reserva["user_id"] = $pedido->user_id;
                     $reserva["visit_id"] = (int)$r["visit"]["id"];
                     $reserva["uuid"] = Str::uuid();
+
+
+                    //revisar si la reserva pertenece a un pedido y ya tiene guia asignado
+
+                    $guia = User::where('rol_id', 2)->inRandomOrder()->first();
+                    if ($guia) {
+                        $reserva["guia_id"] = $guia->id;
+                    }
+
                     $reserva->save();
-                    
                     $reservasArray[] = $reserva; 
                 }
             }    
