@@ -3,9 +3,14 @@
 namespace App\Http\Controllers\Reserva;
 
 use App\Models\Reserva;
+use App\Models\User;
+use App\Models\Languages;
+use App\Models\Hours;
+use App\Models\Visit;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use App\Transformers\ReservaTransformer;
+
 
 class ReservaController extends ApiController
 {
@@ -14,7 +19,7 @@ class ReservaController extends ApiController
     public function __construct()
     {
         $this->middleware('transform.input:'. ReservaTransformer::class)->only(['store','update','reserva', 'reservasvisita']);
-        $this->middleware('auth:api')->except(['index', 'show', 'reserva', 'reservascliente','me']);
+        $this->middleware('auth:api')->except(['index','show','reserva','reservascliente','me','vendidas','enviaremailtest']);
     }
 
 
@@ -116,16 +121,6 @@ class ReservaController extends ApiController
         
         $data = $request->all();
         $reserva = Reserva::create($data);
-
-        // if ($request->hasFile('imagenreserva')) {
-        //     $file = $request->file('imagenreserva');
-            
-        //     if($file != null){
-        //         $namefile = $this->updatefile($file);
-        //         $reserva->image = $namefile;
-        //         $reserva->save();
-        //     }
-        // }
 
         return $this->showOne($reserva, 201);
     }
@@ -291,6 +286,22 @@ class ReservaController extends ApiController
         return $this->showOne($reserva);
     }
 
+    public function vendidas($visitaid, $fecha, $horaid, $languageid)
+    {
+        $horaid ?? 1; 
+        $languageid ?? 1;
+
+        $numvendidas = Reserva::select('reservas.*')
+        ->where('visit_hours_id', $horaid )
+        ->where('visit_id', $visitaid )
+        ->where('fecha', $fecha )
+        ->where('language_id', $languageid )
+        ->where('deleted_at', null)
+        ->sum('persons');
+
+        return $numvendidas;
+    }
+
 
     public function edit($id)
     {
@@ -302,6 +313,31 @@ class ReservaController extends ApiController
     {
         //
     }
+
+    public function enviaremailtest(Request $request)
+    {
+        $data = $request->all();
+        $email = $data['email'];
+        $name = $data['name'];
+        $dataemail = array(
+            'name' => $name ?? '_',
+            'email' => $email ?? '_',
+            'fecha' => '', // $reserva->fecha->format('dd/mm/Y') ?? '_',
+            'hora' => '', //$reserva->hora->format('H:i') ?? '_',
+            'persons' => '', // $reserva->persons ?? 0,
+            'adults' => '', // $reserva->adults ?? 0,
+            'children' => '', // $reserva->children ?? 0,
+            'idioma' => $idioma ?? '_', //traducir
+            'codigo' => '', //$reserva->uuid ?? '_',
+            'precio' => '', //$reserva->total ?? 0,
+            'visita' => $visita ?? '_', //traducir
+            );
+
+            $subject = 'Reserva Confirmada';
+            $viewName = 'emails.reserva';
+            Mail::to($email)->send(new ContactMail($dataemail, $viewName, $subject));
+    }
+
 
    
 }

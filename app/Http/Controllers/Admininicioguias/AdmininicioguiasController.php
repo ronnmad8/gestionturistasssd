@@ -20,15 +20,14 @@ use Illuminate\Support\Str;
 class AdmininicioguiasController extends Controller
 {
 
-   
-
-
     public function index()
     {
-  
         return view('admininicioguias.index');
+    }
 
-        
+    public function index4()
+    {
+        return view('admininicioguias.index');
     }
 
 }

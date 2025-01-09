@@ -101,9 +101,6 @@
                 <hr>
                 <div class="my-2 mx-auto">
                     <div class='w100 '>
-                        <div class="dnone">
-                            <input id="Cg_id" name='Cg_id'>
-                        </div>
                         <div id="Cg_guialanguages" class="my-2 mx-auto">
                             <h4>Idiomas Disponibles</h4>
                             @foreach($idiomas as  $key => $l)
@@ -119,6 +116,24 @@
                         </div>
                     </div>
                 </div>
+                <hr>
+                <div class="my-2 mx-auto">
+                    <div id="Cg_visitas" class='w100 '>
+                        <div class="my-2 mx-auto">
+                            <h4>Visitas</h4>
+                            @foreach($visitas as  $key => $l)
+                            <div>
+                                <div class="time-slots">
+                                <label>
+                                <input id="visit-{{$l->id}}"  type="checkbox" name="{{ $l->nombrevisita }}" > 
+                                {{ $l->nombrevisita }}
+                                </label>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="col-12 ">
                 <div class="m10 mxauto text-center">
@@ -126,6 +141,7 @@
                 </div>
             </div>
         </div>
+
         <div class="dnone">
             <div id="lista_hours" data-hours="{{ json_encode($hours) }}">
             </div>
@@ -135,11 +151,15 @@
             </div>
             <div id="lista_franjas" data-franjas="{{ json_encode($franjashorarias) }}">
             </div>
+            <div id="lista_visitas" data-visitas="{{ json_encode($visitas) }}">
+            </div>
             <div id="disponibilities" data-disponibilidad="{{ json_encode($adminguia->disponibilities) }}">
             </div>
             <div id="nodisponibilities" data-nodisponibilidad="{{ json_encode($adminguia->nodisponibilities) }}">
             </div>
             <div id="lista_guialanguages" data-guialanguages="{{ json_encode($adminguia->guialanguages) }}">
+            </div>
+            <div id="lista_guiavisitas" data-guiavisitas="{{ json_encode($adminguia->guiavisits) }}">
             </div>
         </div>
     </div>
@@ -149,11 +169,13 @@
 <script>
     let franjasData = $('#lista_franjas').data('franjas') || [];
     let languages = $('#lista_languages').data('idiomas') || [];
+    let visitas = $('#lista_visitas').data('visitas') || [];
     let hoursData = $('#lista_hours').data('hours') || [];
     let diasSemanaData = $('#lista_diassemana').data('diassemana') || [];
     let disponibilities = $('#disponibilities').data('disponibilidad') || [];
     let nodisponibilities = $('#nodisponibilities').data('nodisponibilidad') || [];
     let guialanguagesData = $('#lista_guialanguages').data('guialanguages') || [];
+    let guiavisitsData = $('#lista_guiavisitas').data('guiavisitas') || [];
 
     disponibilities.forEach((disponibilidad) => {
         $('#dia-'+ (disponibilidad.diasemana - 1) +'-'+ disponibilidad.franjahoraria_id).prop('checked', true);
@@ -165,6 +187,9 @@
     })
     guialanguagesData.forEach((guialanguage) => {
         $('#language-'+ (guialanguage.language_id ) ).prop('checked', true);
+    })
+    guiavisitsData.forEach((guiavisit) => {
+        $('#visit-'+ (guiavisit.visit_id ) ).prop('checked', true);
     })
 
     $('.menu').removeClass('activ');
@@ -205,47 +230,58 @@
     $("#bteditarX").on('click', function() {
 
         let idguia = $('#Cid').val();  
-        let email = $('#Cemail').val();
-        let name = $('#Cnombre').val();
-        let surname = $('#Capellidos').val();
-        let telefono = $('#Ctelefono').val();
-        let state = $('#Cprovincia').val();
-        let city = $('#Cciudad').val();
-        let postalcode = $('#Cpostalcode').val();
-        let address = $('#Cdireccion').val();
-        let number = $('#Cnumero').val();
+        if(idguia != null && idguia != "")
+        {
+            let email = $('#Cemail').val();
+            let name = $('#Cnombre').val();
+            let surname = $('#Capellidos').val();
+            let telefono = $('#Ctelefono').val();
+            let state = $('#Cprovincia').val();
+            let city = $('#Cciudad').val();
+            let postalcode = $('#Cpostalcode').val();
+            let address = $('#Cdireccion').val();
+            let number = $('#Cnumero').val();
 
-        let listadisponibilidad = [];
-        diasSemanaData.forEach((diasemana, index) => {
-            franjasData.forEach(franja => {
-                  let diacheck =  $('#dia-'+ (index) +'-'+ franja.id).prop('checked');
-                  if(diacheck){
-                    let newdisponibility = {
-                        user_id: parseInt(idguia),
-                        franjahoraria_id: franja.id,
-                        diasemana: index+1
+            let listadisponibilidad = [];
+            diasSemanaData.forEach((diasemana, index) => {
+                franjasData.forEach(franja => {
+                    let diacheck =  $('#dia-'+ (index) +'-'+ franja.id).prop('checked');
+                    if(diacheck){
+                        let newdisponibility = {
+                            user_id: parseInt(idguia),
+                            franjahoraria_id: franja.id,
+                            diasemana: index+1
+                        }
+                        listadisponibilidad.push(newdisponibility);
                     }
-                    listadisponibilidad.push(newdisponibility);
-                  }
+                })
             })
-        })
-        let listaidiomas = [];
-        languages.forEach((language, index) => {
-            let idiomacheck =  $('#language-'+ (index+1) ).prop('checked');
-            if(idiomacheck){
-                let newdguialanguage = {
-                    user_id: parseInt(idguia),
-                    language_id: index+1
+            let listaidiomas = [];
+            languages.forEach((language, index) => {
+                let idiomacheck =  $('#language-'+ (index+1) ).prop('checked');
+                if(idiomacheck){
+                    let newdguialanguage = {
+                        user_id: parseInt(idguia),
+                        language_id: index+1
+                    }
+                    listaidiomas.push(newdguialanguage);
                 }
-                listaidiomas.push(newdguialanguage);
-            }
-        })
+            })
+            let listavisitas = [];
+            visitas.forEach((visita, index) => {
+                let visitacheck =  $('#visit-'+ (index+1) ).prop('checked');
+                if(visitacheck){
+                    let newvisita = {
+                        user_id: parseInt(idguia),
+                        visit_id: index+1
+                    }
+                    listavisitas.push(newvisita);
+                }
+            })
         
+            let urlaccion = "{{ route('adminguia/setguia', ['id' => '__id__']) }}".replace('__id__', idguia);
 
-
-        let urlaccion = "{{ route('adminguia/setguia', ['id' => '__id__']) }}".replace('__id__', idguia);
-
-        let formData = {
+            let formData = {
             id: idguia,
             name: name,
             surname: surname,
@@ -257,10 +293,11 @@
             number: number,
             disponibilities: listadisponibilidad,
             nodisponibilities: nodisponibilities,
-            guialanguages: listaidiomas
-        }
+            guialanguages: listaidiomas,
+            guiavisits: listavisitas
+            }
         
-        try {
+            try {
             $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -286,9 +323,10 @@
                    $("#loading-spinner").hide();
                 }
             });         
-        } catch (error) {
+            } catch (error) {
             console.err(error);
-        }        
+            }       
+        }    
     });
 
 

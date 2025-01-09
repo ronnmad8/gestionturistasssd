@@ -14,10 +14,11 @@ class CheckRole
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-        if ($request->user()->rol_id != $role) {
-            return redirect('/login');
+        // Verificar si el usuario tiene un rol válido
+        if (!in_array($request->user()->rol_id, $roles)) {
+            return redirect('/login'); // O abort(403, 'Unauthorized');
         }
 
         return $next($request);

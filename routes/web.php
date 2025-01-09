@@ -70,29 +70,16 @@ Route::middleware(['auth'])->group(function () {
 
     });
 
-    Route::middleware(['role:2'])->group(function () {
+    Route::middleware(['role:2,4'])->group(function () {
 
         Route::get('/inicioguias', [AdmininicioguiasController::class, 'index'])->name('inicioguias');
         Route::get('/adminreservasguia', [AdminreservasguiaController::class, 'index'])->name('adminreservasguia');
         Route::post('/adminreservasguia/rechazarreserva', [AdminreservasguiaController::class, 'rechazarreserva'])->name('adminreservasguia/rechazarreserva');
-        
         Route::get('/adminguia/{id}', [AdminGuiaController::class, 'index'])->name('adminguia');
         Route::post('/adminguia/setguia/{id}', [AdminGuiaController::class, 'setguia'])->name('adminguia/setguia');
 
-
     });
 
-    Route::middleware(['role:4'])->group(function () {
-
-        Route::get('/inicioguias', [AdmininicioguiasController::class, 'index'])->name('inicioguias');
-        Route::get('/adminreservasguia', [AdminreservasguiaController::class, 'index'])->name('adminreservasguia');
-        Route::post('/adminreservasguia/rechazarreserva', [AdminreservasguiaController::class, 'rechazarreserva'])->name('adminreservasguia/rechazarreserva');
-        
-        Route::get('/adminguia/{id}', [AdminGuiaController::class, 'index'])->name('adminguia');
-        Route::post('/adminguia/setguia/{id}', [AdminGuiaController::class, 'setguia'])->name('adminguia/setguia');
-
-
-    });
 
     
 

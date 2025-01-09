@@ -241,20 +241,10 @@ class ContactoController extends ApiController
 
     public function contact(Request $request)
     {
-        $rules = [
-            'email' => 'required'
-        ];
-
-        $result = "false";
-
-        //$this->validate($request, $rules);
-
         $data = $request->all();
         $email = $data["email"];
 
-        Mail::to($email) // Email al que se enviará el correo
-        ->send(new ContactMail($data));
-
+        Mail::to($email)->send(new ContactMail($data));
         return response()->json(['result' => 'Correo enviado con éxito']);
     }
 

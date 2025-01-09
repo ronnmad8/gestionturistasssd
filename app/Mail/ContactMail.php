@@ -14,15 +14,18 @@ class ContactMail extends Mailable
     use Queueable, SerializesModels;
 
     public $data;
+    public $viewname;
+    public $subject;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($data)
+    public function __construct($data, $viewName = 'emails.contact', $subject = 'Nuevo Contacto desde la web madguides')
     {
-         $this->data = $data; // Datos enviados desde el formulario
+         $this->data = $data;
+         $this->viewName = $viewName;
     }
 
     /**
@@ -61,8 +64,8 @@ class ContactMail extends Mailable
 
     public function build()
     {
-        return $this->subject('Nuevo contacto')
-                    ->view('contact') // Plantilla del correo
-                    ->with('data', $this->data); // Pasar los datos a la plantilla
+        return $this->subject($this->subject)
+                    ->view($this->viewName) // Plantilla
+                    ->with('data', $this->data); 
     }
 }

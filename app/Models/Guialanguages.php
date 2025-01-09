@@ -6,7 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use App\Models\Disponibility;
 
 class Guialanguages extends Model
 {
@@ -22,5 +22,10 @@ class Guialanguages extends Model
         'pivot'
     ];
 
+
+    public function language()
+    {
+        return $this->belongsTo(Disponibility::class, 'user_id', 'user_id');
+    }
 
 }

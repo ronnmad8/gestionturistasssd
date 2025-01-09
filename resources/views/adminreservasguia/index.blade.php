@@ -88,7 +88,6 @@
 
 <script>
 
-debugger
 let listaadminreservas = $('#lista_adminreservas').data('adminreservas') || [];
 
 $('.menu').removeClass('activ');

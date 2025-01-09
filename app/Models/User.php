@@ -13,6 +13,7 @@ use App\Transformers\UserSecTransformer;
 use App\Models\Disponibility;
 use App\Models\Nodisponibility;
 use App\Models\Guialanguages;
+use App\Models\Guiavisits;
 
 class User extends Authenticatable
 {
@@ -110,6 +111,11 @@ class User extends Authenticatable
     public function guialanguages()
     {
         return $this->hasMany(Guialanguages::class);
+    }
+
+    public function guiavisits()
+    {
+        return $this->hasMany(Guiavisits::class);
     }
 
 }

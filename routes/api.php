@@ -26,6 +26,7 @@ use App\Http\Controllers\VisitFilt\VisitFiltController;
 use App\Http\Controllers\Reserva\ReservaController;
 use App\Http\Controllers\Textcontents\TextcontentsController;
 use App\Http\Controllers\Textcomments\TextcommentsController;
+use App\Http\Controllers\Disponibilities\DisponibilitiesController;
 
 
 /** @var \Laravel\Lumen\Routing\Router $router */
@@ -82,7 +83,8 @@ Route::get('/hoursid', [VisitFiltController::class, 'hoursid']);
  */
 Route::resource('reservas', ReservaController::class, ['only' => ['index', 'show','store','update','destroy']]);
 Route::get('/reserva/{id}', [ReservaController::class, 'reserva']);
-
+Route::get('/vendidas/{visitaid}/{fecha}/{horaid}/{languageid}', [ReservaController::class, 'vendidas']);
+Route::post('/enviaremailtest', [ReservaController::class, 'enviaremailtest']);
 
 /**
  * Categories
@@ -147,6 +149,8 @@ Route::post('/pedidocliente', [PedidoController::class, 'store']);
 
 Route::resource('users/verify/{token}', UserController::class, ['only' =>['verify']]);
 
+Route::get('/franjasdiasemana/{diasemana}', [DisponibilitiesController::class, 'franjasdiasemana']);
+Route::get('/disponibilities/{visitaid}/{month}/{year}', [DisponibilitiesController::class, 'disponibilities']);
 
 //Route::resource('users/{user}/resend', UserController::class, ['only' =>['resend']]); ////
 

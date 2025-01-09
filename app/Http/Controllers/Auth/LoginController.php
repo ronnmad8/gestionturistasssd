@@ -73,16 +73,16 @@ class LoginController extends \Laravel\Passport\Http\Controllers\AccessTokenCont
         if (Auth::attempt($request->only('email', 'password'))) {
 
             $user = Auth::user();
-
-            if ($user->rol_id == 2) {
+            if ($user->rol_id == 4) {
                 return redirect()->intended('/inicioguias');
             }
-            if ($user->rol_id == 4) {
+            if ($user->rol_id == 2) {
                 return redirect()->intended('/inicioguias');
             }
             else if ($user->rol_id == 3) {
                 return redirect()->intended('/inicio');
-            } else {
+            } 
+            else {
                 Auth::logout();
                 return back()->withErrors([
                     'email' => 'No tienes permisos para acceder.',

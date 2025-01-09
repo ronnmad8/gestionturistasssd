@@ -29,11 +29,13 @@ class AdminguiaController extends Controller
         ->with('disponibilities')
         ->with('nodisponibilities')
         ->with('guialanguages')
-        ->where('rol_id', 2)
+        ->with('guiavisits')
+        ->where(function ($query) {
+            $query->where('rol_id', 2)
+                  ->orWhere('rol_id', 4);
+        })
         ->where('id', $id)
         ->first() ?? new User();
-
-
 
         $hours= Hours::select('hours.*')->get();
         $franjashorarias= Franjashorarias::select('franjashorarias.*'
@@ -59,8 +61,12 @@ class AdminguiaController extends Controller
             6 => 'griego',
             7 => 'polaco'
         ];
+        $visitas= Visit::select('visits.id'
+        , Visit::raw("(SELECT visitlanguages.name FROM visitlanguages WHERE language_id = 1 and visit_id = visits.id  limit 1) as nombrevisita "))
+        ->get();
 
-        return view('adminguia.index', compact(['adminguia', 'hours', 'diassemana', 'franjashorarias', 'idiomas' ]));
+
+        return view('adminguia.index', compact(['adminguia', 'hours', 'diassemana', 'franjashorarias', 'idiomas', 'visitas' ]));
     }
 
     public function getdisponibility($id)
@@ -89,7 +95,12 @@ class AdminguiaController extends Controller
 
         $id = $request->input('id');
         if($id != null){
-            $g = User::select('users.*')->where('rol_id', 2)->findOrFail($id);
+            $g = User::select('users.*')
+            ->where(function ($query) {
+                $query->where('rol_id', 2)
+                      ->orWhere('rol_id', 4);
+            })
+            ->findOrFail($id);
         
             if ( $request->input('name') != null ) {
                 $g->name = $request->input('name');
@@ -237,6 +248,48 @@ class AdminguiaController extends Controller
                 
                     foreach ($toGuialanguagesAdd as $addguialanguages) {
                         $g->guialanguages()->create($addguialanguages);
+                    }
+                }
+
+                if ($request->input('guiavisits') != null) {
+
+                    $currentGuiavisits = $g->guiavisits()->where('user_id', $id)->get();
+                    $currentGuiavisitsIds = $currentGuiavisits->map(function ($item) {
+                        return [
+                            'user_id' => $item->user_id,
+                            'visit_id' => $item->visit_id
+                        ];
+                    })->toArray();
+                
+                    $newGuiavisits = collect($request->input('guiavisits')); 
+                    $newGuiavisitsIds = $newGuiavisits->map(function ($item) {
+                        return [
+                            'user_id' => $item['user_id'],
+                            'visit_id' => $item['visit_id']
+                        ];
+                    })->toArray();
+
+
+                    $toGuiavisitsDelete = $currentGuiavisits->filter(function ($item) use ($newGuiavisitsIds) {
+                        return !in_array(
+                            ['user_id' => (int) $item->user_id, 'visit_id' => (int)$item->visit_id],
+                            $newGuiavisitsIds
+                        );
+                    });
+                
+                    $toGuiavisitsAdd = $newGuiavisits->filter(function ($item) use ($currentGuiavisitsIds) {
+                        return !in_array(
+                            ['user_id' => (int) $item['user_id'], 'visit_id' => (int)$item['visit_id']],
+                            $currentGuiavisitsIds
+                        );
+                    });
+                
+                    foreach ($toGuiavisitsDelete as $deleteguiavisits) {
+                        $deleteguiavisits->delete();
+                    }
+                
+                    foreach ($toGuiavisitsAdd as $addguiavisits) {
+                        $g->guiavisits()->create($addguiavisits);
                     }
                 }
 
