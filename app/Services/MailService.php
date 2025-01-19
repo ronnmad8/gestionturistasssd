@@ -57,7 +57,7 @@ class MailService
             'visita' => $visita ?? '_',
         );
         $subject = 'Reserva de ' . $namecliente . ' asignada a ' . $nameguia;
-        if ($reasignation) {
+        if ($reasignation == true) {
             $subject = 'Reserva de ' . $namecliente . ' ¡reasignada! a ' . $nameguia;
         }
 
@@ -65,9 +65,9 @@ class MailService
 
         //listar emails de los admin
         Mail::to($_ENV['MAIL_ADMIN0'])->send(new ContactMail($dataemail, $viewName, $subject));
-        //Mail::to($_ENV['MAIL_ADMIN1'])->send(new ContactMail($dataemail, $viewName, $subject));
-        //Mail::to($_ENV['MAIL_ADMIN2'])->send(new ContactMail($dataemail, $viewName, $subject));
-        //Mail::to($_ENV['MAIL_ADMIN3'])->send(new ContactMail($dataemail, $viewName, $subject));
+        Mail::to($_ENV['MAIL_ADMIN1'])->send(new ContactMail($dataemail, $viewName, $subject));
+        Mail::to($_ENV['MAIL_ADMIN2'])->send(new ContactMail($dataemail, $viewName, $subject));
+        Mail::to($_ENV['MAIL_ADMIN3'])->send(new ContactMail($dataemail, $viewName, $subject));
     }
 
 }
