@@ -112,10 +112,18 @@ class LoginController extends \Laravel\Passport\Http\Controllers\AccessTokenCont
             $data = User::select('users.*')
             ->where('users.email', $campos['email'] )
             ->first();
+
+            $ultimacuotaminima = User::select('users.*')
+            ->where('rol_id', 2 )
+            ->max('cuota') ?? 0;
+            if ($ultimacuotaminima > 0) {
+                $ultimacuotaminima = $ultimacuotaminima - 1;
+            }
             
             if($data == null){
                 $campos['password'] = bcrypt($request->password);
                 $campos['rol_id'] = 2;
+                $campos['cuota'] = $ultimacuotaminima ;
                 $usuario = User::create($campos);
                 if($usuario != null){
                     $result = true;

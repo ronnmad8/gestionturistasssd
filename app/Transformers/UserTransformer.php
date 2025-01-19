@@ -28,6 +28,7 @@ class UserTransformer extends TransformerAbstract
          * number
          * address
          * rol_id
+         * cuota
          */	
 
 
@@ -46,7 +47,8 @@ class UserTransformer extends TransformerAbstract
             'postalcode' => (string)$user->postalcode,
             'number' => (string)$user->number,
             'address' => (string)$user->address,
-            'rol_id' => (string)$user->rol_id
+            'rol_id' => (string)$user->rol_id,
+            'cuota' => (int)$user->cuota
         
         ];
     }
@@ -68,7 +70,8 @@ class UserTransformer extends TransformerAbstract
             'postalcode' => 'postalcode',
             'number' => 'number',
             'address' => 'address',
-            'rol_id' => 'rol_id'
+            'rol_id' => 'rol_id',
+            'cuota' => 'cuota'
         ];
 
         return isset($attributes[$index]) ? $attributes[$index] : null;
@@ -91,7 +94,8 @@ class UserTransformer extends TransformerAbstract
             'postalcode' => 'postalcode',
             'number' => 'number',
             'address' => 'address',
-            'rol_id' => 'rol_id'
+            'rol_id' => 'rol_id',
+            'cuota' => 'cuota'
             
         ];
 

@@ -149,6 +149,7 @@ class AdminreservasController extends Controller
                 \DB::beginTransaction();
                 $reserva = Reserva::findOrFail($id);
                 $reserva->delete();
+
                 \DB::commit();
         
                 return response()->json(['message' => 'Reserva eliminada con éxito'], 200);

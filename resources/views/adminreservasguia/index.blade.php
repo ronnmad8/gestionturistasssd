@@ -213,7 +213,7 @@ $(".btdelete").on('click', function() {
             method: "POST",
             success: function(result) {
                 if(result != null){
-                    location.reload();
+                   location.reload();
                 }
             },
             fail: function() {

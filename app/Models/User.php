@@ -42,7 +42,8 @@ class User extends Authenticatable
         'number',
         'address',
         'rol_id',
-        'particular'
+        'particular',
+        'cuota'
 
     ];
 
