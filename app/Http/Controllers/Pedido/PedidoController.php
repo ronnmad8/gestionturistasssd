@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Languages;
 use App\Models\Hours;
 use App\Models\Visitlanguages;
+use App\Models\Visit;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use App\Transformers\PedidoTransformer;
@@ -153,7 +154,10 @@ class PedidoController extends ApiController
                         $idioma = Languages::find($reserva->language_id)->name;
                         $hora = Hours::find($reserva->visit_hours_id)->hora;
                         $visita = Visitlanguages::find($reserva->visit_id)->where('language_id', $reserva->language_id)->first()->name;
-
+                        $visit = Visit::find($reserva->visit_id)->first();
+                        $puntoencuentro = $visit->puntoencuentro;
+                        $puntoencuentrotext = $visit->puntoencuentrotext;
+                        
                         $textostraducidos = TraductionService::getTraduction($reserva->language_id);
                         $textostraducidosadmins = TraductionService::getTraduction(1);
                         $reservasArray[] = array(
@@ -166,11 +170,13 @@ class PedidoController extends ApiController
                             'codigo' => $reserva->uuid ?? '_',
                             'precio' => $reserva->total ?? 0,
                             'visita' => $visita ?? '_', 
-                            'textostraducidos' => $textostraducidos
+                            'textostraducidos' => $textostraducidos,
+                            'puntoencuentro' => $puntoencuentro ?? '#',
+                            'puntoencuentrotext' => $puntoencuentrotext ?? '_',
                         );
 
-                        MailService::sendEmailGuia($reserva, $hora, $visita, $idioma, $textostraducidos);
-                        MailService::sendEmailAdmins($reserva, $hora, $visita, $idioma, $textostraducidosadmins);
+                        MailService::sendEmailGuia($reserva, $hora, $visita, $idioma, $textostraducidos, $puntoencuentro, $puntoencuentrotext);
+                        MailService::sendEmailAdmins($reserva, $hora, $visita, $idioma, $textostraducidosadmins, $puntoencuentro, $puntoencuentrotext);
 
                     }
                 }
@@ -193,215 +199,7 @@ class PedidoController extends ApiController
         return null;
     }
 
-    // public static function sendEmailGuia($reserva, $hora, $visita, $idioma, $textostraducidos)
-    // {
-    //     $guiaemail = User::find($reserva->guia_id)->email;
-    //     $cliente = User::find($reserva->user_id);
-    //     $namecliente = ($cliente?->name ?? ' ') ." ". ($cliente?->surname ?? ' ');
-
-    //     $dataemail = array(
-    //         'textostraducidos' => $textostraducidos,
-    //         'namecliente' => $namecliente ?? '_',
-    //         'fecha' => $reserva->fecha ?? '_',
-    //         'hora' => $hora ?? '_',
-    //         'persons' => $reserva->persons ?? 0,
-    //         'idioma' => $idioma ?? '_',
-    //         'codigo' => $reserva->uuid ?? '_',
-    //         'visita' => $visita ?? '_',
-    //     );
-    //     $subject = 'Reserva asignada';
-    //     $viewName = 'emails.reservaguia';
-    //     Mail::to($guiaemail)->send(new ContactMail($dataemail, $viewName, $subject));
-    // }
-
-    // public static function sendEmailAdmins($reserva, $hora, $visita, $idioma, $textostraducidos)
-    // {
-    //     $guia = User::find($reserva->guia_id);
-    //     $nameguia = ($guia->name ?? ' ') ." ". ($guia->surname ?? ' ');
-    //     $cliente = User::find($reserva->user_id);
-    //     $namecliente = ($cliente?->name ?? ' ') ." ". ($cliente?->surname ?? ' ');
-
-    //     $dataemail = array(
-    //         'textostraducidos' => $textostraducidos,
-    //         'namecliente' => $namecliente ?? '_',
-    //         'nameguia' => $nameguia ?? '_',
-    //         'fecha' => $reserva->fecha ?? '_',
-    //         'hora' => $hora ?? '_',
-    //         'persons' => $reserva->persons ?? 0,
-    //         'idioma' => $idioma ?? '_',
-    //         'codigo' => $reserva->uuid ?? '_',
-    //         'visita' => $visita ?? '_',
-    //     );
-    //     $subject = 'Reserva de ' . $namecliente . ' asignada a ' . $nameguia;
-    //     $viewName = 'emails.reservaadmins';
-
-    //     //listar emails de los admin
-    //     Mail::to($_ENV['MAIL_ADMIN0'])->send(new ContactMail($dataemail, $viewName, $subject));
-    //     //Mail::to($_ENV['MAIL_ADMIN1'])->send(new ContactMail($dataemail, $viewName, $subject));
-    //     //Mail::to($_ENV['MAIL_ADMIN2'])->send(new ContactMail($dataemail, $viewName, $subject));
-    //     //Mail::to($_ENV['MAIL_ADMIN3'])->send(new ContactMail($dataemail, $viewName, $subject));
-    // }
-
-
-    // public static function getTraduction($language_id)
-    // {
-        
-    //     $textos_es = [
-    //         'visita' => 'Visita',
-    //         'nueva_reserva' => 'Nueva reserva',
-    //         'cliente' => 'Cliente',
-    //         'guia' => 'Guía',
-    //         'codigo' => 'Código',
-    //         'idioma' => 'Idioma',
-    //         'fecha' => 'Fecha',
-    //         'hora' => 'Hora',
-    //         'personas' => 'Personas',
-    //         'precio' => 'Precio',
-    //         'texto_confirmada' => 'Reserva confirmada',
-    //         'texto_gracias' => 'Gracias por realizar tu reserva. Aquí tienes los detalles de tu pedido'
-    //     ];
-        
-    //     $textos_en = [
-    //         'visita' => 'Visit',
-    //         'nueva_reserva' => 'New reservation',
-    //         'cliente' => 'Client',
-    //         'guia' => 'Guide',
-    //         'codigo' => 'Code',
-    //         'idioma' => 'Language',
-    //         'fecha' => 'Date',
-    //         'hora' => 'Time',
-    //         'personas' => 'People',
-    //         'precio' => 'Price',
-    //         'texto_confirmada' => 'Reservation confirmed',
-    //         'texto_gracias' => 'Thank you for making your reservation. Here are the details of your order'
-    //     ];
-        
-    //     $textos_fr = [
-    //         'visita' => 'Visite',
-    //         'nueva_reserva' => 'Nouvelle réservation',
-    //         'cliente' => 'Client',
-    //         'guia' => 'Guide',
-    //         'codigo' => 'Code',
-    //         'idioma' => 'Langue',
-    //         'fecha' => 'Date',
-    //         'hora' => 'Heure',
-    //         'personas' => 'Personnes',
-    //         'precio' => 'Prix',
-    //         'texto_confirmada' => 'Réservation confirmée',
-    //         'texto_gracias' => 'Merci d\'avoir effectué votre réservation. Voici les détails de votre commande'
-    //     ];
-        
-    //     $textos_de = [
-    //         'visita' => 'Besuch',
-    //         'nueva_reserva' => 'Neue Reservierung',
-    //         'cliente' => 'Kunde',
-    //         'guia' => 'Führer',
-    //         'codigo' => 'Code',
-    //         'idioma' => 'Sprache',
-    //         'fecha' => 'Datum',
-    //         'hora' => 'Zeit',
-    //         'personas' => 'Personen',
-    //         'precio' => 'Preis',
-    //         'texto_confirmada' => 'Reservierung bestätigt',
-    //         'texto_gracias' => 'Vielen Dank für Ihre Reservierung. Hier sind die Details Ihrer Bestellung'
-    //     ];
-        
-    //     $textos_it = [
-    //         'visita' => 'Visita',
-    //         'nueva_reserva' => 'Nuova prenotazione',
-    //         'cliente' => 'Cliente',
-    //         'guia' => 'Guida',
-    //         'codigo' => 'Codice',
-    //         'idioma' => 'Lingua',
-    //         'fecha' => 'Data',
-    //         'hora' => 'Ora',
-    //         'personas' => 'Persone',
-    //         'precio' => 'Prezzo',
-    //         'texto_confirmada' => 'Prenotazione confermata',
-    //         'texto_gracias' => 'Grazie per aver effettuato la tua prenotazione. Ecco i dettagli del tuo ordine'
-    //     ];
-        
-    //     $textos_pt = [
-    //         'visita' => 'Visita',
-    //         'nueva_reserva' => 'Nova reserva',
-    //         'cliente' => 'Cliente',
-    //         'guia' => 'Guia',
-    //         'codigo' => 'Código',
-    //         'idioma' => 'Idioma',
-    //         'fecha' => 'Data',
-    //         'hora' => 'Hora',
-    //         'personas' => 'Pessoas',
-    //         'precio' => 'Preço',
-    //         'texto_confirmada' => 'Reserva confirmada',
-    //         'texto_gracias' => 'Obrigado por fazer a sua reserva. Aqui estão os detalhes do seu pedido'
-    //     ];
-        
-    //     $textos_el = [
-    //         'visita' => 'Επίσκεψη',
-    //         'nueva_reserva' => 'Νέα κράτηση',
-    //         'cliente' => 'Πελάτης',
-    //         'guia' => 'Ξεναγός',
-    //         'codigo' => 'Κωδικός',
-    //         'idioma' => 'Γλώσσα',
-    //         'fecha' => 'Ημερομηνία',
-    //         'hora' => 'Ώρα',
-    //         'personas' => 'Άτομα',
-    //         'precio' => 'Τιμή',
-    //         'texto_confirmada' => 'Επιβεβαιωμένη κράτηση',
-    //         'texto_gracias' => 'Ευχαριστούμε που κάνατε την κράτησή σας. Εδώ είναι οι λεπτομέρειες της παραγγελίας σας'
-    //     ];
-        
-    //     $textos_pl = [
-    //         'visita' => 'Wizyta',
-    //         'nueva_reserva' => 'Nowa rezerwacja',
-    //         'cliente' => 'Klient',
-    //         'guia' => 'Przewodnik',
-    //         'codigo' => 'Kod',
-    //         'idioma' => 'Język',
-    //         'fecha' => 'Data',
-    //         'hora' => 'Godzina',
-    //         'personas' => 'Osoby',
-    //         'precio' => 'Cena',
-    //         'texto_confirmada' => 'Rezerwacja potwierdzona',
-    //         'texto_gracias' => 'Dziękujemy za dokonanie rezerwacji. Oto szczegóły twojego zamówienia'
-    //     ];
-        
-
-    //     switch($language_id){
-    //         case 1:
-    //             $textostraducidos = $textos_es;
-    //             break;
-    //         case 2:
-    //             $textostraducidos = $textos_en;
-    //             break;
-    //         case 3:
-    //             $textostraducidos = $textos_fr;
-    //             break;
-    //         case 4:
-    //             $textostraducidos = $textos_de;
-    //             break;
-    //         case 5:
-    //             $textostraducidos = $textos_it;
-    //             break;
-    //         case 6:
-    //             $textostraducidos = $textos_pt;
-    //             break;
-    //         case 7:
-    //             $textostraducidos = $textos_el;
-    //             break;
-    //         case 8:
-    //             $textostraducidos = $textos_pl;
-    //             break;
-    //         default:
-    //             $textostraducidos = $textos_es;
-    //             break;
-
-    //     };
-
-
-    //     return $textostraducidos;
-    // }
-
+    
 
     
     /**

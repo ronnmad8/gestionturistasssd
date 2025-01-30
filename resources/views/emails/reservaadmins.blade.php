@@ -9,7 +9,7 @@
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
-            background-color: #f4f4f9;
+            background-color: #e5fc64;
             color: #333;
             margin: 0;
             padding: 0;
@@ -23,7 +23,7 @@
             overflow: hidden;
         }
         .email-header {
-            background: #efefef;
+            background: #e5fc64;
             color: #656565;
             padding: 10px 20px;
             text-align: center;
@@ -79,7 +79,7 @@
                 <p><strong>{{$data['textostraducidos']['fecha']  }}:</strong> {{ $data['fecha'] ?? '_' }}</p>
                 <p><strong>{{$data['textostraducidos']['hora']  }}:</strong> {{ $data['hora'] ?? '_' }}</p>
                 <p><strong>{{$data['textostraducidos']['personas']  }}:</strong> {{ $data['persons'] ?? '0' }}</p>
-
+                <p><a href="{{$data['puntoencuentro']}}" > {{$data['puntoencuentrotext'] ?? '_'}}  </a></p>
             </div>
 
         </div>

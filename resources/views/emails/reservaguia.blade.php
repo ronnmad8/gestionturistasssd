@@ -77,7 +77,8 @@
                 <p><strong>{{$data['textostraducidos']['fecha']  }}:</strong> {{ $data['fecha'] ?? '_' }}</p>
                 <p><strong>{{$data['textostraducidos']['hora']  }}:</strong> {{ $data['hora'] ?? '_' }}</p>
                 <p><strong>{{$data['textostraducidos']['personas']  }}:</strong> {{ $data['persons'] ?? '0' }}</p>
-
+                <p><a href="{{$data['puntoencuentro']}}" > {{$data['puntoencuentrotext'] ?? '_'}}  </a></p>
+            
             </div>
 
         </div>

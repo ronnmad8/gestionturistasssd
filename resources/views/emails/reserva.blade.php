@@ -80,6 +80,7 @@
                 <p><strong>{{$reserva['textostraducidos']['hora']  }}:</strong> {{ $reserva['hora'] ?? '_' }}</p>
                 <p><strong>{{$reserva['textostraducidos']['personas']  }}:</strong> {{ $reserva['persons'] ?? '0' }}</p>
                 <p><strong>{{$reserva['textostraducidos']['precio']  }}:</strong> {{ $reserva['precio'] ?? '0' }} €</p>
+                <p><a href="{{$reserva['puntoencuentro']}}" > {{$reserva['puntoencuentrotext'] ?? '_'}}  </a></p>
             </div>
             @endforeach
 
