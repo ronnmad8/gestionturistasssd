@@ -27,6 +27,7 @@ use App\Http\Controllers\Reserva\ReservaController;
 use App\Http\Controllers\Textcontents\TextcontentsController;
 use App\Http\Controllers\Textcomments\TextcommentsController;
 use App\Http\Controllers\Disponibilities\DisponibilitiesController;
+use App\Http\Controllers\Payments\PaymentsController;
 
 
 /** @var \Laravel\Lumen\Routing\Router $router */
@@ -154,4 +155,4 @@ Route::get('/disponibilities/{visitaid}/{month}/{year}', [DisponibilitiesControl
 
 //Route::resource('users/{user}/resend', UserController::class, ['only' =>['resend']]); ////
 
-Route::post('/api/init-payment', [PaymentController::class, 'checkout']);
+Route::post('/api/init-payment', [PaymentsController::class, 'checkout']);

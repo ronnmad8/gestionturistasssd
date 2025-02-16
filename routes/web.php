@@ -14,7 +14,7 @@ use App\Http\Controllers\Adminfacturacion\AdminfacturacionController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\User\UserController;
 
-use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Payments\PaymentsController;
 
 Route::get('/', function () {
     return redirect('/login');
@@ -86,7 +86,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-Route::get('/checkout', [PaymentController::class, 'checkout'])->name('checkout');
-Route::post('/callback', [PaymentController::class, 'callback'])->name('redsys.callback');
-Route::get('/success', [PaymentController::class, 'success'])->name('redsys.success');
-Route::get('/failure', [PaymentController::class, 'failure'])->name('redsys.failure');
+Route::get('/checkout', [PaymentsController::class, 'checkout'])->name('checkout');
+Route::post('/callback', [PaymentsController::class, 'callback'])->name('redsys.callback');
+Route::get('/success', [PaymentsController::class, 'success'])->name('redsys.success');
+Route::get('/failure', [PaymentsController::class, 'failure'])->name('redsys.failure');
