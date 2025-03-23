@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\User;
+use App\Models\Franjashorarias;
+use App\Models\Disponibility;
+use App\Models\Hours;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -127,6 +130,23 @@ class LoginController extends \Laravel\Passport\Http\Controllers\AccessTokenCont
                 $usuario = User::create($campos);
                 if($usuario != null){
                     $result = true;
+                    //guardar todas las disponibilidades por defecto
+                    $guia = User::find($usuario->id);
+                    $diasSemana = [1,2,3,4,5,6,7];
+                    $franjashorarias = Franjashorarias::select('franjashorarias.*'
+                    , Hours::raw("(SELECT hours.hora FROM hours WHERE hours.id = franjashorarias.init_hours_id  limit 1) as hourinit ")
+                    , Hours::raw("(SELECT hours.hora FROM hours WHERE hours.id = franjashorarias.end_hours_id  limit 1) as hourend ")
+                    )->get();
+                    
+                    foreach ($diasSemana as $diasemana) {
+                        foreach ($franjashorarias as $franja) {
+                            $disponibilidad = new Disponibility();
+                            $disponibilidad->diasemana = $diasemana;
+                            $disponibilidad->franjahoraria_id = $franja->id;
+                            $disponibilidad->user_id = $guia->id;
+                            $disponibilidad->save();
+                        }
+                    }
                 }
             }
         }

@@ -40,6 +40,8 @@ class AdminreservasController extends Controller
         $hours= Hours::select('hours.*')->get();
         $users= User::select('users.*')->where('rol_id', 1)->get();
         $guias= User::select('users.*')->where('rol_id', 2)->get();
+
+
         $diassemana = [
             0 => 'lunes',
             1 => 'martes',

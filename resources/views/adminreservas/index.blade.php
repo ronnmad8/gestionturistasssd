@@ -74,7 +74,7 @@
                         </div>
                     </td>
                     <td style='width: 200px'>
-                        <div id='Euser-{{$c->id}}'>{{$c->user->name}}</div>
+                        <div id='Euser-{{$c->id}}'>{{$c->user->name ?? ""}}</div>
                     </td>
                     <td style='width: 300px'>
                         <div id='Evisit-{{$c->id}}'>{{$c->visit->name}}</div>

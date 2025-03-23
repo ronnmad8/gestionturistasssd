@@ -155,4 +155,4 @@ Route::get('/disponibilities/{visitaid}/{month}/{year}', [DisponibilitiesControl
 
 //Route::resource('users/{user}/resend', UserController::class, ['only' =>['resend']]); ////
 
-Route::post('/api/init-payment', [PaymentsController::class, 'checkout']);
+Route::post('/initpayment', [PaymentsController::class, 'initpayment']);

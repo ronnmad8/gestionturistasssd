@@ -86,7 +86,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-Route::get('/checkout', [PaymentsController::class, 'checkout'])->name('checkout');
-Route::post('/callback', [PaymentsController::class, 'callback'])->name('redsys.callback');
-Route::get('/success', [PaymentsController::class, 'success'])->name('redsys.success');
-Route::get('/failure', [PaymentsController::class, 'failure'])->name('redsys.failure');
+Route::post('/payments_callback', [PaymentsController::class, 'callback'])->name('payments_callback');
+Route::get('/payments_success', [PaymentsController::class, 'success'])->name('payments_success');
+Route::get('/payments_failure', [PaymentsController::class, 'failure'])->name('payments_failure');
