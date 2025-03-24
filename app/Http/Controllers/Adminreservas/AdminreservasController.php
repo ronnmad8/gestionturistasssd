@@ -12,11 +12,19 @@ use App\Models\Category;
 use App\Models\Tag;
 use App\Models\Hours;
 use App\Models\User;
+use App\Models\Cita;
+use App\Models\Disponibility;
+use App\Models\Guia;
+use App\Models\Guialanguages;
+use App\Models\Guiavisits;
+use App\Models\Franjashorarias;
+
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Datetime;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use carbon\Carbon;
 
 class AdminreservasController extends Controller
 {
@@ -126,6 +134,22 @@ class AdminreservasController extends Controller
             }
             
             if($reserva->update()){
+
+                //actualizar las reservas con misma cita
+                $reservas = Reserva::with(['pedido', 'user', 'visit', 'language', 'hour'] )
+                ->where('deleted_at', null)
+                ->where('cita_id', $reserva->cita_id)
+                ->get();
+
+                foreach ($reservas as $re) {
+                    $re->guia_id = $guia->id;
+                    $re->update();
+                }
+
+                $cita = Cita::where('id', $reserva->cita_id)->first();
+                $cita->guia_id = $guia->id;
+                $cita->update();
+
                 return response()->json(true);
             }
             else{
@@ -133,6 +157,111 @@ class AdminreservasController extends Controller
             }
         }
         return response()->json(['error' => 'Visit not found'], 404);
+        }
+        catch (\Exception $e) {
+            return response()->json(['error' => 'Error al crear la visita', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+
+    public function setguiacita(Request $request)
+    {
+        $request->validate([
+            'id' => 'required',
+            'guia_id' => 'required'
+        ]);
+
+        try {
+            $id = $request->input('id');
+            if($id != null){
+
+                $cita = Cita::where('id', $reserva->cita_id)->first();
+                    $cita->guia_id = $guia->id;
+                    $cita->update();
+            
+                //actualizar las reservas con misma cita
+                $reservas = Reserva::with(['pedido', 'user', 'visit', 'language', 'hour'] )
+                ->where('deleted_at', null)
+                ->where('cita_id', $reserva->cita_id)
+                ->get();
+
+                foreach ($reservas as $re) {
+                    $re->guia_id = $guia->id;
+                    $re->update();
+                }
+
+                return response()->json(true);
+            }
+            return response()->json(['error' => 'Cita not found'], 404);
+        }
+        catch (\Exception $e) {
+            return response()->json(['error' => 'Error al crear la visita', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+
+    public function sorteo()
+    {
+        $diasretro = 10;
+        try 
+        {
+            $now = Carbon::now();
+            $limiteFecha = $now->subDays($diasretro)->toDateString(); // 72 horas
+            
+            $citas = Cita::where('guia_id', null)
+            ->where('deleted_at', null)
+            ->whereColumn('clients', '>=', 'min')
+            ->whereDate('fecha', '>=', $limiteFecha)
+            ->get();
+            
+            foreach ($citas as $cita) {
+                $fecha = $cita->fecha;
+                $diasemana = date('w', strtotime($fecha));
+
+
+                $disponibilities = Disponibility::select('disponibilities.user_id' )
+                ->leftjoin('franjashorarias', 'franjashorarias.id', '=', 'disponibilities.franjahoraria_id')
+                ->whereIn('disponibilities.user_id', function ($query) use ($cita) {
+                    $query->select('user_id')
+                        ->from('guialanguages')
+                        ->where('language_id', $cita->language_id);
+                })
+                ->whereIn('disponibilities.user_id', function ($query) use ($cita) {
+                    $query->select('user_id')
+                        ->from('guiavisits')
+                        ->where('visit_id', $cita->visit_id);
+                })
+                ->where('disponibilities.diasemana', $diasemana )
+                ->whereRaw("TIME(franjashorarias.init_hours_id) >= ?", [date('H:i:s', strtotime($cita->hours_id))])
+                ->whereRaw("TIME(franjashorarias.end_hours_id) <= ?", [date('H:i:s', strtotime($cita->hours_id))])
+                ->distinct('disponibilities.user_id')
+                ->pluck('disponibilities.user_id')
+                ->toArray();
+
+                $guia = User::where('rol_id', 2)
+                    ->whereIn('id', $disponibilities)
+                    ->orderBy('cuota', 'asc')
+                    ->orderBy('id', 'asc')
+                    ->first();
+
+                if ($guia) {
+                    $guia->cuota = $guia->cuota + 1;
+                    $guia->update();
+                    $cita->guia_id = $guia->id;
+                    $cita->update();
+
+                    $reservas = Reserva::where('deleted_at', null)
+                        ->where('cita_id', $cita->id)
+                        ->get();
+
+                    foreach ($reservas as $re) {
+                        $re->guia_id = $guia->id;
+                        $re->update();
+                    }
+                }
+            }
+            return response()->json(true);
+
         }
         catch (\Exception $e) {
             return response()->json(['error' => 'Error al crear la visita', 'message' => $e->getMessage()], 500);

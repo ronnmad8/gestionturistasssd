@@ -16,25 +16,22 @@ use Illuminate\Support\Facades\Mail;
 class MailService
 {
 
-    public static function sendEmailGuia($reserva, $hora, $visita, $idioma, $textostraducidos, $puntoencuentro, $puntoencuentrotext)
+    public static function sendEmailGuia($cita, $reservas, $hora, $visita, $idioma, $textostraducidos, $puntoencuentro, $puntoencuentrotext)
     {
-        $guiaemail = User::find($reserva->guia_id)->email;
-        $cliente = User::find($reserva->user_id);
-        $namecliente = ($cliente?->name ?? ' ') ." ". ($cliente?->surname ?? ' ');
-
+        $guiaemail = User::find($cita->guia_id)->email;
+        
         $dataemail = array(
             'textostraducidos' => $textostraducidos,
-            'namecliente' => $namecliente ?? '_',
-            'fecha' => $reserva->fecha ?? '_',
+            'fecha' => $cita->fecha ?? '_',
             'hora' => $hora ?? '_',
-            'persons' => $reserva->persons ?? 0,
+            'persons' => $cita->clients ?? 0,
             'idioma' => $idioma ?? '_',
-            'codigo' => $reserva->uuid ?? '_',
             'visita' => $visita ?? '_',
             'puntoencuentro' => $puntoencuentro ?? '_',
-            'puntoencuentrotext' => $puntoencuentrotext ?? '_'
+            'puntoencuentrotext' => $puntoencuentrotext ?? '_',
+            'reservas' => $reservas
         );
-        $subject = 'Reserva asignada';
+        $subject = 'Cita asignada';
         $viewName = 'emails.reservaguia';
         Mail::to($guiaemail)->send(new ContactMail($dataemail, $viewName, $subject));
     }
@@ -68,8 +65,8 @@ class MailService
         $viewName = 'emails.reservaadmins';
 
         //listar emails de los admin
-        Mail::to($_ENV['MAIL_ADMIN0'])->send(new ContactMail($dataemail, $viewName, $subject));
-        // Mail::to($_ENV['MAIL_ADMIN1'])->send(new ContactMail($dataemail, $viewName, $subject));
+        //Mail::to($_ENV['MAIL_ADMIN0'])->send(new ContactMail($dataemail, $viewName, $subject));
+        Mail::to($_ENV['MAIL_ADMIN1'])->send(new ContactMail($dataemail, $viewName, $subject));
         // Mail::to($_ENV['MAIL_ADMIN2'])->send(new ContactMail($dataemail, $viewName, $subject));
         // Mail::to($_ENV['MAIL_ADMIN3'])->send(new ContactMail($dataemail, $viewName, $subject));
     }

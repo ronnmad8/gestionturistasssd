@@ -53,6 +53,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/adminreservas', [AdminreservasController::class, 'index'])->name('adminreservas');
         Route::post('/adminreservas/updatereserva', [AdminreservasController::class, 'updatereserva'])->name('adminreservas/updatereserva');
         Route::post('/adminreservas/setguia', [AdminreservasController::class, 'setguia'])->name('adminreservas/setguia');
+        Route::post('/adminreservas/setguiacita', [AdminreservasController::class, 'setguiacita'])->name('adminreservas/setguiacita');
+        Route::get('/adminreservas/sorteo', [AdminreservasController::class, 'sorteo'])->name('adminreservas/sorteo');
         Route::post('/adminreservas/deletereserva', [AdminreservasController::class, 'deletereserva'])->name('adminvisits/deletereserva');
         
         Route::get('/admincitas', [AdmincitasController::class, 'index'])->name('admincitas');

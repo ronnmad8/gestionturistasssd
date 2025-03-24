@@ -70,7 +70,7 @@
         <div class="email-body">
             
             <div class="details reservation">
-                <h3> {{$data['textostraducidos']['texto_confirmada']  }}, {{ $data['namecliente']?? '_' }} </h3>
+
                 <p><strong>{{$data['textostraducidos']['visita']  }}:</strong> {{ $data['visita'] ?? '_' }}</p>
                 <p><strong>{{$data['textostraducidos']['codigo']  }}:</strong> {{ $data['codigo'] ?? '_' }}</p>
                 <p><strong>{{$data['textostraducidos']['idioma']  }}:</strong> {{ $data['idioma'] ?? '_' }}</p>
@@ -79,6 +79,14 @@
                 <p><strong>{{$data['textostraducidos']['personas']  }}:</strong> {{ $data['persons'] ?? '0' }}</p>
                 <p><a href="{{$data['puntoencuentro']}}" > {{$data['puntoencuentrotext'] ?? '_'}}  </a></p>
             
+                @foreach ($data['reservas'] as $reserva)
+                    <h3> {{ $reserva['cliente']['name'] ?? '_' }} </h3>
+                    <p><strong> {{$reserva['persons'] ?? '0' }}</strong></p>
+                    <p><strong> {{$reserva['uuid'] ?? '_' }}</strong></p>
+                    <p><strong> {{$reserva['pedidoi_d'] ?? '_' }}</strong></p>
+                    <br>
+                @endforeach
+
             </div>
 
         </div>

@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '7597d55fc1bda352c4eb7daada18437f1d7988c9',
+        'reference' => '6dad921f20415ae52934046bc4f47b618fc2243e',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -421,7 +421,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '7597d55fc1bda352c4eb7daada18437f1d7988c9',
+            'reference' => '6dad921f20415ae52934046bc4f47b618fc2243e',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -601,6 +601,15 @@
                 0 => '*',
             ),
         ),
+        'maatwebsite/excel' => array(
+            'pretty_version' => 'v1.1.5',
+            'version' => '1.1.5.0',
+            'reference' => '0c67aba8387726458d42461eae91a3415593bbc4',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../maatwebsite/excel',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'mockery/mockery' => array(
             'pretty_version' => '1.6.12',
             'version' => '1.6.12.0',
@@ -738,6 +747,15 @@
             'provided' => array(
                 0 => '1.0',
             ),
+        ),
+        'phpoffice/phpexcel' => array(
+            'pretty_version' => '1.8.1',
+            'version' => '1.8.1.0',
+            'reference' => '372c7cbb695a6f6f1e62649381aeaa37e7e70b32',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpoffice/phpexcel',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
         'phpoption/phpoption' => array(
             'pretty_version' => '1.9.3',

@@ -10,7 +10,7 @@ use App\Models\Visit;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use App\Transformers\ReservaTransformer;
-
+use Carbon\Carbon;
 
 class ReservaController extends ApiController
 {
@@ -339,5 +339,43 @@ class ReservaController extends ApiController
     }
 
 
+    public function asignarguias()
+    {
+        //buscar citas que no tienen guia asignado y que superan el limite de 72horas
+        $now = Carbon::now();
+        $limiteFecha = $now->subDays(3)->toDateString();
+        $citas = Cita::Cita::where('guia_id', null)
+        ->where('deleted_at', null)
+        ->whereDate('fecha', '<=', $limiteFecha)
+        ->get();
+
+        foreach ($citas as $cita) {
+            $guia = User::where('rol_id', 2)
+            ->orderBy('cuota', 'asc')
+            ->orderBy('id', 'asc')
+            ->first();
+            if ($guia) {
+                $guia->cuota = $guia->cuota + 1;
+                $guia->save();
+                $cita->guia_id = $guia->id;
+                $cita->save();
+
+
+                $idioma = Languages::find($cita->language_id)->name;
+                $hora = Hours::find($cita->hours_id)->hora;
+                $visita = Visitlanguages::find($cita->visit_id)->where('language_id', $cita->language_id)->first()->name;
+                $visit = Visit::find($cita->visit_id)->first();
+                $puntoencuentro = $visit->puntoencuentro;
+                $puntoencuentrotext = $visit->puntoencuentrotext;        
+                $textostraducidos = TraductionService::getTraduction($cita->language_id);
+                $reservas = Reserva::where('deleted_at', null)
+                ->where('cita_id', $cita->id)
+                ->get();
+
+                MailService::sendEmailGuia($cita, $reservas, $hora, $visita, $idioma, $textostraducidos,
+                $puntoencuentro, $puntoencuentrotext);
+            }
+        }
+    }
    
 }

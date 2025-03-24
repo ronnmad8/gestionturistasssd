@@ -48,6 +48,10 @@
                 <i class="fas fa-money-bill-wave icomenu" style=" right: 17px; "></i>
             </a>
 
+            <button   id="btsorteo" class="btn btn-danger m-3">
+                SORTEO
+            </button>
+
             @endif
 
             @if(Auth::user()->rol_id == 2  || Auth::user()->rol_id == 4)
@@ -143,4 +147,48 @@ function esmovil() {
     var ua = navigator.userAgent;
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua);
 }
+
+
+$("#btsorteo").on('click', function() {
+    
+    if (confirm('¿Estás seguro de que desea realizar el sorteo?')) {
+      try {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $.ajax({
+            url: '/adminreservas/sorteo',
+            dataType: "json",
+            method: "GET",
+            success: function(result) {
+                console.log("result ",result);
+                if(result == true){
+                    alert("Sorteo realizado con éxito");
+                    location.reload();
+                }
+            },
+            err: function(result) {
+                console.log("result ",result);
+            },
+            fail: function() {
+                alert("fail");
+            },
+            beforeSend: function() {
+                $("#loading-spinner").show();
+            },
+            complete: function() {
+                $("#loading-spinner").hide();
+            }
+        })
+      }catch (error) {
+        console.err(error);
+      }
+    }
+});
+
+
+
+
 </script>

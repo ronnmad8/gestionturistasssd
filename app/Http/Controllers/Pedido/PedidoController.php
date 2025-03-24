@@ -9,6 +9,7 @@ use App\Models\Languages;
 use App\Models\Hours;
 use App\Models\Visitlanguages;
 use App\Models\Visit;
+use App\Models\Cita;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
 use App\Transformers\PedidoTransformer;
@@ -121,7 +122,7 @@ class PedidoController extends ApiController
         }
         $pedido = Pedido::create($newpedido);
         if($pedido != null){
-
+                    
             $reservasArray = []; 
             $reservas = $newpedido["reservas"];
             if($reservas != null){
@@ -134,23 +135,34 @@ class PedidoController extends ApiController
                     $reserva["user_id"] = $user->id;
                     $reserva["visit_id"] = (int)$r["visit"]["id"];
                     $reserva["uuid"] = Str::uuid();
-                    //revisar si la reserva pertenece a un pedido y ya tiene guia asignado
+                      
+                    $cita = Cita::where('fecha', $reserva->fecha)
+                    ->where('hours_id', $reserva->visit_hours_id)
+                    ->where('visit_id', $reserva->visit_id)
+                    ->where('language_id', $reserva->language_id)
+                    ->first();
                     
-                    $guia = User::where('rol_id', 2)
-                    ->orderBy('cuota', 'asc')
-                    ->orderBy('id', 'asc')
-                    ->first();                    
-                    //$guia = User::where('rol_id', 2)->inRandomOrder()->first(); //TODO implementar cola controlada
-
-                    if ($guia) {
-                        $reserva["guia_id"] = $guia->id;
+                    if($cita != null){
+                        $cita->clients = (int)$cita->clients + (int)$reserva->persons;
+                        $cita->update();
+                        $reserva["cita_id"] = $cita->id;
+                    }
+                    else{
+                        $citanew = new Cita();
+                        $citanew->fecha = $reserva->fecha;
+                        $citanew->hours_id = $reserva->visit_hours_id;
+                        $citanew->visit_id = $reserva->visit_id;
+                        $citanew->language_id = $reserva->language_id;
+                        $citanew->clients = (int)$reserva->persons ?? 0;
+                        $visitcita = Visit::where('id', $citanew->visit_id)->first();
+                        $citanew->max = (int)$visitcita->nummax ?? 0;
+                        $citanew->min = (int)$visitcita->nummin ?? 0;
+                        $citanew->save();
+                        $reserva["cita_id"] = $citanew->id;
                     }
 
                     if($reserva->save()){
-                        //actualizar guia cuota
-                        $guia->cuota = $guia->cuota + 1;
-                        $guia->save();
-
+                        
                         $idioma = Languages::find($reserva->language_id)->name;
                         $hora = Hours::find($reserva->visit_hours_id)->hora;
                         $visita = Visitlanguages::find($reserva->visit_id)->where('language_id', $reserva->language_id)->first()->name;
@@ -175,9 +187,7 @@ class PedidoController extends ApiController
                             'puntoencuentrotext' => $puntoencuentrotext ?? '_',
                         );
 
-                        MailService::sendEmailGuia($reserva, $hora, $visita, $idioma, $textostraducidos, $puntoencuentro, $puntoencuentrotext);
                         MailService::sendEmailAdmins($reserva, $hora, $visita, $idioma, $textostraducidosadmins, $puntoencuentro, $puntoencuentrotext);
-
                     }
                 }
             }
