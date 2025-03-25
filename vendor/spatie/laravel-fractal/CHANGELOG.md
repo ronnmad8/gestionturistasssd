@@ -2,6 +2,44 @@
 
 All notable changes to `laravel-fractal` will be documented in this file
 
+## 6.3.1 - 2024-12-16
+
+### What's Changed
+
+* feat: disable fieldsets by default by @Mohammad-Alavi in https://github.com/spatie/laravel-fractal/pull/262
+
+**Full Changelog**: https://github.com/spatie/laravel-fractal/compare/6.3.0...6.3.1
+
+## 6.3.0 - 2024-12-09
+
+### What's Changed
+
+* Allow auto parsing the `fieldsets` by @Mohammad-Alavi in https://github.com/spatie/laravel-fractal/pull/261
+
+**Full Changelog**: https://github.com/spatie/laravel-fractal/compare/6.2.2...6.3.0
+
+## 6.2.2 - 2024-12-09
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 1.6.0 to 2.1.0 by @dependabot in https://github.com/spatie/laravel-fractal/pull/257
+* Bump dependabot/fetch-metadata from 2.1.0 to 2.2.0 by @dependabot in https://github.com/spatie/laravel-fractal/pull/259
+* fix phpdoc mismatch by @Mohammad-Alavi in https://github.com/spatie/laravel-fractal/pull/260
+
+**Full Changelog**: https://github.com/spatie/laravel-fractal/compare/6.2.1...6.2.2
+
+## 6.2.1 - 2024-06-04
+
+### What's Changed
+
+* fix: wrong `return` annotation by @Mohammad-Alavi in https://github.com/spatie/laravel-fractal/pull/258
+
+### New Contributors
+
+* @Mohammad-Alavi made their first contribution in https://github.com/spatie/laravel-fractal/pull/258
+
+**Full Changelog**: https://github.com/spatie/laravel-fractal/compare/6.2.0...6.2.1
+
 ## 6.2.0 - 2024-03-18
 
 ### What's Changed

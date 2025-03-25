@@ -25,10 +25,15 @@
                         </select>
                     </div>
                 </div>
-                <div class="col-xl-6 my-1 d-flex">
-                    <div class="mx-1 formulariocita" style="min-width: 150px">
+                <div class="col-xl-3 my-1 d-flex">
+                    <div class="mx-1 formulariocita" style="min-width: 100px">
                         <p class="m-0">TOTAL</p>
                         <div id="Csuma" >0 €</div>
+                    </div>
+                </div>
+                <div class="col-xl-3 my-1 d-flex">
+                    <div class="mx-1" style="min-width: 50px">
+                        <a href="#" id="exportexcel"  class="btn btn-primary">Exportar a Excel</a>
                     </div>
                 </div>
             </div>
@@ -137,6 +142,14 @@ function setTableCita(){
   });
 
   $('#Csuma').html(suma + ' €');
+
+  
+  if(mesesFiltrar == ""){
+      mesesFiltrar = 1;
+    }
+    var url = "{{ route('excelfacturacion', ['mes' => ':mes']) }}";
+    url = url.replace(':mes', parseInt(mesesFiltrar)+1);
+    $('#exportexcel').attr('href', url);
 }
 
 

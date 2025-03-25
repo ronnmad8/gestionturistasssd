@@ -69,7 +69,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/adminclientes/deletecliente', [AdminclientesController::class, 'deletecliente'])->name('adminclientes/deletecliente');
     
         Route::get('/adminfacturacion', [AdminfacturacionController::class, 'index'])->name('adminfacturacion');
-
+        Route::get('/excelfacturacion/{mes}', [AdminFacturacionController::class, 'excelfacturacion'])->name('excelfacturacion');
     });
 
     Route::middleware(['role:2,4'])->group(function () {
