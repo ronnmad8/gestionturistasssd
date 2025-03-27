@@ -9,12 +9,50 @@
             <div class="col-xl-2 col-12">
                 <h2>RESERVAS</h2>
             </div>
-            <!-- <div class="col-xl-2 col-12">
-                <button id="crear" type="button" class="btn btn-dark cupo mb-2" title="buscar">
-                    <i class="fa fa-plus mr-2"></i> <small> NUEVA VISITA</small>
-                </button>
-            </div> -->
+
         </div>
+
+        <div class="row ">
+            <div class="mx-1 formulariocita" style="min-width: 100px" >
+                <p class="m-0">Fecha</p>
+                <input class="form-control  mx-1" id="Cfecha" type="date"  >
+            </div>
+            <div class="mx-1 formulariocita" style="min-width: 150px">
+                <p class="m-0">Visitas</p>
+                <select class="form-control  mx-1" id="CVisits" >
+                    <option value="">-</option>
+                    @foreach($visits as $visit)
+                    <option value="{{$visit['id']}}">
+                        {{$visit['name']}}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="mx-1 formulariocita" style="min-width: 100px">
+                <p class="m-0">Idiomas</p>
+                <select class="form-control mx-1" id="CIdiomas" value="">
+                    <option value="">-</option>
+                    @foreach($languages as $idioma)
+                    <option value="{{$idioma['id']}}">
+                        {{$idioma['name']}}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="mx-1 formulariocita" style="min-width: 100px">
+                <p class="m-0">Guias</p>
+                <select class="form-control mx-1" id="CGuias" value="">
+                    <option value="">-</option>
+                    @foreach($guias as $guia)
+                    <option value="{{$guia['id']}}">
+                        {{$guia['name']}}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+
+        </div>
+
     </div>
 
     <div class="py-2 my-2" id="pags">
@@ -154,13 +192,14 @@
     </div>
 
     <div class="dnone">
-        <div id="lista_hours" data-hours="{{ json_encode($hours) }}">
-        </div>
-        <div id="lista_diassemana" data-diassemana="{{ json_encode($diassemana) }}">
-        </div>
+
         <div id="lista_languages" data-languages="{{ json_encode($languages) }}">
         </div>
         <div id="lista_guias" data-languages="{{ json_encode($guias) }}">
+        </div>
+        <div id="lista_visits" data-visits="{{ json_encode($visits) }}">
+        </div>
+        <div id="adminreservas" data-adminreservas="{{ json_encode($adminreservas) }}">
         </div>
     </div>
 
@@ -289,19 +328,16 @@
 <script>
 
 
+let visitsData = $('#lista_visits').data('visits') || [];
 let guiasData = $('#lista_guias').data('guias') || [];
 let languagesData = $('#lista_languages').data('languages') || [];
-let hoursData = $('#lista_hours').data('hours') || [];
-let diasSemanaData = $('#lista_diassemana').data('diassemana') || [];
-
-
+let listaadminreservas = $('#adminreservas').data('adminreservas')["data"] || [];
 
 $('.menu').removeClass('activ');
 $("#linkadminreservas").addClass('activ');
 
 $(".editar").on('click', function() {
     let id = $(this).attr('id').split('-')[1];
-
     let user_id = $('#Euser_id-' + id).text();
     let language_id = $('#Elanguage_id-' + id).text() || "";
     let adults = parseInt($('#Eadults-' + id).text());
@@ -339,11 +375,7 @@ $(".asignarguia").on('click', function() {
 
 
 
-
-
 ///////////////////////////////////////////////////////calls ajax
-
-
 
 //bteditarX
 $("#bteditarX").on('click', function() {
@@ -359,7 +391,6 @@ $("#bteditarX").on('click', function() {
         children: $('#Cchildren').val(),
         private: $('#Cprivate').val(),
         status: $('#Cstatus').val()
-
     }
     try {
         $.ajaxSetup({
@@ -382,7 +413,6 @@ $("#bteditarX").on('click', function() {
                     $("#Echildren-" + id).text(result["children"]);
                     $("#Eprivate-" + id).text(result["private"]);
                     $("#Estatus-" + id).text(result["status"]);
-
                 }
             },
             fail: function() {
@@ -402,7 +432,6 @@ $("#bteditarX").on('click', function() {
     }
 
 });
-
 
 
 $(".btdelete").on('click', function() {
@@ -443,7 +472,6 @@ $(".btdelete").on('click', function() {
     }
 });
 
-
 $("#btasignarguia").on('click', function() {
 
     let id = parseInt($('#Cg_id').val());
@@ -482,15 +510,7 @@ $("#btasignarguia").on('click', function() {
       }catch (error) {
         console.err(error);
       }
-    
-    
 });
-
-
-
-function getGuia(id) {
-    return guiasData[id - 1].name ;
-}
 
 
 </script>
@@ -515,7 +535,7 @@ function getGuia(id) {
         .oculto{
             display: none;
         }
-    </style>
+</style>
 
 <div id="form-data-display" class="oculto" >
         <h3>Valores del formulario</h3>
@@ -547,6 +567,63 @@ function getGuia(id) {
             $('#btcloseeditar').on('click', function (){
                 $('#form-data-display').addClass('oculto');
             })
+
+
+    function setTableCita(){
+    debugger
+    let idiomasFiltrar = $('#CIdiomas').val();
+    let fechaFiltrar = $('#CFecha').val();
+    let visitaFiltrar = $('#CVisits').val();
+    let guiaFiltrar = $('#CGuias').val();
+    let filtAdminreservasTable = [] ;
+    filtAdminreservasTable = listaadminreservas ?? [] ;
+    if( fechaFiltrar != "" && fechaFiltrar != null){
+        filtAdminreservasTable = filtAdminreservasTable.filter(res => res.fecha == fechaFiltrar)  ?? [] ;
+    }
+    if( visitaFiltrar != "" && visitaFiltrar != null){
+        filtAdminreservasTable = filtAdminreservasTable.filter(res => res.visit_id == parseInt(visitaFiltrar))  ?? [] ;
+    }
+    if( idiomasFiltrar != "" && idiomasFiltrar != null){
+        filtAdminreservasTable = filtAdminreservasTable.filter(res => res.language_id == parseInt(idiomasFiltrar))  ?? [] ;
+    }
+    if( guiaFiltrar != "" && guiaFiltrar != null){
+        filtAdminreservasTable = filtAdminreservasTable.filter(res => res.guia_id == parseInt(guiaFiltrar))  ?? [] ;
+    }
+
+    console.log("filtAdminreservasTable ", filtAdminreservasTable);
+
+    $('.trreservas').removeClass('dnone');
+    listaadminreservas.forEach( reserva => { 
+        if(!filtAdminreservasTable.includes(reserva))
+        {
+            $('#tr-'+reserva.id).addClass('dnone');
+        }
+    });
+
+    console.log("filtAdminreservasTable ", filtAdminreservasTable);
+}
+
+
+
+$(function () {
+
+  $(document).on('change', '#CIdiomas', function () {
+      setTableCita();
+  });
+  $(document).on('change', '#CGuias', function () {
+      setTableCita();
+  });
+  $(document).on('change', '#CVisits', function () {
+    debugger
+      setTableCita();
+  });
+  $(document).on('change', '#CFecha', function () {
+      setTableCita();
+  });
+});
+
+
+
     </script>
 
 

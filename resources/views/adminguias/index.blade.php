@@ -9,12 +9,22 @@
             <div class="col-xl-2 col-12">
                 <h2>GUIAS</h2>
             </div>
-            <!-- <div class="col-xl-2 col-12">
-                <button id="crear" type="button" class="btn btn-dark cupo mb-2" title="buscar">
-                    <i class="fa fa-plus mr-2"></i> <small> NUEVA VISITA</small>
-                </button>
-            </div> -->
+            
         </div>
+
+        <div class="row ">
+            <div class="col-xl-4 col-12">
+                <div class="mx-1 formulariocita" style="min-width: 100px" >
+                    <input class="form-control  mx-1" id="Cfiltro" type="text"  >
+                </div>
+            </div>
+            <div class="col-xl-2 col-12">
+                <button id="btfiltrar" type="button" class="btn btn-dark cupo mb-2" title="filtrar">
+                    <i class="fa fa-filter mr-2"></i> <small> filtrar </small>
+                </button>
+            </div>
+        </div>
+        
     </div>
 
     <div class="py-2 my-2" id="pags">
@@ -45,7 +55,7 @@
             @if($adminguias != null)
                 @foreach($adminguias as $key => $c)
                 
-                 <tr id="tr-{{$c->id}}" class="trreservas">
+                 <tr id="tr-{{$c->id}}" class="trguias">
 
                     <td style="min-width: 200px;">
                         <button type='button' id='edit-{{$c->id}}' class='editar btn btn-warning py-0'>
@@ -135,6 +145,8 @@
         <div id="lista_diassemana" data-diassemana="{{ json_encode($diassemana) }}">
         </div>
         <div id="lista_franjas" data-franjas="{{ json_encode($franjashorarias) }}">
+        </div>
+        <div id="lista_adminguias" data-adminguias="{{ json_encode($adminguias) }}">
         </div>
 
 
@@ -255,7 +267,7 @@ let franjasData = $('#lista_franjas').data('franjas') || [];
 let languagesData = $('#lista_languages').data('languages') || [];
 let hoursData = $('#lista_hours').data('hours') || [];
 let diasSemanaData = $('#lista_diassemana').data('diassemana') || [];
-
+let listaadminguias= $('#lista_adminguias').data('adminguias') || [];
 
 
 $('.menu').removeClass('activ');
@@ -305,7 +317,24 @@ $(".verdisponibilidad").on('click', function() {
 });
 
 
+$("#btfiltrar").on('click', function() {
+    
+    let textofiltrar = $('#Cfiltro').val();
+    
+    filtAdminTable = listaadminguias ?? [] ;
+    if( textofiltrar != ""){
+        filtAdminTable = filtAdminTable.filter(res => res.name.includes(textofiltrar)) ?? [] ;
+    }
+    
+    $('.trguias').removeClass('dnone');
+    listaadminguias.forEach( guia => { 
+        if(!filtAdminTable.includes(guia))
+        {
+            $('#tr-'+guia.id).addClass('dnone');
+        }
+    });
 
+});
 
 
 ///////////////////////////////////////////////////////calls ajax

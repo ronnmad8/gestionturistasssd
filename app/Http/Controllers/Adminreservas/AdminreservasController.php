@@ -49,6 +49,8 @@ class AdminreservasController extends Controller
         $users= User::select('users.*')->where('rol_id', 1)->get();
         $guias= User::select('users.*')->where('rol_id', 2)->get();
 
+        $visits= Visit::select('visits.*')->get();
+
 
         $diassemana = [
             0 => 'lunes',
@@ -60,7 +62,7 @@ class AdminreservasController extends Controller
             6 => 'domingo'
         ];
 
-        return view('adminreservas.index', compact(['adminreservas', 'hours', 'languages', 'diassemana', 'categories', 'tags', 'users', 'guias'  ]));
+        return view('adminreservas.index', compact(['adminreservas','visits', 'hours', 'languages', 'diassemana', 'categories', 'tags', 'users', 'guias'  ]));
     }
 
 

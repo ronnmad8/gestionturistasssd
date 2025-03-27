@@ -9,11 +9,18 @@
             <div class="col-xl-2 col-12">
                 <h2>CLIENTES</h2>
             </div>
-            <!-- <div class="col-xl-2 col-12">
-                <button id="crear" type="button" class="btn btn-dark cupo mb-2" title="buscar">
-                    <i class="fa fa-plus mr-2"></i> <small> NUEVA VISITA</small>
+        </div>
+        <div class="row ">
+            <div class="col-xl-4 col-12">
+                <div class="mx-1 formulariocita" style="min-width: 100px" >
+                    <input class="form-control  mx-1" id="Cfiltro" type="text"  >
+                </div>
+            </div>
+            <div class="col-xl-2 col-12">
+                <button id="btfiltrar" type="button" class="btn btn-dark cupo mb-2" title="filtrar">
+                    <i class="fa fa-filter mr-2"></i> <small> filtrar </small>
                 </button>
-            </div> -->
+            </div>
         </div>
     </div>
 
@@ -44,7 +51,7 @@
 
 
                 @foreach($adminclientes as $key => $c)
-                <tr id="tr-{{$c->id}}" class="trreservas">
+                <tr id="tr-{{$c->id}}" class="trclientes">
 
                     <td style="min-width: 200px;">
                         <button type='button' id='edit-{{$c->id}}' class='editar btn btn-warning py-0'>
@@ -131,7 +138,8 @@
         </div>
         <div id="lista_diassemana" data-diassemana="{{ json_encode($diassemana) }}">
         </div>
-
+        <div id="lista_adminclientes" data-adminclientes="{{ json_encode($adminclientes) }}">
+        </div>
 
 
     </div>
@@ -251,7 +259,7 @@ let franjasData = $('#lista_franjas').data('franjas') || [];
 let languagesData = $('#lista_languages').data('languages') || [];
 let hoursData = $('#lista_hours').data('hours') || [];
 let diasSemanaData = $('#lista_diassemana').data('diassemana') || [];
-
+let listaadminclientes= $('#lista_adminclientes').data('adminclientes') || [];
 
 
 $('.menu').removeClass('activ');
@@ -301,6 +309,24 @@ $(".verpedidos").on('click', function() {
 });
 
 
+
+$("#btfiltrar").on('click', function() {
+    let textofiltrar = $('#Cfiltro').val();
+    
+    filtAdminTable = listaadminclientes ?? [] ;
+    if( textofiltrar != ""){
+        filtAdminTable = filtAdminTable.filter(res => res.name.includes(textofiltrar)) ?? [] ;
+    }
+    
+    $('.trclientes').removeClass('dnone');
+    listaadminclientes.forEach( cliente => { 
+        if(!filtAdminTable.includes(cliente))
+        {
+            $('#tr-'+cliente.id).addClass('dnone');
+        }
+    });
+
+});
 
 
 

@@ -31,7 +31,7 @@ class AdminclientesController extends Controller
         $adminclientes = User::select('users.*')
         ->where('rol_id', 1)
         ->orderByDesc('users.id')
-        ->simplePaginate(10000);
+        ->get();
 
         $hours= Hours::select('hours.*')->get();
         $diassemana = [
