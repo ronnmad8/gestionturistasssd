@@ -7,7 +7,7 @@
     <div class="panel-heading">
         <div class="row">
             <div class="col-xl-2 col-12">
-                <h2>CITA</h2>
+                <h2>SERVICIO</h2>
             </div>
         </div>
 

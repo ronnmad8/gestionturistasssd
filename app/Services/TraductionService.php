@@ -21,6 +21,7 @@ class TraductionService
             'personas' => 'Personas',
             'precio' => 'Precio',
             'texto_confirmada' => 'Reserva confirmada',
+            'texto_cancelada' => 'Cita Anulada y en un plazo de 7 a 10 dias se te devolverá el dinero',
             'texto_gracias' => 'Gracias por realizar tu reserva. Aquí tienes los detalles de tu pedido'
         ];
         
@@ -36,6 +37,7 @@ class TraductionService
             'personas' => 'People',
             'precio' => 'Price',
             'texto_confirmada' => 'Reservation confirmed',
+            'texto_cancelada' => 'Cancelled and you will be refunded within 7 to 10 days',
             'texto_gracias' => 'Thank you for making your reservation. Here are the details of your order'
         ];
         
@@ -51,6 +53,7 @@ class TraductionService
             'personas' => 'Personnes',
             'precio' => 'Prix',
             'texto_confirmada' => 'Réservation confirmée',
+            'texto_cancelada' => 'La réservation a été annulée et vous serez remboursé dans un délai de 7 à 10 jours',
             'texto_gracias' => 'Merci d\'avoir effectué votre réservation. Voici les détails de votre commande'
         ];
         
@@ -66,6 +69,7 @@ class TraductionService
             'personas' => 'Personen',
             'precio' => 'Preis',
             'texto_confirmada' => 'Reservierung bestätigt',
+            'texto_cancelada' => 'Die Buchung wurde storniert und Sie erhalten Ihr Geld innerhalb von 7 bis 10 Tagen zurück.',
             'texto_gracias' => 'Vielen Dank für Ihre Reservierung. Hier sind die Details Ihrer Bestellung'
         ];
         
@@ -81,6 +85,7 @@ class TraductionService
             'personas' => 'Persone',
             'precio' => 'Prezzo',
             'texto_confirmada' => 'Prenotazione confermata',
+            'texto_cancelada' => 'La prenotazione è stata annullata e riceverai il rimborso entro 7-10 giorni',
             'texto_gracias' => 'Grazie per aver effettuato la tua prenotazione. Ecco i dettagli del tuo ordine'
         ];
         
@@ -96,6 +101,7 @@ class TraductionService
             'personas' => 'Pessoas',
             'precio' => 'Preço',
             'texto_confirmada' => 'Reserva confirmada',
+            'texto_cancelada' => 'Cita Anulada y en un plazo de 7 a 10 días se te devolverá el diner',
             'texto_gracias' => 'Obrigado por fazer a sua reserva. Aqui estão os detalhes do seu pedido'
         ];
         
@@ -111,6 +117,7 @@ class TraductionService
             'personas' => 'Άτομα',
             'precio' => 'Τιμή',
             'texto_confirmada' => 'Επιβεβαιωμένη κράτηση',
+            'texto_cancelada' => 'Η κράτηση ακυρώθηκε και θα λάβετε επιστροφή χρημάτων εντός 7 έως 10 ημερών',
             'texto_gracias' => 'Ευχαριστούμε που κάνατε την κράτησή σας. Εδώ είναι οι λεπτομέρειες της παραγγελίας σας'
         ];
         
@@ -126,6 +133,7 @@ class TraductionService
             'personas' => 'Osoby',
             'precio' => 'Cena',
             'texto_confirmada' => 'Rezerwacja potwierdzona',
+            'texto_cancelada' => 'Rezerwacja została anulowana, a zwrot pieniędzy otrzymasz w ciągu 7 do 10 dni',
             'texto_gracias' => 'Dziękujemy za dokonanie rezerwacji. Oto szczegóły twojego zamówienia'
         ];
         

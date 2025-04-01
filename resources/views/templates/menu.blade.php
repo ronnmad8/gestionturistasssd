@@ -29,7 +29,7 @@
             </a>
             <a href="{{ route('admincitas')  }}" id="linkadmincitas"
                 class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
-                CITAS
+                SERVICIOS
                 <i class="fas fa-map-signs icomenu" style=" right: 17px; "></i>
             </a>
             <a href="{{ route('adminguias')  }}" id="linkadminguias"
@@ -48,8 +48,9 @@
                 <i class="fas fa-money-bill-wave icomenu" style=" right: 17px; "></i>
             </a>
 
-            <button   id="btsorteo" class="btn btn-danger m-3">
-                SORTEO
+            <button   id="btsorteo" class="btn btn-danger m-3"  title="Se va a adjudicar las citas que superen el minimo de personas y este en las proximas 72 horas" >
+                SORTEO <br>
+                <small> hasta {{ date('d-m-Y', strtotime('+4 days')) }} </small>
             </button>
 
             @endif

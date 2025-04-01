@@ -28,6 +28,7 @@ use App\Http\Controllers\Textcontents\TextcontentsController;
 use App\Http\Controllers\Textcomments\TextcommentsController;
 use App\Http\Controllers\Disponibilities\DisponibilitiesController;
 use App\Http\Controllers\Payments\PaymentsController;
+use App\Http\Controllers\Guialanguages\GuialanguagesController;
 
 
 /** @var \Laravel\Lumen\Routing\Router $router */
@@ -151,6 +152,7 @@ Route::post('/pedidocliente', [PedidoController::class, 'store']);
 Route::resource('users/verify/{token}', UserController::class, ['only' =>['verify']]);
 
 Route::get('/franjasdiasemana/{diasemana}', [DisponibilitiesController::class, 'franjasdiasemana']);
+Route::get('/languagesdiasemana/{diasemana}', [GuialanguagesController::class, 'languagesdiasemana']);
 Route::get('/disponibilities/{visitaid}/{month}/{year}', [DisponibilitiesController::class, 'disponibilities']);
 
 //Route::resource('users/{user}/resend', UserController::class, ['only' =>['resend']]); ////

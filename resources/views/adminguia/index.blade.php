@@ -58,7 +58,36 @@
                     <input type="text" id="Cnumero" name="numero" class='form-control mxwfield ' value="{{ $adminguia->number }}" >
                 </div>
             </div>
+
+
+
             <div class="col-xl-4 ">
+                <div class="my-2 mx-auto">
+                    <div class='w100 '>
+                        <div class="dnone">
+                            <input id="Cg_id" name='Cg_id'>
+                        </div>
+                        <div class="my-2 mx-auto">
+                            <h4>No Disponibilidad</h4>
+                            <div id="Cg_nodisponibilidad" class="mb-4 mx-auto">
+                            </div>
+                            <input type="date" class="form-control mxwfield m-1" id="fechaSeleccionada">
+
+                            <select class="form-control mxwfield m-1" id="franjaSeleccionada">
+                                <option value="0">Día completo </option>
+                                @foreach($franjashorarias as $franja)
+                                <option value="{{ $franja->id }}">{{ $franja->hourinit }} - {{ $franja->hourend }}</option>
+                                @endforeach
+                            </select>
+
+                            <button id="addFechaBtn" class="btn btn-success m-1" >Añadir Fecha</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-xl-4 dnone">
                 <div class="my-2 mx-auto">
                     <div class='w100 '>
                         <div class="dnone">
@@ -84,21 +113,6 @@
                 </div>
             </div>
             <div class="col-xl-4 ">
-                <div class="my-2 mx-auto">
-                    <div class='w100 '>
-                        <div class="dnone">
-                            <input id="Cg_id" name='Cg_id'>
-                        </div>
-                        <div class="my-2 mx-auto">
-                            <h4>No Disponibilidad</h4>
-                            <div id="Cg_nodisponibilidad" class="mb-4 mx-auto">
-                            </div>
-                            <input type="date" class="form-control mxwfield m-1" id="fechaSeleccionada">
-                            <button id="addFechaBtn" class="btn btn-success m-1" >Añadir Fecha</button>
-                        </div>
-                    </div>
-                </div>
-                <hr>
                 <div class="my-2 mx-auto">
                     <div class='w100 '>
                         <div id="Cg_guialanguages" class="my-2 mx-auto">
@@ -197,6 +211,7 @@
 
     $("#addFechaBtn").on('click', function() {
         let fecha = $('#fechaSeleccionada').val();
+        let franjaid = $('#franjaSeleccionada').val();
         if(fecha != undefined){
             let idguia = $('#Cid').val(); 
             let fechaExistente = nodisponibilities.some(function(nodisponibility) {
@@ -206,7 +221,8 @@
             if( !fechaExistente ){
                 let newnodisponibility = {
                     user_id: parseInt(idguia),
-                    fecha: fecha
+                    fecha: fecha,
+                    franjahoraria_id: franjaid
                 }
                 nodisponibilities.push(newnodisponibility);
                 let [yearA, monthA, dayA] = fecha.split('-');

@@ -287,9 +287,10 @@
                                 </div>
                                 <div class="my-2 mx-auto">
                                     <p class="m-0">Descripción en {{ $language->name }}</p>
-                                    <input type="text" id="Clanguagedescripcion_{{ $language->id }}" name="Clanguagedescripcion_{{ $language->id }}" class='form-control' >
+                                    <textarea id="Clanguagedescripcion_{{ $language->id }}" name="Clanguagedescripcion_{{ $language->id }}" class='form-control' style="min-height: 200px; height: 200px;" ></textarea>
                                 </div>
                             </div>
+
                         @endforeach
                         </div>
 
@@ -362,6 +363,7 @@
             </div>
         </div>
     </div>
+    
 </div>
 
 
@@ -563,6 +565,7 @@ $(".editar").on('click', function() {
     $('#form-data-display').removeClass('oculto');
     updateFormData();
     mostraridiomasactivados(visit_languagesdata);
+ 
 });
 
 
@@ -1039,7 +1042,18 @@ function mostraridiomasactivados(visit_languagesdatax){
             let descriptiondata = visit_languagesdatax.filter(x=> x.language_id == id).map(x=> x.descripcion) || "";
             $('#Clanguagename_'+ id).val(namedata);
             $('#Clanguagedescripcion_'+ id).val(descriptiondata);
+
+            CKEDITOR.replace( "Clanguagedescripcion_" + id, {
+                on: {
+                    change: function( event ) {
+                        event.editor.updateElement();
+                    }
+                }
+            });
+
         });
+
+        
     }
 }
 
@@ -1067,7 +1081,10 @@ function getcomponenthoradia(horax){
 
 
 
+
 </script>
+
+
 
 
 <!-----test formulario----->
@@ -1091,7 +1108,7 @@ function getcomponenthoradia(horax){
         }
     </style>
 
-<div id="form-data-display" class="oculto" >
+<div id="form-data-display" style="display: none"  >
         <h3>Valores del formulario</h3>
         <span>Nombre: </span><span id="displayName"></span><br>
         <span>Precio: </span><span id="displayPrecio"></span><br>
@@ -1108,9 +1125,9 @@ function getcomponenthoradia(horax){
         <span>Recomendado:</span><span id="displayRecomendado"></span><br>
         <span>Punto de encuentro:</span><span id="displayPuntoEncuentro"></span><br>
         <span>Texto del punto de encuentro:</span><span id="displayPuntoEncuentroText"></span><br>
-    </div>
+</div>
 
-    <script>
+<script>
             // Función para actualizar los valores en el div
             function updateFormData() {
                 
@@ -1142,8 +1159,18 @@ function getcomponenthoradia(horax){
 
             $('#btcloseeditar').on('click', function (){
                 $('#form-data-display').addClass('oculto');
+                let visitlanguages = $('#Cvisitlanguages').val() || [];
+                if (visitlanguages) {
+                    visitlanguages.forEach(function(lid) {
+                        if (CKEDITOR.instances["Clanguagedescripcion_" + lid]) {
+                            CKEDITOR.instances["Clanguagedescripcion_" + lid].destroy();
+                        }
+                    });
+                }
+
             })
-    </script>
+
+</script>
 
 
 @stop

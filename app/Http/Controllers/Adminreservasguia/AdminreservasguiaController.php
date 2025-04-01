@@ -88,13 +88,11 @@ class AdminreservasguiaController extends Controller
                 $nameguia = ($guianew->name ?? ' ') ." ". ($guianew->surname ?? ' ');
                 $cliente = User::find($reserva->user_id);
                 $namecliente = ($cliente?->name ?? ' ') ." ". ($cliente?->surname ?? ' ');
-                
                 $idioma = Languages::find($reserva->language_id)->name;
                 $hora = Hours::find($reserva->visit_hours_id)->hora;
                 $visita = Visitlanguages::find($reserva->visit_id)->where('language_id', $reserva->language_id)->first()->name;
                 $textostraducidos = TraductionService::getTraduction($reserva->language_id);
                 $textostraducidosadmin = TraductionService::getTraduction(1);
-                
                 $dataemail = array(
                     'textostraducidos' => $textostraducidos,
                     'namecliente' => $namecliente ?? '_',

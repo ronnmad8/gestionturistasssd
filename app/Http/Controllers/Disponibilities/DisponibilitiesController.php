@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Disponibility;
 use App\Models\Nodisponibility;
 use App\Models\Guiavisits;
+use App\Models\Guialanguages;
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use App\Transformers\DisponibilitiesTransformer;
@@ -33,8 +34,9 @@ class DisponibilitiesController extends ApiController
     {
         $diasemana ?? 1; 
 
-        $data = Disponibility::select('disponibilities.*', 'franjashorarias.init_hours_id', 'franjashorarias.end_hours_id' )
-        ->with('guialanguages')
+        $data = Disponibility::select('disponibilities.*'
+        , 'franjashorarias.init_hours_id', 'franjashorarias.end_hours_id' 
+        )
         ->leftjoin('franjashorarias', 'franjashorarias.id', '=', 'disponibilities.franjahoraria_id')
         ->where('disponibilities.diasemana', $diasemana )
         ->get();
@@ -44,6 +46,7 @@ class DisponibilitiesController extends ApiController
 
     public function disponibilities($visitaid, $month, $year)
     {
+
         $month = $month ?? Carbon::now()->month;
         $year = $year ?? Carbon::now()->year;
         
@@ -93,6 +96,7 @@ class DisponibilitiesController extends ApiController
                 }
             }
             $diasmes = array_unique($diasmes);
+
             return array_values($diasmes);
         }
         return null;

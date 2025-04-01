@@ -14,17 +14,21 @@ use App\Models\Hours;
 use App\Models\User;
 use App\Models\Cita;
 use App\Models\Disponibility;
+use App\Models\Nodisponibility;
 use App\Models\Guia;
 use App\Models\Guialanguages;
 use App\Models\Guiavisits;
 use App\Models\Franjashorarias;
-
+use App\Mail\ContactMail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Datetime;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use carbon\Carbon;
+use App\Services\TraductionService;
+use App\Services\MailService;
+use Illuminate\Support\Facades\Mail;
 
 class AdminreservasController extends Controller
 {
@@ -204,20 +208,30 @@ class AdminreservasController extends Controller
 
     public function sorteo()
     {
-        $diasretro = 10;
+        $diasretro = 3;
         try 
         {
-            $now = Carbon::now();
-            $limiteFecha = $now->subDays($diasretro)->toDateString(); // 72 horas
+            $now = Carbon::now()->format('Y-m-d');
+            $limiteFecha = Carbon::now()->addDays($diasretro)->format('Y-m-d');
             
             $citas = Cita::where('guia_id', null)
             ->where('deleted_at', null)
             ->whereColumn('clients', '>=', 'min')
-            ->whereDate('fecha', '>=', $limiteFecha)
+            ->whereDate('fecha', '>=', $now)
+            ->whereDate('fecha', '<=', $limiteFecha)
             ->get();
+
+            $citasmin = Cita::where('guia_id', null)
+            ->where('deleted_at', null)
+            ->whereColumn('clients', '<', 'min')
+            ->whereDate('fecha', '>=', $now)
+            ->whereDate('fecha', '<=', $limiteFecha)
+            ->get();
+
+        
             
             foreach ($citas as $cita) {
-                $fecha = $cita->fecha;
+                $fecha = Carbon::parse($cita->fecha);
                 $diasemana = date('w', strtotime($fecha));
 
 
@@ -233,35 +247,91 @@ class AdminreservasController extends Controller
                         ->from('guiavisits')
                         ->where('visit_id', $cita->visit_id);
                 })
-                ->where('disponibilities.diasemana', $diasemana )
-                ->whereRaw("TIME(franjashorarias.init_hours_id) >= ?", [date('H:i:s', strtotime($cita->hours_id))])
-                ->whereRaw("TIME(franjashorarias.end_hours_id) <= ?", [date('H:i:s', strtotime($cita->hours_id))])
+                ->where('disponibilities.diasemana', $diasemana)
+                ->whereTime('franjashorarias.init_hours_id', '>=', Carbon::parse($cita->hours_id)->toTimeString())
+                ->whereTime('franjashorarias.end_hours_id', '<=', Carbon::parse($cita->hours_id)->toTimeString())
                 ->distinct('disponibilities.user_id')
                 ->pluck('disponibilities.user_id')
                 ->toArray();
 
+                $nodisponibilities = Nodisponibility::select('nodisponibilities.user_id')
+                ->where('nodisponibilities.fecha', '=', $cita->fecha)
+                ->pluck('user_id')
+                ->toArray();
+
                 $guia = User::where('rol_id', 2)
-                    ->whereIn('id', $disponibilities)
-                    ->orderBy('cuota', 'asc')
-                    ->orderBy('id', 'asc')
-                    ->first();
+                ->whereNotIn('id', $nodisponibilities)
+                ->orderBy('cuota', 'asc')
+                ->orderBy('id', 'asc')
+                ->first();
 
                 if ($guia) {
-                    $guia->cuota = $guia->cuota + 1;
-                    $guia->update();
+                    $guia->cuota = ($guia->cuota ?? 0) + 1;
+                    $guia->save();
                     $cita->guia_id = $guia->id;
-                    $cita->update();
+                    $cita->save();
 
                     $reservas = Reserva::where('deleted_at', null)
                         ->where('cita_id', $cita->id)
                         ->get();
 
-                    foreach ($reservas as $re) {
-                        $re->guia_id = $guia->id;
-                        $re->update();
+                    if ($reservas->isNotEmpty()) {
+                        foreach ($reservas as $re) {
+                            $re->guia_id = $guia->id;
+                            $re->update();
+                        }
                     }
+
+                    //enviar email a guia
+                    $fecha = $cita->fecha;
+                    $diasemana = date('w', strtotime($fecha));
+                    $visita = Visitlanguages::find($cita->visit_id)->where('language_id', $cita->language_id)->first()->name;
+                    $visit = Visit::find($cita->visit_id)->first();
+                    $hora = Hours::find($cita->hours_id)->hora;
+                    $puntoencuentro = $visit->puntoencuentro;
+                    $puntoencuentrotext = $visit->puntoencuentrotext;
+                    $textostraducidos = TraductionService::getTraduction($cita->language_id);
+                    $textostraducidosadmin = TraductionService::getTraduction(1);
+                    $idioma = Languages::find($cita->language_id)->name;
+
+                    MailService::sendEmailGuia($cita, $reservas, $hora, $visita, $idioma, $textostraducidos,
+                    $puntoencuentro, $puntoencuentrotext);
                 }
             }
+
+
+            //enviar correo a cliente por anulacion de cita
+            if ($citasmin != null) {
+              foreach ($citasmin as $cita) {
+                $fecha = $cita->fecha;
+                $diasemana = date('w', strtotime($fecha));
+                $visita = Visitlanguages::find($cita->visit_id)->where('language_id', $cita->language_id)->first()->name;
+                $visit = Visit::find($cita->visit_id)->first();
+                $puntoencuentro = $visit->puntoencuentro;
+                $puntoencuentrotext = $visit->puntoencuentrotext;
+                $textostraducidos = TraductionService::getTraduction($cita->language_id);
+                $reservaanulada = Reserva::where('deleted_at', null)
+                ->where('cita_id', $cita->id)
+                ->first();
+                $user = User::find($reservaanulada->user_id);
+                $hora = Hours::find($cita->hours_id)->hora;
+                $dataemail = array(
+                    'textos' => $textostraducidos,
+                    'name' => ($user->name ?? '_') ." ". ($user->surname ?? '_'),
+                    'email' => $user->email ?? '_',
+                    'reserva' => $reservaanulada,
+                    'visita_nombre' => $visita,
+                    'hora' => $hora
+                );
+                $subject = 'Reserva Anulada';
+                $viewName = 'emails.reservaanulada';
+                Mail::to($user->email)->send(new ContactMail($dataemail, $viewName, $subject));
+                Mail::to("ronnmad@hotmail.es")->send(new ContactMail($dataemail, $viewName, $subject));//ontest
+                
+              }
+            }
+return response()->json([$reservaanulada]);
+
             return response()->json(true);
 
         }

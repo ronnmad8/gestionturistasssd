@@ -14,5 +14,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.js"></script>
     <script src="{{ asset('js/admin.js') }}"></script>
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <script src="https://cdn.ckeditor.com/4.22.1/standard/ckeditor.js"></script>
     
 </head>
