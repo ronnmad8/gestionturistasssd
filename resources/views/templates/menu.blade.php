@@ -64,7 +64,7 @@
             </a>
             <a href="{{ route('adminreservasguia')  }}" id="linkadminreservasguia"
                 class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
-                MIS RESERVAS
+                MIS SERVICIOS
                 <i class="fas fa-house-user icomenu" style=" right: 17px; "></i>
             </a>
             <a href="{{ route('adminguia', ['id' => Auth::user()->id] )  }}" id="linkadminguia"

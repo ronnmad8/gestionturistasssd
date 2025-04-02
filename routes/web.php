@@ -77,6 +77,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/inicioguias', [AdmininicioguiasController::class, 'index'])->name('inicioguias');
         Route::get('/adminreservasguia', [AdminreservasguiaController::class, 'index'])->name('adminreservasguia');
         Route::post('/adminreservasguia/rechazarreserva', [AdminreservasguiaController::class, 'rechazarreserva'])->name('adminreservasguia/rechazarreserva');
+        Route::post('/admincitasguia/rechazarcita', [AdminreservasguiaController::class, 'rechazarcita'])->name('admincitasguia/rechazarcita');
         Route::get('/adminguia/{id}', [AdminGuiaController::class, 'index'])->name('adminguia');
         Route::post('/adminguia/setguia/{id}', [AdminGuiaController::class, 'setguia'])->name('adminguia/setguia');
 

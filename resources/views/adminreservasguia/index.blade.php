@@ -7,7 +7,7 @@
     <div class="panel-heading">
         <div class="row">
             <div class="col-xl-2 col-12">
-                <h2>MIS RESERVAS</h2>
+                <h2>MIS SERVICIOS</h2>
             </div>
             <div class="col-xl-6 my-1 d-flex">
                 <div class="mx-1 formulariocita" style="min-width: 100px" >
@@ -30,17 +30,12 @@
                     <th style="min-width: 50px">ACCIONES</th>
                     <th style="min-width: 100px">REF</th>
                     <th style="min-width: 100px">ESTADO</th>
-                    <th style="min-width: 200px">PEDIDO</th>
-                    <th style="min-width: 200px">CLIENTE</th>
+                    <th style="min-width: 200px">CLIENTES</th>
                     <th style="min-width: 300px">VISITA</th>
                     <th style="min-width: 100px">IDIOMA</th>
                     <th style="min-width: 150px">FECHA</th>
-                    <th style="min-width: 100px"><span> PRECIO €</span></th>
                     <th style="min-width: 100px">HORA</th>
                     <th style="min-width: 150px"><div><i class="mr-1 fa fa-users"></i>PERSONAS</div></th>
-                    <th style="min-width: 150px"><i class="mr-1 fa fa-users"></i>ADULTOS</div></th>
-                    <th style="min-width: 150px"><i class="mr-1 fa fa-users"></i>NIÑOS</div></th>
-                    <th style="min-width: 50px">PRIVADA</th>
 
                 </tr>
             </thead>
@@ -53,17 +48,12 @@
                     <th style="min-width: 50px">ACCIONES</th>
                     <th style="min-width: 100px">REF</th>
                     <th style="min-width: 100px">ESTADO</th>
-                    <th style="min-width: 200px">PEDIDO</th>
-                    <th style="min-width: 200px">CLIENTE</th>
+                    <th style="min-width: 200px">CLIENTES</th>
                     <th style="min-width: 300px">VISITA</th>
                     <th style="min-width: 100px">IDIOMA</th>
                     <th style="min-width: 150px">FECHA</th>
-                    <th style="min-width: 100px"><span> PRECIO €</span></th>
                     <th style="min-width: 100px">HORA</th>
                     <th style="min-width: 150px"><div><i class="mr-1 fa fa-users"></i>PERSONAS</div></th>
-                    <th style="min-width: 150px"><i class="mr-1 fa fa-users"></i>ADULTOS</div></th>
-                    <th style="min-width: 150px"><i class="mr-1 fa fa-users"></i>NIÑOS</div></th>
-                    <th style="min-width: 50px">PRIVADA</th>
 
                 </tr>
             </tfoot>
@@ -77,18 +67,15 @@
         </div>
         <div id="lista_languages" data-languages="{{ json_encode($languages) }}">
         </div>
-        <div id="lista_adminreservas" data-adminreservas="{{ json_encode($adminreservas) }}">
+        <div id="lista_admincitas" data-admincitas="{{ json_encode($admincitas) }}">
         </div>
     </div>
 
 </div>
 
-
-
-
 <script>
 
-let listaadminreservas = $('#lista_adminreservas').data('adminreservas') || [];
+let listaadmincitas = $('#lista_admincitas').data('admincitas') || [];
 
 $('.menu').removeClass('activ');
 $("#linkadminreservasguia").addClass('activ');
@@ -99,7 +86,7 @@ function setTableCita(){
     let fechaFiltrarini = $('#Cfechaini').val();
     let fechaFiltrarfin = $('#Cfechafin').val();
     
-    let filtAdmincitasTable = listaadminreservas.data;
+    let filtAdmincitasTable = listaadmincitas.data;
     if( fechaFiltrarini != "" ){
         filtAdmincitasTable = filtAdmincitasTable.filter(cita => cita.fecha >= fechaFiltrarini  ) ?? [] ;    
     }
@@ -128,9 +115,6 @@ function mostrarResultados(citasTable){
   fila += `     <div id='Eestado-${c.id}'>${c.status == 1 ? 'Cerrada' : 'Abierta'  }</div> `;
   fila += ` </td> `;
   fila += ` <td style='width: 200px'> `;
-  fila += `     <div id='Epedido-${c.id}'>${c.pedido.id} - total ${c.pedido.totalfinal} € </div> `;
-  fila += ` </td> `;
-  fila += ` <td style='width: 200px'> `;
   fila += `     <div id='Euser-${c.id}'>${c.user.name }</div> `;
   fila += ` </td> `;
   fila += ` <td style='width: 300px'> `;
@@ -140,35 +124,22 @@ function mostrarResultados(citasTable){
   fila += `     <div id='Elanguage-${c.id}'>${c.language.name }</div> `;
   fila += ` </td> `;
   fila += ` <td style='width: 150px'> `;
-  fila += `     <div id='Efecha-${c.id}'>${c.fecha }</div> `;
-  fila += ` </td> `;
-  fila += ` <td style='width: 100px'> `;
-  fila += `     <div id='Etotal-${c.id}'>${c.total }</div> `;
+  let fecha = new Date(c.fecha);
+  fila += `     <div id='Efecha-${c.id}'>${ fecha.toLocaleDateString() }</div> `;
   fila += ` </td> `;
   fila += ` <td style='width: 100px'> `;
   fila += `     <div id='Ehora-${c.id}'>${c.hour.hora }</div> `;
   fila += ` </td> `;
   fila += ` <td style='width: 150px'> `;
-  fila += `     <div id='Epersons-${c.id}'>${c.persons }</div> `;
+  fila += `     <div id='Epersons-${c.id}'>${c.clients }</div> `;
   fila += ` </td> `;
-  fila += ` <td style='width: 150px'> `;
-  fila += `     <div id='Eadults-${c.id}'>${c.adults }</div> `;
-  fila += ` </td> `;
-  fila += ` <td style='width: 150px'> `;
-  fila += `     <div id='Echildren-${c.id}'>${c.children }</div> `;
-  fila += ` </td> `;
-  fila += ` <td style='width: 50px'> `;
-  fila += `     <div id='Echildren-${c.id}'>${c.private == 1 ? 'Si' : 'No' }</div> `;
-  fila += ` </td> `;  
   fila += ` <div class="dnone" hidden>
       <div id='Eguia_id-${c.id}'>${c.guia_id}</div>
       <div id='Euser_id-${c.id}'>${c.user_id}</div>
-      <div id='Euuid-${c.id}'>${c.uuid}</div>
       <div id='Evisit_id-${c.id}'>${c.visit_id}</div>
       <div id='Elanguage_id-${c.id}'>${c.language_id}</div>
-      <div id='Evisit_hours_id-${c.id}'>${c.visit_hours_id}</div>
-      <div id='Estatus-${c.id}'>${c.status}</div>
-      <div id='Eprivate-${c.id}'>${c.private}</div>       
+      <div id='Evisit_hours_id-${c.id}'>${c.hours_id}</div>
+      <div id='Estatus-${c.id}'>${c.status}</div>     
       </div> `;
   fila += ` </tr> `;
   
@@ -199,7 +170,7 @@ $(".btdelete").on('click', function() {
     var formData = {
         id: idtodelete
     }
-    if (confirm('¿Estás seguro de que quieres rechazar esta reserva?')) {
+    if (confirm('¿Estás seguro de que quieres rechazar esta Cita?')) {
       try {
         $.ajaxSetup({
             headers: {
@@ -207,7 +178,7 @@ $(".btdelete").on('click', function() {
             }
         });
         $.ajax({
-            url: '/adminreservasguia/rechazarreserva',
+            url: '/admincitasguia/rechazarcita',
             data: formData,
             dataType: "json",
             method: "POST",

@@ -34,23 +34,23 @@ class Cita extends Model
     
 
 
-    // public function visit()
-    // {
-    // 	return $this->belongsTo(Visit::class, 'visit_id', 'id');
-    // }
+    public function visit()
+    {
+    	return $this->belongsTo(Visit::class, 'visit_id', 'id');
+    }
 
-    // public function language()
-    // {
-    // 	return $this->belongsTo(Languages::class, 'language_id', 'id');
-    // }
+    public function language()
+    {
+    	return $this->belongsTo(Languages::class, 'language_id', 'id');
+    }
 
-    // public function hour()
-    // {
-    // 	return $this->belongsTo(Hours::class, 'hours_id', 'id');
-    // }
+    public function hour()
+    {
+    	return $this->belongsTo(Hours::class, 'hours_id', 'id');
+    }
 
-    // public function user()
-    // {
-    // 	return $this->belongsTo(User::class, 'guia_id', 'id');
-    // }
+    public function user()
+    {
+    	return $this->belongsTo(User::class, 'guia_id', 'id');
+    }
 }

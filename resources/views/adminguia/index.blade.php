@@ -212,7 +212,7 @@
     $("#addFechaBtn").on('click', function() {
         let fecha = $('#fechaSeleccionada').val();
         let franjaid = $('#franjaSeleccionada').val();
-        if(fecha != undefined){
+        if(fecha != undefined && franjaid != undefined && franjaid != null && fecha != ""){
             let idguia = $('#Cid').val(); 
             let fechaExistente = nodisponibilities.some(function(nodisponibility) {
                 return nodisponibility.fecha === fecha;
@@ -227,7 +227,15 @@
                 nodisponibilities.push(newnodisponibility);
                 let [yearA, monthA, dayA] = fecha.split('-');
                 let resultfechaA = `${dayA}/${monthA}/${yearA}`;
-                $('#Cg_nodisponibilidad').append('<div id="div-'+fecha+'" class="mx-auto my-1"><span class="badge bg-light p-2 ">' + resultfechaA + '</span><span class="fa fa-trash bg-danger text-white p-1 cupo eliminarfecha" style="font-size:11px" id="delno-'+fecha+'" ></span></div>');
+
+                let franjaFecha = " Día completo ";
+                if(franjaid != 0){
+                    let franja = franjasData.filter(franja => franja.id == franjaid)[0];
+                    franjaFecha = franja.hourinit + " - " + franja.hourend;
+                }
+                $('#Cg_nodisponibilidad').append('<div id="div-'+fecha+'" class="mx-auto my-1"><span class="badge bg-light p-2 ">' + resultfechaA + ' ' + franjaFecha +'</span><span class="fa fa-trash bg-danger text-white p-1 cupo eliminarfecha" style="font-size:11px" id="delno-'+fecha+'" ></span></div>');
+                $('#fechaSeleccionada').val("");
+                $('#franjaSeleccionada').val(0);
             }
 
         }
