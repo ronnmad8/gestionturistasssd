@@ -175,7 +175,8 @@ class AdminguiaController extends Controller
                     $currentNoIds = $currentNoDisponibilities->map(function ($item) {
                         return [
                             'user_id' => $item->user_id,
-                            'fecha' => $item->fecha
+                            'fecha' => $item->fecha,
+                            'franjahoraria_id' => $item->franjahoraria_id,
                         ];
                     })->toArray();
                 
@@ -183,20 +184,21 @@ class AdminguiaController extends Controller
                     $newNoIds = $newNoDisponibilities->map(function ($item) {
                         return [
                             'user_id' => $item['user_id'],
-                            'fecha' => $item['fecha']
+                            'fecha' => $item['fecha'],
+                            'franjahoraria_id' => $item['franjahoraria_id'],
                         ];
                     })->toArray();
 
                     $toNoDelete = $currentNoDisponibilities->filter(function ($item) use ($newNoIds) {
                         return !in_array(
-                            ['user_id' => (int) $item->user_id, 'fecha' => $item->fecha],
+                            ['user_id' => (int) $item->user_id, 'fecha' => $item->fecha, 'franjahoraria_id' => $item->franjahoraria_id],
                             $newNoIds
                         );
                     });
                 
                     $toNoAdd = $newNoDisponibilities->filter(function ($item) use ($currentNoIds) {
                         return !in_array(
-                            ['user_id' => (int) $item['user_id'], 'fecha' => $item['fecha']],
+                            ['user_id' => (int) $item['user_id'], 'fecha' => $item['fecha'], 'franjahoraria_id' => $item['franjahoraria_id']],
                             $currentNoIds
                         );
                     });

@@ -208,12 +208,12 @@ class AdminreservasController extends Controller
 
     public function sorteo()
     {
-        $diasretro = 3;
+        $diasretro = 3; //dias
         try 
         {
             $now = Carbon::now()->format('Y-m-d');
             $limiteFecha = Carbon::now()->addDays($diasretro)->format('Y-m-d');
-            
+
             $citas = Cita::where('guia_id', null)
             ->where('deleted_at', null)
             ->whereColumn('clients', '>=', 'min')
@@ -228,12 +228,10 @@ class AdminreservasController extends Controller
             ->whereDate('fecha', '<=', $limiteFecha)
             ->get();
 
-        
             
             foreach ($citas as $cita) {
-                $fecha = Carbon::parse($cita->fecha);
+                $fecha = Carbon::parse($cita->fecha)->format('Y-m-d');
                 $diasemana = date('w', strtotime($fecha));
-
 
                 $disponibilities = Disponibility::select('disponibilities.user_id' )
                 ->leftjoin('franjashorarias', 'franjashorarias.id', '=', 'disponibilities.franjahoraria_id')
@@ -265,11 +263,13 @@ class AdminreservasController extends Controller
                 ->orderBy('id', 'asc')
                 ->first();
 
+                
+
                 if ($guia) {
                     $guia->cuota = ($guia->cuota ?? 0) + 1;
-                    $guia->save();
+                    $guia->update();
                     $cita->guia_id = $guia->id;
-                    $cita->save();
+                    $cita->update();
 
                     $reservas = Reserva::where('deleted_at', null)
                         ->where('cita_id', $cita->id)
@@ -294,9 +294,9 @@ class AdminreservasController extends Controller
                     $textostraducidosadmin = TraductionService::getTraduction(1);
                     $idioma = Languages::find($cita->language_id)->name;
 
-                    MailService::sendEmailGuia($cita, $reservas, $hora, $visita, $idioma, $textostraducidos,
-                    $puntoencuentro, $puntoencuentrotext);
+                    MailService::sendEmailGuia($cita, $reservas, $hora, $visita, $idioma, $textostraducidos,$puntoencuentro, $puntoencuentrotext);
                 }
+
             }
 
 
@@ -330,7 +330,6 @@ class AdminreservasController extends Controller
                 
               }
             }
-return response()->json([$reservaanulada]);
 
             return response()->json(true);
 

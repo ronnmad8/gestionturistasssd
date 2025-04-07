@@ -16,7 +16,8 @@ class Nodisponibility extends Model
     protected $dates = ['deleted_at'];
     protected $fillable = [
     	'user_id',
-    	'fecha'
+    	'fecha',
+        'franjahoraria_id'
     ];
     protected $hidden = [
         'pivot'

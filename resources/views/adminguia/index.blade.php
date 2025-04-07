@@ -8,12 +8,8 @@
             <div class="col-xl-2 col-12">
                 <h2>MIS DATOS</h2>
             </div>
-            <!-- <div class="col-xl-2 col-12">
-                <button id="crear" type="button" class="btn btn-dark cupo mb-2" title="buscar">
-                    <i class="fa fa-plus mr-2"></i> <small> NUEVA VISITA</small>
-                </button>
-            </div> -->
-            </div>
+
+        </div>
     </div>
     <div class='w100 formulariomodal mxh'>
         <div class="row">
@@ -62,14 +58,14 @@
 
 
             <div class="col-xl-4 ">
-                <div class="my-2 mx-auto">
+                <div class="my-2 mx-auto"    >
                     <div class='w100 '>
                         <div class="dnone">
                             <input id="Cg_id" name='Cg_id'>
                         </div>
                         <div class="my-2 mx-auto">
                             <h4>No Disponibilidad</h4>
-                            <div id="Cg_nodisponibilidad" class="mb-4 mx-auto">
+                            <div id="Cg_nodisponibilidad" class="mb-4 mx-auto" style="max-height: 400px; overflow-x: hidden;">
                             </div>
                             <input type="date" class="form-control mxwfield m-1" id="fechaSeleccionada">
 
@@ -151,7 +147,7 @@
             </div>
             <div class="col-12 ">
                 <div class="m10 mxauto text-center">
-                    <button type="button" id="bteditarX" class='m-2 btn btn-info'>GUARDAR</button>
+                    <button type="button" id="btGuardarX" class='m-2 btn btn-info'>GUARDAR</button>
                 </div>
             </div>
         </div>
@@ -197,7 +193,15 @@
     nodisponibilities.forEach((nodisponibilidad) => {
         let [year, month, day] = nodisponibilidad.fecha.split('-');
         let resultfecha = `${day}/${month}/${year}`;
-        $('#Cg_nodisponibilidad').append('<div id="div-'+nodisponibilidad.fecha+'" class="mx-auto my-1"><span class="badge bg-light p-2 ">' + resultfecha + '</span><span class="fa fa-trash bg-danger text-white p-1 cupo eliminarfecha" style="font-size:11px" id="delno-'+nodisponibilidad.fecha+'" ></span></div>');
+        let franjaFecha = "";
+        if(nodisponibilidad.franjahoraria_id != 0){
+            let franja = franjasData.filter(franja => franja.id == nodisponibilidad.franjahoraria_id)[0];
+            franjaFecha = franja.hourinit + " - " + franja.hourend;
+        }
+        resultfecha = resultfecha+" - "+ franjaFecha;
+        $('#Cg_nodisponibilidad').append('<div id="div-'+nodisponibilidad.fecha+'" class="mx-auto my-1" style="min-width: 350px" >'+
+            '<span class="badge bg-light p-2 ">' + resultfecha + '</span>'+
+            '<span class="fa fa-trash bg-danger text-white p-1 cupo eliminarfecha" style="font-size:11px" id="delno-'+nodisponibilidad.fecha+'" ></span></div>');
     })
     guialanguagesData.forEach((guialanguage) => {
         $('#language-'+ (guialanguage.language_id ) ).prop('checked', true);
@@ -217,23 +221,50 @@
             let fechaExistente = nodisponibilities.some(function(nodisponibility) {
                 return nodisponibility.fecha === fecha;
             });
-
             if( !fechaExistente ){
-                let newnodisponibility = {
-                    user_id: parseInt(idguia),
-                    fecha: fecha,
-                    franjahoraria_id: franjaid
-                }
-                nodisponibilities.push(newnodisponibility);
+                
                 let [yearA, monthA, dayA] = fecha.split('-');
                 let resultfechaA = `${dayA}/${monthA}/${yearA}`;
 
-                let franjaFecha = " Día completo ";
+                let franjaFecha = "";
                 if(franjaid != 0){
                     let franja = franjasData.filter(franja => franja.id == franjaid)[0];
                     franjaFecha = franja.hourinit + " - " + franja.hourend;
+                    $('#Cg_nodisponibilidad').append('<div id="div-'+fecha+'" class="mx-auto my-1" style="min-width: 350px"  ><span class="badge bg-light p-2 ">' + resultfechaA + ' ' + franjaFecha +'</span><span class="fa fa-trash bg-danger text-white p-1 cupo eliminarfecha" style="font-size:11px" id="delno-'+fecha+'" ></span></div>');
+                
+                    let newnodisponibility = {
+                        user_id: parseInt(idguia),
+                        fecha: fecha,
+                        franjahoraria_id: franjaid
+                    }
+                    nodisponibilities.push(newnodisponibility);
+                   
                 }
-                $('#Cg_nodisponibilidad').append('<div id="div-'+fecha+'" class="mx-auto my-1"><span class="badge bg-light p-2 ">' + resultfechaA + ' ' + franjaFecha +'</span><span class="fa fa-trash bg-danger text-white p-1 cupo eliminarfecha" style="font-size:11px" id="delno-'+fecha+'" ></span></div>');
+                else{
+                    let franja1 = franjasData[0];
+                    let newnodisponibility1 = {
+                        user_id: parseInt(idguia),
+                        fecha: fecha,
+                        franjahoraria_id: franja1.id
+                    }
+                    franjaFecha1 = franja1.hourinit + " - " + franja1.hourend;
+                    $('#Cg_nodisponibilidad').append('<div id="div-'+fecha+'" class="mx-auto my-1" style="min-width: 350px" ><span class="badge bg-light p-2 ">' + resultfechaA + ' ' + franjaFecha1 +'</span><span class="fa fa-trash bg-danger text-white p-1 cupo eliminarfecha" style="font-size:11px" id="delno-'+fecha+'" ></span></div>');
+                    
+                    
+                    let franja2 = franjasData[1];
+                    let newnodisponibility2 = {
+                        user_id: parseInt(idguia),
+                        fecha: fecha,
+                        franjahoraria_id: franja2.id
+                    }
+                    franjaFecha2 = franja2.hourinit + " - " + franja2.hourend;
+                    $('#Cg_nodisponibilidad').append('<div id="div-'+fecha+'" class="mx-auto my-1" style="min-width: 350px" ><span class="badge bg-light p-2 ">' + resultfechaA + ' ' + franjaFecha2 +'</span><span class="fa fa-trash bg-danger text-white p-1 cupo eliminarfecha" style="font-size:11px" id="delno-'+fecha+'" ></span></div>');
+
+                    nodisponibilities.push(newnodisponibility1);
+                    nodisponibilities.push(newnodisponibility2);
+                }
+
+                
                 $('#fechaSeleccionada').val("");
                 $('#franjaSeleccionada').val(0);
             }
@@ -251,7 +282,7 @@
         $(this).parent().remove();
     })
     
-    $("#bteditarX").on('click', function() {
+    $("#btGuardarX").on('click', function() {
 
         let idguia = $('#Cid').val();  
         if(idguia != null && idguia != "")

@@ -103,7 +103,7 @@ class AdminreservasguiaController extends Controller
                 );
                 
                 MailService::sendEmailGuia($reserva, $hora, $visita, $idioma, $textostraducidos);
-                MailService::sendEmailAdmins($reserva, $hora, $visita, $idioma, $textostraducidosadmin, true);
+                //MailService::sendEmailAdmins($reserva, $hora, $visita, $idioma, $textostraducidosadmin, true);
         
                 return response()->json(['message' => 'Reserva rechazada con éxito'], 200);
             }
@@ -121,22 +121,35 @@ class AdminreservasguiaController extends Controller
             $id = $request->input('id');
             if($id != null){
                 $cita = Cita::findOrFail($id);
-
+                //penalizar cuota por rechazo
                 $guiaold = User::where('rol_id', 2)
                 ->where('id', $cita->guia_id)->first();
                 if ($guiaold) {
                     $guiaold->cuota = $guiaold->cuota + 1;
                     $guiaold->save();
                 }
+                //registro historico //////
+                
+
                 //buscar guia con cuota menor  
                 $guianew = User::where('rol_id', 2)
-                ->orderBy('cuota', 'asc')
-                ->orderBy('id', 'asc')
-                ->first();
-                if ($guianew) {
+                    ->orderBy('cuota', 'asc')
+                    ->orderBy('id', 'asc')
+                    ->first();
+                
+                if ($guianew != $guiaold){
+                    $guianew = User::where('rol_id', 2)
+                    ->orderBy('cuota', 'asc')
+                    ->orderBy('id', 'asc')
+                    ->offset(1)
+                    ->first();
+                }
+                
+                if ($guianew != null) {
                     $cita->guia_id = $guianew->id;
                 }
                 
+
                 $cita->save();
                 
                 //enviar correo a guia
@@ -144,14 +157,16 @@ class AdminreservasguiaController extends Controller
                 $cliente = User::find($cita->user_id);
                 $namecliente = ($cliente?->name ?? ' ') ." ". ($cliente?->surname ?? ' ');
                 $idioma = Languages::find($cita->language_id)->name;
-                $hora = Hours::find($cita->visit_hours_id)->hora;
+                $hora = Hours::find($cita->hours_id)->hora;
                 $visita = Visitlanguages::find($cita->visit_id)->where('language_id', $cita->language_id)->first()->name;
                 $textostraducidos = TraductionService::getTraduction($cita->language_id);
                 $textostraducidosadmin = TraductionService::getTraduction(1);
                 $reservas = Reserva::where('deleted_at', null)
                 ->where('cita_id', $cita->id)
                 ->get();
-
+                $visit = Visit::find($cita->visit_id)->first();
+                $puntoencuentro = $visit->puntoencuentro;
+                $puntoencuentrotext = $visit->puntoencuentrotext;
 
                 $dataemail = array(
                     'textostraducidos' => $textostraducidos,
@@ -162,17 +177,16 @@ class AdminreservasguiaController extends Controller
                     'idioma' => $idioma ?? '_',
                     'codigo' => $cita->uuid ?? '_',
                     'visita' => $visita ?? '_',
-                    'reserves' => $reservas
+                    'reservas' => $reservas
                 );
                 
-                MailService::sendEmailGuia($cita, $reservas, $hora, $visita, $idioma, $textostraducidos);
-        
-                return response()->json(['message' => 'Reserva rechazada con éxito'], 200);
+                MailService::sendEmailGuia($cita, $reservas, $hora, $visita, $idioma, $textostraducidos, $puntoencuentro, $puntoencuentrotext);
+                return response()->json(['message' => 'Cita rechazada con éxito'], 200);
             }
             return null;
         } catch (\Exception $e) {
             \DB::rollBack();
-            return response()->json(['error' => 'Error al rechazar la reserva', 'message' => $e->getMessage()], 500);
+            return response()->json(['error' => 'Error al rechazar la cita', 'message' => $e->getMessage()], 500);
         }
     }
 

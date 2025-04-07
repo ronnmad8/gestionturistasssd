@@ -125,9 +125,9 @@ class PedidoController extends ApiController
                     
             $reservasArray = []; 
             $reservas = $newpedido["reservas"];
+        
             if($reservas != null){
                 foreach($reservas as $r){
-
                     $reserva = new Reserva();
                     $reserva->fill($r);
                     $reserva["persons"] = (int)$r["children"] + (int)$r["adults"];
@@ -135,17 +135,18 @@ class PedidoController extends ApiController
                     $reserva["user_id"] = $user->id;
                     $reserva["visit_id"] = (int)$r["visit"]["id"];
                     $reserva["uuid"] = Str::uuid();
-                      
-                    $cita = Cita::where('fecha', $reserva->fecha)
-                    ->where('hours_id', $reserva->visit_hours_id)
-                    ->where('visit_id', $reserva->visit_id)
-                    ->where('language_id', $reserva->language_id)
+                                          
+                    $cita = Cita::where('citas.fecha', $reserva->fecha)
+                    ->where('citas.hours_id', $reserva->visit_hours_id)
+                    ->where('citas.visit_id', $reserva->visit_id)
+                    ->where('citas.language_id', $reserva->language_id)
                     ->first();
                     
+                    $idcita = null;
                     if($cita != null){
                         $cita->clients = (int)$cita->clients + (int)$reserva->persons;
                         $cita->update();
-                        $reserva["cita_id"] = $cita->id;
+                        $idcita = $cita->id;
                     }
                     else{
                         $citanew = new Cita();
@@ -158,10 +159,12 @@ class PedidoController extends ApiController
                         $citanew->max = (int)$visitcita->nummax ?? 0;
                         $citanew->min = (int)$visitcita->nummin ?? 0;
                         $citanew->save();
-                        $reserva["cita_id"] = $citanew->id;
+                        $idcita = $citanew->id;
                     }
 
-                    if($reserva->save()){
+                    $reserva->cita_id = $idcita;
+                    $registrada = $reserva->save();
+                    if($registrada){
                         
                         $idioma = Languages::find($reserva->language_id)->name;
                         $hora = Hours::find($reserva->visit_hours_id)->hora;
