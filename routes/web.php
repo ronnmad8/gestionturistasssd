@@ -59,6 +59,8 @@ Route::middleware(['auth'])->group(function () {
         
         Route::get('/admincitas', [AdmincitasController::class, 'index'])->name('admincitas');
         Route::post('/admincitas/cita', [AdmincitasController::class, 'getcita'])->name('admincitas/cita');
+        Route::post('/admincitas/setstatus', [AdmincitasController::class, 'setstatus'])->name('admincitas/setstatus');
+        Route::post('/admincitas/setguia', [AdmincitasController::class, 'setguia'])->name('admincitas/setguia');
     
         Route::get('/adminguias', [AdminguiasController::class, 'index'])->name('adminguias');
         Route::post('/adminguias/guia', [AdminguiasController::class, 'setguia'])->name('adminguias/guia');

@@ -17,6 +17,7 @@ use App\Models\Disponibility;
 use App\Models\Nodisponibility;
 use App\Models\Guia;
 use App\Models\Guialanguages;
+use App\Models\Configuraciones;
 use App\Models\Guiavisits;
 use App\Models\Franjashorarias;
 use App\Mail\ContactMail;
@@ -179,20 +180,21 @@ class AdminreservasController extends Controller
 
         try {
             $id = $request->input('id');
+            $guiaid = $request->input('guia_id');
             if($id != null){
 
-                $cita = Cita::where('id', $reserva->cita_id)->first();
-                    $cita->guia_id = $guia->id;
+                $cita = Cita::where('id', $id)->first();
+                    $cita->guia_id = $guiaid;
                     $cita->update();
             
                 //actualizar las reservas con misma cita
                 $reservas = Reserva::with(['pedido', 'user', 'visit', 'language', 'hour'] )
                 ->where('deleted_at', null)
-                ->where('cita_id', $reserva->cita_id)
+                ->where('cita_id', $id)
                 ->get();
 
                 foreach ($reservas as $re) {
-                    $re->guia_id = $guia->id;
+                    $re->guia_id = $guiaid;
                     $re->update();
                 }
 
@@ -208,7 +210,8 @@ class AdminreservasController extends Controller
 
     public function sorteo()
     {
-        $diasretro = 3; //dias
+        $diasretro= Configuraciones::where('name', 'sorteo')->first()->value; //dato de configuraciones => sorteo
+        
         try 
         {
             $now = Carbon::now()->format('Y-m-d');

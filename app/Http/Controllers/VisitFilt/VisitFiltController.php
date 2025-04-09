@@ -19,7 +19,6 @@ use DateTime;
 use DateInterval;
 
 
-
 class VisitFiltController extends ApiController
 {
     /**

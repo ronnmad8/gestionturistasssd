@@ -9,7 +9,6 @@
             <div class="col-xl-2 col-12">
                 <h2>RESERVAS</h2>
             </div>
-
         </div>
 
         <div class="row ">
@@ -64,7 +63,7 @@
             <thead>
                 <tr>
 
-                    <th style="min-width: 200px">ACCIONES</th>
+                    <th style="min-width: 150px">ACCIONES</th>
                     <th style="min-width: 100px">REF</th>
                     <th style="min-width: 200px">GUÍA</th>
                     <th style="min-width: 200px">CLIENTE</th>
@@ -88,12 +87,9 @@
                 @foreach($adminreservas as $key => $c)
                 <tr id="tr-{{$c->id}}" class="trreservas">
 
-                    <td style="min-width: 200px;">
+                    <td style="min-width: 150px;">
                         <button type='button' id='edit-{{$c->id}}' class='editar btn btn-warning py-0'>
                             <i class='fa fa-cog' style="color: #fff"></i>
-                        </button>
-                        <button type='button' id='asignarguia-{{$c->id}}' class='asignarguia btn btn-success py-0'>
-                            <i class='fa fa-user' style="color: #fff"></i>
                         </button>
                         <button type='button' id='delete-{{$c->id}}' class='btdelete btn btn-danger py-0'>
                             <i class='fa fa-trash' style="color: #fff"></i>
@@ -121,7 +117,7 @@
                         <div id='Elanguage-{{$c->id}}'>{{$c->language->name}}</div>
                     </td>
                     <td style='width: 150px'>
-                        <div id='Efecha-{{$c->id}}'>{{ $c->fecha }}</div>
+                        <div id='Efecha-{{$c->id}}'>{{ \Carbon\Carbon::parse($c->fecha)->format('d/m/Y') }}</div>
                     </td>
                     <td style='width: 100px'>
                         <div id='Etotal-{{$c->id}}'>{{$c->total}}</div>
@@ -170,7 +166,7 @@
             <tfoot>
                 <tr>
 
-                    <th style="min-width: 200px">ACCIONES</th>
+                    <th style="min-width: 150px">ACCIONES</th>
                     <th style="min-width: 100px">REF</th>
                     <th style="min-width: 200px">GUÍA</th>
                     <th style="min-width: 200px">CLIENTE</th>
@@ -280,48 +276,7 @@
 </div>
 
 
-<div>
-    <button type='button' class="dnone" id='abrirModalXasignarguia' data-toggle='modal' data-target='#modalXasignarguias'
-        data-backdrop='static' data-keyboard='false'>
-    </button>
-    <div class='modal fade' id='modalXasignarguias'>
 
-        <div class='modal-dialog' role='document'>
-            <div class='modal-content'>
-                <div class='modal-header'>
-                    <h4 class='modal-title text-center'>
-                        <span> ASIGNAR GUIA </span>
-                    </h4>
-                    <button id="btcloseasignarguias" type='button' class='close' data-dismiss='modal' aria-label='Close'>
-                        <span aria-hidden='true'>&times;</span>
-                    </button>
-                </div>
-                <div class='modal-body'>
-                    <div class='w100 formulariomodal'>
-
-                        <div class="dnone">
-                            <input id="Cg_id" name='Cg_id'>
-                        </div>
-
-                        <div class="my-2 mx-auto">
-                            <p class="m-0">Guía</p>
-                            <select class="form-control" id="Cg_guia" name="Cg_guia" >
-                            @foreach ($guias as $key => $guia)
-                                <option value="{{ $guia->id }}">{{ $guia->name }} - {{ $guia->email }} </option>
-                            @endforeach
-                            </select>
-                        </div>
-                        
-                        <div class="m10 mxauto text-center">
-                            <button type="button" id="btasignarguia" class='m-2 btn btn-info'>ASIGNAR</button>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 
@@ -364,14 +319,7 @@ $(".editar").on('click', function() {
 });
 
 
-$(".asignarguia").on('click', function() {
-    let id = $(this).attr('id').split('-')[1];
-    $('#Cg_id').val(id);
-    let guia_id = $('#Eguia_id-' + id).text();
-    $('#Cg_guia').val(guia_id);
 
-    $('#abrirModalXasignarguia').click();
-});
 
 
 
@@ -472,45 +420,6 @@ $(".btdelete").on('click', function() {
     }
 });
 
-$("#btasignarguia").on('click', function() {
-
-    let id = parseInt($('#Cg_id').val());
-
-    let formData = {
-        id: id,
-        guia_id: $('#Cg_guia').val()
-    }
-
-    try {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        $.ajax({
-            url: '/adminreservas/setguia',
-            data: formData,
-            dataType: "json",
-            method: "POST",
-            success: function(result) {
-                if(result != null){
-                    location.reload();
-                }
-            },
-            fail: function() {
-                alert("fail");
-            },
-            beforeSend: function() {
-                $("#loading-spinner").show();
-            },
-            complete: function() {
-                $("#loading-spinner").hide();
-            }
-        })
-      }catch (error) {
-        console.err(error);
-      }
-});
 
 
 </script>
@@ -537,7 +446,7 @@ $("#btasignarguia").on('click', function() {
         }
 </style>
 
-<div id="form-data-display" class="oculto" >
+<div id="form-data-display" style="display: none"  >
         <h3>Valores del formulario</h3>
         <span>Usuario: </span><span id="displayUser"></span><br>
         <span>Idioma: </span><span id="displayLanguage"></span><br>
@@ -570,7 +479,7 @@ $("#btasignarguia").on('click', function() {
 
 
     function setTableCita(){
-    debugger
+    
     let idiomasFiltrar = $('#CIdiomas').val();
     let fechaFiltrar = $('#CFecha').val();
     let visitaFiltrar = $('#CVisits').val();
@@ -614,7 +523,6 @@ $(function () {
       setTableCita();
   });
   $(document).on('change', '#CVisits', function () {
-    debugger
       setTableCita();
   });
   $(document).on('change', '#CFecha', function () {
