@@ -47,6 +47,11 @@
                 FACTURACIÓN
                 <i class="fas fa-money-bill-wave icomenu" style=" right: 17px; "></i>
             </a>
+            <a href="{{ route('adminhistorics')  }}" id="linkadminhistorics"
+                class="menu cupo posrel list-group-item list-group-item-action text-light border-light">
+                HISTORICOS
+                <i class="fas fa-history icomenu" style=" right: 17px; "></i>
+            </a>
 
             <button   id="btsorteo" class="btn btn-danger m-3"  title="Se va a adjudicar las citas que superen el minimo de personas y este en las proximas 72 horas" >
                 SORTEO <br>

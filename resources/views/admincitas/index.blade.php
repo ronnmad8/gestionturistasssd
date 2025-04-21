@@ -12,10 +12,27 @@
         </div>
 
         <div class="row ">
-                <div class="col-xl-6 my-1 d-flex">
+                <div class="col-xl-3 my-1 d-flex">
                     <div class="mx-1 formulariocita" style="min-width: 100px" >
-                        <p class="m-0">Fecha</p>
-                        <input class="form-control  mx-1" id="Cfecha" type="date"  >
+                        <p class="m-0">Desde</p>
+                        <input class="form-control  mx-1" id="CfechaDesde" type="date"  >
+                    </div>
+                    <div class="mx-1 formulariocita" style="min-width: 100px" >
+                        <p class="m-0">Hasta</p>
+                        <input class="form-control  mx-1" id="CfechaHasta" type="date"  >
+                    </div>
+                </div>
+                <div class="col-xl-8 my-1 d-flex">
+                    <div class="mx-1 formulariocita" style="min-width: 100px">
+                        <p class="m-0">Estado</p>
+                        <select class="form-control  mx-1" id="Cestado" >
+                            <option value="">-</option>
+                            @foreach($statuscitas as $estado)
+                            <option value="{{$estado['id']}}">
+                                {{$estado['name']}}
+                            </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="mx-1 formulariocita" style="min-width: 150px">
                         <p class="m-0">Visitas</p>
@@ -162,6 +179,15 @@
         </table>
     </div>
 
+    <div class="row mx-auto">   
+        <div class="d-flex justify-content-center mt-3">
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="pagination-container">
+                    </ul>
+            </nav>
+        </div>
+    </div>
+
     <div class="dnone">
         <div id="admincitas" data-visits="{{ json_encode($admincitas) }}">
         </div>
@@ -268,6 +294,57 @@ console.log("listaadmincitas ", listaadmincitas);
 $('.menu').removeClass('activ');
 $("#linkadmincitas").addClass('activ');
 
+/// pagination
+
+const tablaAdminvisitasBody = document.getElementById('body_table');
+const paginationContainer = document.getElementById('pagination-container');
+const citasPorPagina = 8;
+let currentPage = 1;
+let listaFiltradaParaPaginacion = [...listaadmincitas]; 
+setTableCita();
+
+function mostrarPagina(pagina) {
+    const startIndex = (pagina - 1) * citasPorPagina;
+    const endIndex = startIndex + citasPorPagina;
+
+    tablaAdminvisitasBody.querySelectorAll('tr').forEach((row, index) => {
+        row.style.display = 'none';
+    });
+
+    for (let i = startIndex; i < endIndex && i < listaFiltradaParaPaginacion.length; i++) {
+        const citaId = listaFiltradaParaPaginacion[i].id;
+        const row = document.getElementById(`tr-${citaId}`);
+        if (row) {
+            row.style.display = '';
+        }
+    }
+
+    generarBotonesPaginacion();
+}
+
+function getIndiceCita(citaId) {
+    return listaFiltradaParaPaginacion.findIndex(cita => cita.id === citaId);
+}
+
+function generarBotonesPaginacion() {
+    paginationContainer.innerHTML = '';
+    const totalPaginas = Math.ceil(listaFiltradaParaPaginacion.length / citasPorPagina);
+
+    for (let i = 1; i <= totalPaginas; i++) {
+        const li = document.createElement('li');
+        li.className = 'page-item ' + (i === currentPage ? 'active' : '');
+        const button = document.createElement('button');
+        button.className = 'page-link';
+        button.textContent = i;
+        button.addEventListener('click', () => {
+            currentPage = i;
+            mostrarPagina(currentPage);
+        });
+        li.appendChild(button);
+        paginationContainer.appendChild(li);
+    }
+}
+
 ///////////////////////////////////////////////////////calls ajax
 
 
@@ -353,7 +430,7 @@ try {
         method: "POST",
         success: function(result) {
             if(result != null){
-                location.reload();
+               location.reload();
             }
         },
         fail: function() {
@@ -378,10 +455,12 @@ $(function () {
     $(document).on('change', '#Cvisitas', function () {
         setTableCita();
     });
-    $(document).on('change', '#Cfecha', function () {
+    $(document).on('change', '#CfechaDesde', function () {
         setTableCita();
     });
-
+    $(document).on('change', '#CfechaHasta', function () {
+        setTableCita();
+    });
     $(document).on('change', '#Cfranjas', function () {
         setTableCita();
     });
@@ -394,23 +473,35 @@ $(function () {
 
 function setTableCita(){
     let idiomasFiltrar = $('#Cidiomas').val();
-    let fechaFiltrar = $('#Cfecha').val();
+    let fechaDesdeFiltrar = $('#CfechaDesde').val();
+    let fechaHastaFiltrar = $('#CfechaHasta').val();
     let visitaFiltrar = $('#Cvisitas').val();
     let franjasFiltrar = $('#Cfranjas').val();
     let filtAdminCitasTable = [] ;
     filtAdminCitasTable = listaadmincitas ?? [] ;
 
-    if( fechaFiltrar != "" && fechaFiltrar != null){
-        debugger
+    if( fechaDesdeFiltrar != "" && fechaDesdeFiltrar != null){
         filtAdminCitasTable = filtAdminCitasTable.filter(res => {
         const fechaRes = new Date(res.fecha);
         const anio = fechaRes.getFullYear();
         const mes = (fechaRes.getMonth() + 1).toString().padStart(2, '0');
         const dia = fechaRes.getDate().toString().padStart(2, '0');
-        const fechaResFormateada = `${anio}-${mes}-${dia}`;
-        return fechaResFormateada === fechaFiltrar;
+        const fechaResDesdeFormateada = `${anio}-${mes}-${dia}`;
+        return fechaResDesdeFormateada >= fechaDesdeFiltrar;
         }) ?? [];
     }
+    if( fechaHastaFiltrar != "" && fechaHastaFiltrar != null){
+        filtAdminCitasTable = filtAdminCitasTable.filter(res => {
+        const fechaRes = new Date(res.fecha);
+        const anio = fechaRes.getFullYear();
+        const mes = (fechaRes.getMonth() + 1).toString().padStart(2, '0');
+        const dia = fechaRes.getDate().toString().padStart(2, '0');
+        const fechaResHastaFormateada = `${anio}-${mes}-${dia}`;
+        return fechaResHastaFormateada <= fechaHastaFiltrar;
+        }) ?? [];
+    }
+
+
     if( visitaFiltrar != "" && visitaFiltrar != null){
         filtAdminCitasTable = filtAdminCitasTable.filter(res => res.visit_id == parseInt(visitaFiltrar))  ?? [] ;
     }
@@ -429,6 +520,9 @@ function setTableCita(){
             $('#tr-'+cita.id).addClass('dnone');
         }
     });
+    mostrarPagina(currentPage);
+    generarBotonesPaginacion();
+
 }
 
 

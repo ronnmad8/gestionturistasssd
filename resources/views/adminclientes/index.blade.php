@@ -133,6 +133,15 @@
         </table>
     </div>
 
+    <div class="row mx-auto">   
+        <div class="d-flex justify-content-center mt-3">
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="pagination-container">
+                    </ul>
+            </nav>
+        </div>
+    </div>
+
     <div class="dnone">
         <div id="lista_hours" data-hours="{{ json_encode($hours) }}">
         </div>
@@ -265,6 +274,59 @@ let listaadminclientes= $('#lista_adminclientes').data('adminclientes') || [];
 $('.menu').removeClass('activ');
 $("#linkadminclientes").addClass('activ');
 
+/// pagination
+
+const tablaAdminvisitasBody = document.getElementById('body_table');
+const paginationContainer = document.getElementById('pagination-container');
+const citasPorPagina = 10;
+let currentPage = 1;
+let listaFiltradaParaPaginacion = [...listaadminclientes]; 
+setTable();
+
+function mostrarPagina(pagina) {
+    const startIndex = (pagina - 1) * citasPorPagina;
+    const endIndex = startIndex + citasPorPagina;
+
+    tablaAdminvisitasBody.querySelectorAll('tr').forEach((row, index) => {
+        row.style.display = 'none';
+    });
+
+    for (let i = startIndex; i < endIndex && i < listaFiltradaParaPaginacion.length; i++) {
+        const citaId = listaFiltradaParaPaginacion[i].id;
+        const row = document.getElementById(`tr-${citaId}`);
+        if (row) {
+            row.style.display = '';
+        }
+    }
+
+    generarBotonesPaginacion();
+}
+
+function getIndiceCita(citaId) {
+    return listaFiltradaParaPaginacion.findIndex(cita => cita.id === citaId);
+}
+
+function generarBotonesPaginacion() {
+    paginationContainer.innerHTML = '';
+    const totalPaginas = Math.ceil(listaFiltradaParaPaginacion.length / citasPorPagina);
+
+    for (let i = 1; i <= totalPaginas; i++) {
+        const li = document.createElement('li');
+        li.className = 'page-item ' + (i === currentPage ? 'active' : '');
+        const button = document.createElement('button');
+        button.className = 'page-link';
+        button.textContent = i;
+        button.addEventListener('click', () => {
+            currentPage = i;
+            mostrarPagina(currentPage);
+        });
+        li.appendChild(button);
+        paginationContainer.appendChild(li);
+    }
+}
+
+//functions
+
 $(".editar").on('click', function() {
     let id = $(this).attr('id').split('-')[1];
 
@@ -311,20 +373,7 @@ $(".verpedidos").on('click', function() {
 
 
 $("#btfiltrar").on('click', function() {
-    let textofiltrar = $('#Cfiltro').val();
-    
-    filtAdminTable = listaadminclientes ?? [] ;
-    if( textofiltrar != ""){
-        filtAdminTable = filtAdminTable.filter(res => res.name.includes(textofiltrar)) ?? [] ;
-    }
-    
-    $('.trclientes').removeClass('dnone');
-    listaadminclientes.forEach( cliente => { 
-        if(!filtAdminTable.includes(cliente))
-        {
-            $('#tr-'+cliente.id).addClass('dnone');
-        }
-    });
+    setTable();
 
 });
 
@@ -474,6 +523,29 @@ $("#abrirModalXverpedidos").on('click', function() {
 function getGuia(id) {
     return guiasData[id - 1].name ;
 }
+
+function setTable(){
+
+    let textofiltrar = $('#Cfiltro').val();
+    
+    filtAdminTable = listaadminclientes ?? [] ;
+    if( textofiltrar != ""){
+        filtAdminTable = filtAdminTable.filter(res => res.name.includes(textofiltrar)) ?? [] ;
+    }
+    
+    $('.trclientes').removeClass('dnone');
+    listaadminclientes.forEach( cliente => { 
+        if(!filtAdminTable.includes(cliente))
+        {
+            $('#tr-'+cliente.id).addClass('dnone');
+        }
+    });
+
+    mostrarPagina(currentPage);
+    generarBotonesPaginacion();
+
+}
+
 
 
 </script>

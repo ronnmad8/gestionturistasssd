@@ -13,6 +13,7 @@ use App\Http\Controllers\Adminclientes\AdminclientesController;
 use App\Http\Controllers\Adminfacturacion\AdminfacturacionController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Adminhistorics\AdminhistoricsController;
 
 use App\Http\Controllers\Payments\PaymentsController;
 
@@ -72,7 +73,10 @@ Route::middleware(['auth'])->group(function () {
     
         Route::get('/adminfacturacion', [AdminfacturacionController::class, 'index'])->name('adminfacturacion');
         Route::get('/excelfacturacion/{mes}', [AdminFacturacionController::class, 'excelfacturacion'])->name('excelfacturacion');
+    
+        Route::get('/adminhistorics', [AdminhistoricsController::class, 'index'])->name('adminhistorics');
     });
+
 
     Route::middleware(['role:2,4'])->group(function () {
 

@@ -20,6 +20,10 @@ use App\Http\Controllers\Controller;
 use Datetime;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Services\TraductionService;
+use App\Services\MailService;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ContactMail;
 
 class AdmincitasController extends Controller
 {
@@ -63,7 +67,7 @@ class AdmincitasController extends Controller
         ]);
 
         try {
-
+        $cancelada = 4; //status candelada
         $status = $request->input('status');
         $id = $request->input('id');
         if($id != null){
@@ -73,7 +77,39 @@ class AdmincitasController extends Controller
                 $c->status = $request->input('status');
             }
 
-            if($c->update()){
+            if($c->status == $cancelada){
+
+                //enviar correo a clientes de las reservas de la cita
+                $reservas = Reserva::select('reservas.*')->where('cita_id', $id)->get();
+                foreach ($reservas as $reservaanulada) {
+                    $fecha = $c->fecha;
+                    $diasemana = date('w', strtotime($fecha));
+                    $visita = Visitlanguages::find($c->visit_id)->where('language_id', $c->language_id)->first()->name;
+                    $visit = Visit::find($c->visit_id)->first();
+                    $puntoencuentro = $visit->puntoencuentro;
+                    $puntoencuentrotext = $visit->puntoencuentrotext;
+                    $textostraducidos = TraductionService::getTraduction($c->language_id);
+
+                    $user = User::find($reservaanulada->user_id);
+                    $hora = Hours::find($c->hours_id)->hora;
+                    $dataemail = array(
+                        'textos' => $textostraducidos,
+                        'name' => ($user->name ?? '_') ." ". ($user->surname ?? '_'),
+                        'email' => $user->email ?? '_',
+                        'reserva' => $reservaanulada,
+                        'visita_nombre' => $visita,
+                        'hora' => $hora
+                    );
+                    $subject = 'Reserva Anulada';
+                    $viewName = 'emails.reservaanulada';
+                    Mail::to($user->email)->send(new ContactMail($dataemail, $viewName, $subject));
+                    Mail::to("ronnmad@hotmail.es")->send(new ContactMail($dataemail, $viewName, $subject));//ontest
+                
+                }
+            }
+            
+            $update = $c->update();
+            if($update != null){
                 return response()->json($c);
             }
             else{

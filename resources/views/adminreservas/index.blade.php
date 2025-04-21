@@ -187,6 +187,15 @@
         </table>
     </div>
 
+    <div class="row mx-auto">   
+        <div class="d-flex justify-content-center mt-3">
+            <nav aria-label="Page navigation">
+                <ul class="pagination" id="pagination-container">
+                    </ul>
+            </nav>
+        </div>
+    </div>
+
     <div class="dnone">
 
         <div id="lista_languages" data-languages="{{ json_encode($languages) }}">
@@ -277,9 +286,6 @@
 
 
 
-
-
-
 <script>
 
 
@@ -290,6 +296,59 @@ let listaadminreservas = $('#adminreservas').data('adminreservas')["data"] || []
 
 $('.menu').removeClass('activ');
 $("#linkadminreservas").addClass('activ');
+
+/// pagination
+
+const tablaAdminvisitasBody = document.getElementById('body_table');
+const paginationContainer = document.getElementById('pagination-container');
+const citasPorPagina = 8;
+let currentPage = 1;
+let listaFiltradaParaPaginacion = [...listaadminreservas]; 
+setTable();
+
+function mostrarPagina(pagina) {
+    const startIndex = (pagina - 1) * citasPorPagina;
+    const endIndex = startIndex + citasPorPagina;
+
+    tablaAdminvisitasBody.querySelectorAll('tr').forEach((row, index) => {
+        row.style.display = 'none';
+    });
+
+    for (let i = startIndex; i < endIndex && i < listaFiltradaParaPaginacion.length; i++) {
+        const citaId = listaFiltradaParaPaginacion[i].id;
+        const row = document.getElementById(`tr-${citaId}`);
+        if (row) {
+            row.style.display = '';
+        }
+    }
+
+    generarBotonesPaginacion();
+}
+
+function getIndiceCita(citaId) {
+    return listaFiltradaParaPaginacion.findIndex(cita => cita.id === citaId);
+}
+
+function generarBotonesPaginacion() {
+    paginationContainer.innerHTML = '';
+    const totalPaginas = Math.ceil(listaFiltradaParaPaginacion.length / citasPorPagina);
+
+    for (let i = 1; i <= totalPaginas; i++) {
+        const li = document.createElement('li');
+        li.className = 'page-item ' + (i === currentPage ? 'active' : '');
+        const button = document.createElement('button');
+        button.className = 'page-link';
+        button.textContent = i;
+        button.addEventListener('click', () => {
+            currentPage = i;
+            mostrarPagina(currentPage);
+        });
+        li.appendChild(button);
+        paginationContainer.appendChild(li);
+    }
+}
+
+//functions
 
 $(".editar").on('click', function() {
     let id = $(this).attr('id').split('-')[1];
@@ -421,6 +480,61 @@ $(".btdelete").on('click', function() {
 });
 
 
+$(function () {
+
+    $(document).on('change', '#CIdiomas', function () {
+        setTable();
+    });
+    $(document).on('change', '#CGuias', function () {
+        setTable();
+    });
+    $(document).on('change', '#CVisits', function () {
+        setTable();
+    });
+    $(document).on('change', '#CFecha', function () {
+        setTable();
+    });
+
+
+});
+
+function setTable(){
+    
+    let idiomasFiltrar = $('#CIdiomas').val();
+    let fechaFiltrar = $('#CFecha').val();
+    let visitaFiltrar = $('#CVisits').val();
+    let guiaFiltrar = $('#CGuias').val();
+    let filtAdminreservasTable = [] ;
+    filtAdminreservasTable = listaadminreservas ?? [] ;
+    if( fechaFiltrar != "" && fechaFiltrar != null){
+        filtAdminreservasTable = filtAdminreservasTable.filter(res => res.fecha == fechaFiltrar)  ?? [] ;
+    }
+    if( visitaFiltrar != "" && visitaFiltrar != null){
+        filtAdminreservasTable = filtAdminreservasTable.filter(res => res.visit_id == parseInt(visitaFiltrar))  ?? [] ;
+    }
+    if( idiomasFiltrar != "" && idiomasFiltrar != null){
+        filtAdminreservasTable = filtAdminreservasTable.filter(res => res.language_id == parseInt(idiomasFiltrar))  ?? [] ;
+    }
+    if( guiaFiltrar != "" && guiaFiltrar != null){
+        filtAdminreservasTable = filtAdminreservasTable.filter(res => res.guia_id == parseInt(guiaFiltrar))  ?? [] ;
+    }
+
+    console.log("filtAdminreservasTable ", filtAdminreservasTable);
+
+    $('.trreservas').removeClass('dnone');
+    listaadminreservas.forEach( reserva => { 
+        if(!filtAdminreservasTable.includes(reserva))
+        {
+            $('#tr-'+reserva.id).addClass('dnone');
+        }
+    });
+
+    console.log("filtAdminreservasTable ", filtAdminreservasTable);
+
+    mostrarPagina(currentPage);
+    generarBotonesPaginacion();
+}
+
 
 </script>
 
@@ -476,60 +590,6 @@ $(".btdelete").on('click', function() {
             $('#btcloseeditar').on('click', function (){
                 $('#form-data-display').addClass('oculto');
             })
-
-
-    function setTableCita(){
-    
-    let idiomasFiltrar = $('#CIdiomas').val();
-    let fechaFiltrar = $('#CFecha').val();
-    let visitaFiltrar = $('#CVisits').val();
-    let guiaFiltrar = $('#CGuias').val();
-    let filtAdminreservasTable = [] ;
-    filtAdminreservasTable = listaadminreservas ?? [] ;
-    if( fechaFiltrar != "" && fechaFiltrar != null){
-        filtAdminreservasTable = filtAdminreservasTable.filter(res => res.fecha == fechaFiltrar)  ?? [] ;
-    }
-    if( visitaFiltrar != "" && visitaFiltrar != null){
-        filtAdminreservasTable = filtAdminreservasTable.filter(res => res.visit_id == parseInt(visitaFiltrar))  ?? [] ;
-    }
-    if( idiomasFiltrar != "" && idiomasFiltrar != null){
-        filtAdminreservasTable = filtAdminreservasTable.filter(res => res.language_id == parseInt(idiomasFiltrar))  ?? [] ;
-    }
-    if( guiaFiltrar != "" && guiaFiltrar != null){
-        filtAdminreservasTable = filtAdminreservasTable.filter(res => res.guia_id == parseInt(guiaFiltrar))  ?? [] ;
-    }
-
-    console.log("filtAdminreservasTable ", filtAdminreservasTable);
-
-    $('.trreservas').removeClass('dnone');
-    listaadminreservas.forEach( reserva => { 
-        if(!filtAdminreservasTable.includes(reserva))
-        {
-            $('#tr-'+reserva.id).addClass('dnone');
-        }
-    });
-
-    console.log("filtAdminreservasTable ", filtAdminreservasTable);
-}
-
-
-
-$(function () {
-
-  $(document).on('change', '#CIdiomas', function () {
-      setTableCita();
-  });
-  $(document).on('change', '#CGuias', function () {
-      setTableCita();
-  });
-  $(document).on('change', '#CVisits', function () {
-      setTableCita();
-  });
-  $(document).on('change', '#CFecha', function () {
-      setTableCita();
-  });
-});
-
 
 
     </script>
