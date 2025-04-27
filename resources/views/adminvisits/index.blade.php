@@ -990,7 +990,6 @@ $("#bteditarimages").on('click', function()
                             'id': id,
                             'visitimages': visitimagesdata
                         }
-                        
                         try {
                             $.ajaxSetup({
                                 headers: {
@@ -1004,7 +1003,8 @@ $("#bteditarimages").on('click', function()
                                 method: "POST",
                                 success: function(result) {
                                     if(result != null){
-                                        location.reload();
+                                    debugger
+                                       // location.reload();
                                     }
                                 },
                                 fail: function() {
