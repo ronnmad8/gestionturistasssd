@@ -69,8 +69,13 @@ class DisponibilitiesController extends ApiController
 
             for ($day = 1; $day <= $daysInMonth; $day++) {
                 $currentDate = Carbon::createFromDate($year, $month, $day);
+                $currentDayOfWeek = $currentDate->dayOfWeek;
                 $usuariosConDisponibilidadEseDia = [];
                 foreach ($daysWithDisponibilities as $dayWD ) {
+                    if ($dayWD->diasemana == 7) {
+                        $dayWD->diasemana = 0;
+                    }
+
                     if ($currentDate->dayOfWeek == $dayWD->diasemana ) {
                         $usuariosConDisponibilidadEseDia[] = $dayWD->user_id;
                     }

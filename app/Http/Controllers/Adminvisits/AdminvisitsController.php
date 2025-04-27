@@ -203,11 +203,11 @@ class AdminvisitsController extends Controller
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $file) {
                     $filename = $file->getClientOriginalName();
-                    $filepath = 'public/images/' . $filename;
-                    if (Storage::exists($filepath)) {
-                        Storage::delete($filepath);
-                    }
-                    $file->storeAs('public/images/', $filename);
+                    $filepath = 'images/' . $filename;
+                    if (Storage::disk('public')->exists($filepath)) {
+                        Storage::disk('public')->delete($filepath);
+                    }    
+                    $file->storeAs('images/', $filename, 'public');
                     $res = true;
                 }
                 return response()->json($res);
@@ -224,26 +224,35 @@ class AdminvisitsController extends Controller
         try {    
             $visitimages = $request->input('visitimages', []);
             if(!empty($visitimages)){
+
                 $id = $request->input('id');
-                $visit = Visit::findOrFail($id);
-                
+                if($id != null){
                 foreach ($visitimages as $vm) 
                 {
-                    if($id != null){
                         $order = $vm['order'];
                         $filename = $vm['filename'] ;
                         $url = $vm['url'] ;
-                        $visit->mediafiles()->updateOrCreate(
-                            ['order' => $order],
-                            [
+                        $visitid = $vm['visit_id'] ;
+                        $visit = Visit::findOrFail($visitid);
+
+                        $updated = $visit->mediafiles()->where('order', $order)->where('visit_id', $visitid)->update([
+                            'filename' => $filename,
+                            'url' => $url
+                        ]);
+
+                        if ($updated === 0) {
+                            $visit->mediafiles()->create([
+                                'order' => $order,
                                 'filename' => $filename,
                                 'url' => $url,
-                                'visit_id' => $id
-                            ]
-                        );
-                    }
+                                'visit_id' => $visitid,
+                            ]);
+                        }
+
+                    
                 }
                 return response()->json(true);
+                }
             }
             else{
                 return null;
