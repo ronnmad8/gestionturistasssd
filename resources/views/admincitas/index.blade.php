@@ -480,9 +480,12 @@ function setTableCita(){
     let filtAdminCitasTable = [] ;
     filtAdminCitasTable = listaadmincitas ?? [] ;
 
+    const fechaRes = new Date(res.fecha);
+    console.log("fechaRes", fechaRes);
+    console.log("filtAdminCitasTable (1)", filtAdminCitasTable);
+
     if( fechaDesdeFiltrar != "" && fechaDesdeFiltrar != null){
         filtAdminCitasTable = filtAdminCitasTable.filter(res => {
-        const fechaRes = new Date(res.fecha);
         const anio = fechaRes.getFullYear();
         const mes = (fechaRes.getMonth() + 1).toString().padStart(2, '0');
         const dia = fechaRes.getDate().toString().padStart(2, '0');
@@ -490,9 +493,10 @@ function setTableCita(){
         return fechaResDesdeFormateada >= fechaDesdeFiltrar;
         }) ?? [];
     }
+    console.log("filtAdminCitasTable (1)", filtAdminCitasTable);
+
     if( fechaHastaFiltrar != "" && fechaHastaFiltrar != null){
         filtAdminCitasTable = filtAdminCitasTable.filter(res => {
-        const fechaRes = new Date(res.fecha);
         const anio = fechaRes.getFullYear();
         const mes = (fechaRes.getMonth() + 1).toString().padStart(2, '0');
         const dia = fechaRes.getDate().toString().padStart(2, '0');

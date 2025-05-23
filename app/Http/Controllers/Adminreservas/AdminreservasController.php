@@ -211,7 +211,7 @@ class AdminreservasController extends Controller
     public function sorteo()
     {
         $diasretro= Configuraciones::where('name', 'sorteo')->first()->value; //dato de configuraciones => sorteo
-        
+
         try 
         {
             $now = Carbon::now()->format('Y-m-d');
@@ -231,13 +231,12 @@ class AdminreservasController extends Controller
             ->whereDate('fecha', '<=', $limiteFecha)
             ->get();
 
-            
+
             foreach ($citas as $cita) {
                 $fecha = Carbon::parse($cita->fecha)->format('Y-m-d');
                 $diasemana = date('w', strtotime($fecha));
-
                 $disponibilities = Disponibility::select('disponibilities.user_id' )
-                ->leftjoin('franjashorarias', 'franjashorarias.id', '=', 'disponibilities.franjahoraria_id')
+                ->join('franjashorarias', 'franjashorarias.id', 'disponibilities.franjahoraria_id')
                 ->whereIn('disponibilities.user_id', function ($query) use ($cita) {
                     $query->select('user_id')
                         ->from('guialanguages')
@@ -249,8 +248,8 @@ class AdminreservasController extends Controller
                         ->where('visit_id', $cita->visit_id);
                 })
                 ->where('disponibilities.diasemana', $diasemana)
-                ->whereTime('franjashorarias.init_hours_id', '>=', Carbon::parse($cita->hours_id)->toTimeString())
-                ->whereTime('franjashorarias.end_hours_id', '<=', Carbon::parse($cita->hours_id)->toTimeString())
+                ->where('franjashorarias.init_hours_id', '<=', (int)$cita->hours_id)
+                ->where('franjashorarias.end_hours_id', '>=', (int)$cita->hours_id)
                 ->distinct('disponibilities.user_id')
                 ->pluck('disponibilities.user_id')
                 ->toArray();
@@ -265,8 +264,6 @@ class AdminreservasController extends Controller
                 ->orderBy('cuota', 'asc')
                 ->orderBy('id', 'asc')
                 ->first();
-
-                
 
                 if ($guia) {
                     $guia->cuota = ($guia->cuota ?? 0) + 1;
