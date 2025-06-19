@@ -216,6 +216,9 @@ function setTable(){
             $('#tr-'+c.id).addClass('dnone');
         }
     });
+
+    listaFiltradaParaPaginacion = [...filtAdminHistoricsTable]
+    currentPage = 1;
     mostrarPagina(currentPage);
     generarBotonesPaginacion();
 

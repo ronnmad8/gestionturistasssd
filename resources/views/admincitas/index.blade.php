@@ -25,7 +25,7 @@
                 <div class="col-xl-8 my-1 d-flex">
                     <div class="mx-1 formulariocita" style="min-width: 100px">
                         <p class="m-0">Estado</p>
-                        <select class="form-control  mx-1" id="Cestado" >
+                        <select class="form-control  mx-1" id="CEstado" >
                             <option value="">-</option>
                             @foreach($statuscitas as $estado)
                             <option value="{{$estado['id']}}">
@@ -77,7 +77,7 @@
                 <tr>
 
                     <th style="min-width: 150px">ACCIONES</th>
-                    <th style="min-width: 50px">REF</th>
+                    {{-- <th style="min-width: 50px">REF</th> --}}
                     <th style="min-width: 300px">GUÍA</th>
                     <th style="min-width: 300px">VISITA</th>
                     <th style="min-width: 50px">ESTADO</th>
@@ -104,9 +104,9 @@
                             <i class='fa fa-cog' style="color: #fff"></i>
                         </button>
                     </td>
-                    <td style='width: 50px'>
+                    {{-- <td style='width: 50px'>
                         <div id='Eid-{{$cita->id}}'>{{$cita->id}}</div>
-                    </td>
+                    </td> --}}
                     <td style='width: 300px'>
                         <div id='Eguia-{{$cita->id}}'>{{$cita->guia ?? ""}}</div>
                     </td>
@@ -163,7 +163,7 @@
                 <tr>
 
                     <th style="min-width: 150px">ACCIONES</th>
-                    <th style="min-width: 50px">REF</th>
+                    {{-- <th style="min-width: 50px">REF</th> --}}
                     <th style="min-width: 300px">GUÍA</th>
                     <th style="min-width: 300px">VISITA</th>
                     <th style="min-width: 50px">ESTADO</th>
@@ -467,6 +467,9 @@ $(function () {
     $(document).on('change', '#Cidiomas', function () {
         setTableCita();
     });
+    $(document).on('change', '#CEstado', function () {
+        setTableCita();
+    });
 });
 
 
@@ -477,12 +480,11 @@ function setTableCita(){
     let fechaHastaFiltrar = $('#CfechaHasta').val();
     let visitaFiltrar = $('#Cvisitas').val();
     let franjasFiltrar = $('#Cfranjas').val();
+    let estadoFiltrar = $('#CEstado').val();
     let filtAdminCitasTable = [] ;
     filtAdminCitasTable = listaadmincitas ?? [] ;
 
-    const fechaRes = new Date(res.fecha);
-    console.log("fechaRes", fechaRes);
-    console.log("filtAdminCitasTable (1)", filtAdminCitasTable);
+    const fechaRes = new Date(fechaDesdeFiltrar);
 
     if( fechaDesdeFiltrar != "" && fechaDesdeFiltrar != null){
         filtAdminCitasTable = filtAdminCitasTable.filter(res => {
@@ -493,7 +495,6 @@ function setTableCita(){
         return fechaResDesdeFormateada >= fechaDesdeFiltrar;
         }) ?? [];
     }
-    console.log("filtAdminCitasTable (1)", filtAdminCitasTable);
 
     if( fechaHastaFiltrar != "" && fechaHastaFiltrar != null){
         filtAdminCitasTable = filtAdminCitasTable.filter(res => {
@@ -516,6 +517,9 @@ function setTableCita(){
         let frns = franjasFiltrar.split("-");
         filtAdminCitasTable = filtAdminCitasTable.filter(res => res.hours_id >= parseInt(frns[0]) && res.hours_id < parseInt(frns[1]))  ?? [] ;
     }
+    if( estadoFiltrar != "" && estadoFiltrar != null){
+        filtAdminCitasTable = filtAdminCitasTable.filter(res => res.visit_id == parseInt(estadoFiltrar))  ?? [] ;
+    }
     $('.trcitas').removeClass('dnone');
 
     listaadmincitas.forEach( cita => { 
@@ -524,6 +528,9 @@ function setTableCita(){
             $('#tr-'+cita.id).addClass('dnone');
         }
     });
+
+    listaFiltradaParaPaginacion = [...filtAdminCitasTable]
+    currentPage = 1;
     mostrarPagina(currentPage);
     generarBotonesPaginacion();
 

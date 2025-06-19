@@ -14,7 +14,7 @@
         <div class="row ">
             <div class="mx-1 formulariocita" style="min-width: 100px" >
                 <p class="m-0">Fecha</p>
-                <input class="form-control  mx-1" id="Cfecha" type="date"  >
+                <input class="form-control  mx-1" id="CFecha" type="date"  >
             </div>
             <div class="mx-1 formulariocita" style="min-width: 150px">
                 <p class="m-0">Visitas</p>
@@ -64,7 +64,7 @@
                 <tr>
 
                     <th style="min-width: 150px">ACCIONES</th>
-                    <th style="min-width: 100px">REF</th>
+                    {{-- <th style="min-width: 100px">REF</th> --}}
                     <th style="min-width: 200px">GUÍA</th>
                     <th style="min-width: 200px">CLIENTE</th>
                     <th style="min-width: 300px">VISITA</th>
@@ -95,9 +95,9 @@
                             <i class='fa fa-trash' style="color: #fff"></i>
                         </button>
                     </td>
-                    <td style='width: 100px'>
+                    {{-- <td style='width: 100px'>
                         <div id='Eid-{{$c->id}}'>{{$c->id}}</div>
-                    </td>
+                    </td> --}}
                     <td style='width: 200px'>
                         <div id='Eguia-{{$c->id}}'>
                         @foreach($guias as $guia)
@@ -167,7 +167,7 @@
                 <tr>
 
                     <th style="min-width: 150px">ACCIONES</th>
-                    <th style="min-width: 100px">REF</th>
+                    {{-- <th style="min-width: 100px">REF</th> --}}
                     <th style="min-width: 200px">GUÍA</th>
                     <th style="min-width: 200px">CLIENTE</th>
                     <th style="min-width: 300px">VISITA</th>
@@ -506,8 +506,10 @@ function setTable(){
     let guiaFiltrar = $('#CGuias').val();
     let filtAdminreservasTable = [] ;
     filtAdminreservasTable = listaadminreservas ?? [] ;
+
     if( fechaFiltrar != "" && fechaFiltrar != null){
-        filtAdminreservasTable = filtAdminreservasTable.filter(res => res.fecha == fechaFiltrar)  ?? [] ;
+        const resFechaFormatted = new Date(fechaFiltrar).toISOString().slice(0, 10);
+        filtAdminreservasTable = filtAdminreservasTable.filter(res => res.fecha == resFechaFormatted  )  ?? [] ;
     }
     if( visitaFiltrar != "" && visitaFiltrar != null){
         filtAdminreservasTable = filtAdminreservasTable.filter(res => res.visit_id == parseInt(visitaFiltrar))  ?? [] ;
@@ -519,8 +521,8 @@ function setTable(){
         filtAdminreservasTable = filtAdminreservasTable.filter(res => res.guia_id == parseInt(guiaFiltrar))  ?? [] ;
     }
 
-    console.log("filtAdminreservasTable ", filtAdminreservasTable);
-
+    
+    
     $('.trreservas').removeClass('dnone');
     listaadminreservas.forEach( reserva => { 
         if(!filtAdminreservasTable.includes(reserva))
@@ -528,9 +530,9 @@ function setTable(){
             $('#tr-'+reserva.id).addClass('dnone');
         }
     });
-
-    console.log("filtAdminreservasTable ", filtAdminreservasTable);
-
+    
+    listaFiltradaParaPaginacion = [...filtAdminreservasTable]
+    currentPage = 1;
     mostrarPagina(currentPage);
     generarBotonesPaginacion();
 }

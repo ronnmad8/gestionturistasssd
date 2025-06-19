@@ -38,6 +38,8 @@ class AdminfacturacionController extends Controller
         , Visit::raw("(SELECT languages.name FROM languages WHERE languages.id = reservas.language_id  limit 1) as language ")
         , Visit::raw("(SELECT hours.hora FROM hours WHERE hours.id = reservas.visit_hours_id  limit 1) as hour ")
         )
+        ->where('reservas.deleted_at', null)
+        ->where('reservas.status', 1)
         ->get();
 
         $visits= Visit::select('visits.*')->get();

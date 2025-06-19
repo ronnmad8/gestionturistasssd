@@ -85,7 +85,6 @@
 <script>
 
 let listaadminfacturacion = $('#adminfacturacion').data('reservas') || [];
-console.log("listaadminfacturacion ", listaadminfacturacion);
 
 $('.menu').removeClass('activ');
 $("#linkadminfacturacion").addClass('activ');
@@ -103,7 +102,6 @@ function setTableCita(){
       });
   }
 
-  console.log("filtAdmincitasTable ", filtAdmincitasTable);
 
   $('#body_table').html('');
   let suma = 0;
@@ -150,6 +148,11 @@ function setTableCita(){
     var url = "{{ route('excelfacturacion', ['mes' => ':mes']) }}";
     url = url.replace(':mes', parseInt(mesesFiltrar)+1);
     $('#exportexcel').attr('href', url);
+
+
+
+    
+
 }
 
 
@@ -161,8 +164,11 @@ $(function () {
     });
 });
 
-
-
+const today = new Date();
+const currentMonthValue = today.getMonth() +0;
+console.log("currentMonthValue", currentMonthValue);
+$('#Cmeses').val(currentMonthValue);
+setTableCita()
 
 
 </script>

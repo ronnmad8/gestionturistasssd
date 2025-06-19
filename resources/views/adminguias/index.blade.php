@@ -246,7 +246,7 @@
             <div class='modal-content'>
                 <div class='modal-header'>
                     <h4 class='modal-title text-center'>
-                        <span> VER DISPONIBILIDAD </span>
+                        <span> VER NO DISPONIBILIDAD </span>
                     </h4>
                     <button id="btcloseverdisponibilidad" type='button' class='close' data-dismiss='modal' aria-label='Close'>
                         <span aria-hidden='true'>&times;</span>
@@ -544,7 +544,9 @@ function setTable(){
             $('#tr-'+guia.id).addClass('dnone');
         }
     });
-    
+
+    listaFiltradaParaPaginacion = [...filtAdminTable]
+    currentPage = 1;
     mostrarPagina(currentPage);
     generarBotonesPaginacion();
 

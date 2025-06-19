@@ -541,6 +541,8 @@ function setTable(){
         }
     });
 
+    listaFiltradaParaPaginacion = [...filtAdminTable]
+    currentPage = 1;
     mostrarPagina(currentPage);
     generarBotonesPaginacion();
 
